@@ -44,20 +44,3 @@ jobs:
           actions-cache-key: windows-${{ hashFiles('xmake.lua') }}
       - name: Build
         run: xmake -y
-  freebsd-build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - name: Build on FreeBSD
-        uses: cross-platform-actions/action@v0.32.0
-        with:
-          operating_system: freebsd
-          version: '15.0'
-          sync_files: 'true'
-          run: |
-            # 1. Install xmake and raylib dependencies
-            # FreeBSD uses 'pkg' for package management
-            sudo pkg install -y xmake raylib mesa-libs libGLU
-            
-            # 2. Build the project
-            xmake -y
