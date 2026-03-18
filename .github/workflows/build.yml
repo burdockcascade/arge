@@ -30,9 +30,14 @@ jobs:
         with:
           xmake-version: latest
           actions-cache-folder: '.xmake-cache'
-          actions-cache-key: 'ubuntu-xmake-cache'
+          actions-cache-key: 'linux-${{ hashFiles("xmake.lua") }}'
       - name: Build
         run: xmake -y
+      - name: Upload Linux Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-artifact
+          path: bin/
   windows-build:
     runs-on: windows-latest
     steps:
@@ -41,6 +46,11 @@ jobs:
         with:
           xmake-version: latest
           actions-cache-folder: '.xmake-cache'
-          actions-cache-key: 'windows-xmake-cache'
+          actions-cache-key: 'windows-${{ hashFiles("xmake.lua") }}'
       - name: Build
         run: xmake -y
+      - name: Upload Windows Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-artifact
+          path: bin/
