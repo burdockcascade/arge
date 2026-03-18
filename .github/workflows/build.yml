@@ -44,22 +44,20 @@ jobs:
           actions-cache-key: windows-${{ hashFiles('xmake.lua') }}
       - name: Build
         run: xmake -y
-  haiku-build:
+  freebsd-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Build on Haiku
+      - name: Build on FreeBSD
         uses: cross-platform-actions/action@v0.32.0
         with:
-          operating_system: haiku
-          version: r1beta5
+          operating_system: freebsd
+          version: '15.0'
           sync_files: 'true'
           run: |
-            # 1. Install dependencies
-            # pkgman is non-interactive by default in scripts, 
-            # but -y ensures it doesn't hang.
-            pkgman install -y xmake raylib_devel
+            # 1. Install xmake and raylib dependencies
+            # FreeBSD uses 'pkg' for package management
+            sudo pkg install -y xmake raylib mesa-libs libGLU
             
             # 2. Build the project
-            # We use xmake as requested
             xmake -y
