@@ -30,7 +30,7 @@ jobs:
         with:
           xmake-version: latest
           actions-cache-folder: '.xmake-cache'
-          actions-cache-key: 'linux-${{ hashFiles("xmake.lua") }}'
+          actions-cache-key: 'linux-${{ hashFiles('xmake.lua') }}'
       - name: Build
         run: xmake -y
       - name: Upload Linux Binary
@@ -46,7 +46,7 @@ jobs:
         with:
           xmake-version: latest
           actions-cache-folder: '.xmake-cache'
-          actions-cache-key: 'windows-${{ hashFiles("xmake.lua") }}'
+          actions-cache-key: 'windows-${{ hashFiles('xmake.lua') }}'
       - name: Build
         run: xmake -y
       - name: Upload Windows Binary
