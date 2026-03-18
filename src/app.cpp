@@ -14,6 +14,29 @@ static JSValue js_app_run(JSContext *ctx, JSValueConst this_val, int argc, JSVal
 
 static JSValue js_app_constructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv) {
     const JSValue obj = JS_NewObject(ctx);
+
+    if (auto* engine = static_cast<App*>(JS_GetContextOpaque(ctx)); engine && argc >= 1 && JS_IsObject(argv[0])) {
+
+        // Extract Width
+        const JSValue w = JS_GetPropertyStr(ctx, argv[0], "width");
+        if (JS_IsNumber(w)) JS_ToInt32(ctx, &engine->windowWidth, w);
+        JS_FreeValue(ctx, w);
+
+        // Extract Height
+        const JSValue h = JS_GetPropertyStr(ctx, argv[0], "height");
+        if (JS_IsNumber(h)) JS_ToInt32(ctx, &engine->windowHeight, h);
+        JS_FreeValue(ctx, h);
+
+        // Extract Title
+        const JSValue t = JS_GetPropertyStr(ctx, argv[0], "title");
+        if (JS_IsString(t)) {
+            const char* titleStr = JS_ToCString(ctx, t);
+            engine->windowTitle = titleStr;
+            JS_FreeCString(ctx, titleStr);
+        }
+        JS_FreeValue(ctx, t);
+    }
+
     JS_SetPropertyStr(ctx, obj, "run", JS_NewCFunction(ctx, js_app_run, "run", 1));
     return obj;
 }
@@ -111,12 +134,12 @@ void App::BindAPI() {
 
 bool App::Initialize() {
 
+    // Load and Eval Script
+    if (!LoadScript()) return false;
+
     // Initialize Window
     InitWindow(windowWidth, windowHeight, windowTitle.c_str());
     SetTargetFPS(targetFPS);
-
-    // Load and Eval Script
-    if (!LoadScript()) return false;
 
     // Call init
     const JSValue initFunc = JS_GetProperty(ctx, appInstance, initAtom);

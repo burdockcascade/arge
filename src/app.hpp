@@ -7,18 +7,18 @@ public:
     explicit App(std::string  path);
 
     void BindAPI();
-
     ~App();
-
-
 
     bool Initialize();
     void Run() const;
     void Shutdown();
 
-
     void HandleJSException() const;
     JSValue appInstance = JS_UNDEFINED;
+
+    int windowWidth = 800;
+    int windowHeight = 600;
+    std::string windowTitle = "Untitled";
 
 private:
     void ProcessFrame() const;
@@ -34,8 +34,5 @@ private:
     JSValue jsSystemObj = JS_UNDEFINED;
 
     bool isRunning = false;
-    int windowWidth = 800;
-    int windowHeight = 600;
-    std::string windowTitle = "Arge Engine";
     int targetFPS = 60;
 };
