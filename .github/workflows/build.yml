@@ -25,7 +25,7 @@ jobs:
     steps:
       - name: Installation
         run: sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: latest
@@ -33,15 +33,10 @@ jobs:
           actions-cache-key: linux-${{ hashFiles('xmake.lua') }}
       - name: Build
         run: xmake -y
-      - name: Upload Linux Binary
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-artifact
-          path: bin/
   windows-build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: latest
@@ -49,8 +44,3 @@ jobs:
           actions-cache-key: windows-${{ hashFiles('xmake.lua') }}
       - name: Build
         run: xmake -y
-      - name: Upload Windows Binary
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows-artifact
-          path: bin/
