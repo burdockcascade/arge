@@ -9,11 +9,21 @@ public:
     void BindAPI();
 
     ~App();
-    void Run();
+
+
+
+    bool Initialize();
+    void Run() const;
+    void Shutdown();
+
+
     void HandleJSException() const;
     JSValue appInstance = JS_UNDEFINED;
 
 private:
+    void ProcessFrame() const;
+    [[nodiscard]] bool LoadScript() const;
+
     JSRuntime* rt;
     JSContext* ctx;
     std::string scriptPath;
@@ -23,4 +33,9 @@ private:
     JSValue jsCtxObj = JS_UNDEFINED;
     JSValue jsSystemObj = JS_UNDEFINED;
 
+    bool isRunning = false;
+    int windowWidth = 800;
+    int windowHeight = 600;
+    std::string windowTitle = "Arge Engine";
+    int targetFPS = 60;
 };

@@ -27,11 +27,12 @@ int main(const int argc, char** argv) {
 
     try {
         App app(scriptPath);
-
-        app.Run();
+        if (app.Initialize()) {
+            app.Run();
+        }
+        app.Shutdown();
     } catch (const std::exception& e) {
         TraceLog(LOG_ERROR, "%s", e.what());
-        return 0;
     }
 
     return 0;

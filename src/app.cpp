@@ -78,95 +78,108 @@ void App::BindAPI() {
 
 }
 
-void App::Run() {
-
-    InitWindow(800, 600, "C++/QuickJS Engine");
-    SetTargetFPS(60);
-
-    // Load script
+[[nodiscard]] bool App::LoadScript() const {
+    // 1. Read the script file from disk
     std::ifstream t(scriptPath);
     if (!t.is_open()) {
         TraceLog(LOG_ERROR, "Failed to open script: %s", scriptPath.c_str());
-        return;
+        return false;
     }
-    std::string code((std::istreambuf_iterator(t)), std::istreambuf_iterator<char>());
 
-    // Evaluate script
-    JSValue eval_ret = JS_Eval(ctx, code.c_str(), code.length(), scriptPath.c_str(), JS_EVAL_TYPE_MODULE);
+    // Read file content into a string
+    const std::string code((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+
+    // 2. Evaluate the script in the QuickJS context
+    // We use JS_EVAL_TYPE_MODULE to support modern JS features
+    const JSValue eval_ret = JS_Eval(ctx, code.c_str(), code.length(), scriptPath.c_str(), JS_EVAL_TYPE_MODULE);
+
+    // 3. Check for syntax or evaluation errors
     if (JS_IsException(eval_ret)) {
-        JSValue exception = JS_GetException(ctx);
-        const char* msg = JS_ToCString(ctx, exception);
-        std::cerr << "JS Error: " << msg << std::endl;
-        JS_FreeCString(ctx, msg);
-        JS_FreeValue(ctx, exception);
-        return;
+        HandleJSException(); // Uses the existing error handler
+        return false;
     }
     JS_FreeValue(ctx, eval_ret);
 
+    // 4. Verify that the user called 'app.run(instance)' in their script
+    // This check ensures appInstance (set via js_app_run) is no longer undefined
     if (JS_IsUndefined(appInstance)) {
-        TraceLog(LOG_WARNING, "No app instance found. Make sure to call 'app.run(yourAppInstance)' in your script.");
+        TraceLog(LOG_WARNING, "No app instance found. Ensure 'app.run(new YourClass())' is called in %s", scriptPath.c_str());
+        return false;
     }
 
-    // Get callbacks
-    JSValue initFunc = JS_GetProperty(ctx, appInstance, initAtom);
-    JSValue updateFunc = JS_GetProperty(ctx, appInstance, updateAtom);
-    JSValue drawFunc = JS_GetProperty(ctx, appInstance, drawAtom);
+    TraceLog(LOG_INFO, "Script loaded and evaluated successfully: %s", scriptPath.c_str());
+    return true;
+}
 
-    // Call Init
+bool App::Initialize() {
+
+    // Initialize Window
+    InitWindow(windowWidth, windowHeight, windowTitle.c_str());
+    SetTargetFPS(targetFPS);
+
+    // Load and Eval Script
+    if (!LoadScript()) return false;
+
+    // Call init
+    const JSValue initFunc = JS_GetProperty(ctx, appInstance, initAtom);
     if (JS_IsFunction(ctx, initFunc)) {
-
         JSValue args[1];
         args[0] = JS_DupValue(ctx, jsSystemObj);
 
-        JSValue ret = JS_Call(ctx, initFunc, appInstance, 1, args);
+        const JSValue ret = JS_Call(ctx, initFunc, appInstance, 1, args);
         if (JS_IsException(ret)) HandleJSException();
 
         JS_FreeValue(ctx, ret);
         JS_FreeValue(ctx, args[0]);
-
     }
-
-    // App Loop
-    while (!WindowShouldClose()) {
-        const float dt = GetFrameTime();
-
-        BeginDrawing();
-        ClearBackground(BLACK);
-
-        // Update
-        if (JS_IsFunction(ctx, updateFunc)) {
-
-            JSValue args[2];
-            args[0] = JS_NewFloat64(ctx, dt);
-            args[1] = JS_DupValue(ctx, jsSystemObj);
-
-            JSValue ret = JS_Call(ctx, updateFunc, appInstance, 2, args);
-            if (JS_IsException(ret)) HandleJSException();
-
-            JS_FreeValue(ctx, ret);
-            JS_FreeValue(ctx, args[0]);
-            JS_FreeValue(ctx, args[1]);
-
-        }
-
-        // Draw
-        if (JS_IsFunction(ctx, drawFunc)) {
-            JSValue args[1] = { JS_DupValue(ctx, jsCtxObj) };
-            JSValue ret = JS_Call(ctx, drawFunc, appInstance, 1, args);
-            if (JS_IsException(ret)) HandleJSException();
-            JS_FreeValue(ctx, ret);
-            JS_FreeValue(ctx, args[0]);
-        }
-
-        EndDrawing();
-    }
-
     JS_FreeValue(ctx, initFunc);
+
+    isRunning = true;
+    return true;
+}
+
+void App::Run() const {
+    while (!WindowShouldClose() && isRunning) {
+        ProcessFrame();
+    }
+}
+
+void App::ProcessFrame() const {
+    const float dt = GetFrameTime();
+
+    // Logic/Update Phase
+    const JSValue updateFunc = JS_GetProperty(ctx, appInstance, updateAtom);
+    if (JS_IsFunction(ctx, updateFunc)) {
+        JSValue args[2] = { JS_NewFloat64(ctx, dt), JS_DupValue(ctx, jsSystemObj) };
+        JSValue ret = JS_Call(ctx, updateFunc, appInstance, 2, args);
+        if (JS_IsException(ret)) HandleJSException();
+        JS_FreeValue(ctx, ret);
+        JS_FreeValue(ctx, args[0]);
+        JS_FreeValue(ctx, args[1]);
+    }
     JS_FreeValue(ctx, updateFunc);
+
+    // Rendering Phase
+    BeginDrawing();
+    ClearBackground(BLACK);
+
+    const JSValue drawFunc = JS_GetProperty(ctx, appInstance, drawAtom);
+    if (JS_IsFunction(ctx, drawFunc)) {
+        JSValue args[1] = { JS_DupValue(ctx, jsCtxObj) };
+        JSValue ret = JS_Call(ctx, drawFunc, appInstance, 1, args);
+        if (JS_IsException(ret)) HandleJSException();
+        JS_FreeValue(ctx, ret);
+        JS_FreeValue(ctx, args[0]);
+    }
     JS_FreeValue(ctx, drawFunc);
 
+    EndDrawing();
+}
+
+void App::Shutdown() {
     CloseWindow();
 }
+
 
 void App::HandleJSException() const {
     const JSValue exception = JS_GetException(ctx);
