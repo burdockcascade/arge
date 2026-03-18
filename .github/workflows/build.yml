@@ -44,3 +44,22 @@ jobs:
           actions-cache-key: windows-${{ hashFiles('xmake.lua') }}
       - name: Build
         run: xmake -y
+  haiku-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build on Haiku
+        uses: cross-platform-actions/action@v0.32.0
+        with:
+          operating_system: haiku
+          version: r1beta5
+          sync_files: 'true'
+          run: |
+            # 1. Install dependencies
+            # pkgman is non-interactive by default in scripts, 
+            # but -y ensures it doesn't hang.
+            pkgman install -y xmake raylib_devel
+            
+            # 2. Build the project
+            # We use xmake as requested
+            xmake -y
