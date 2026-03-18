@@ -79,7 +79,7 @@ void App::BindAPI() {
 }
 
 [[nodiscard]] bool App::LoadScript() const {
-    // 1. Read the script file from disk
+    // Read the script file from disk
     std::ifstream t(scriptPath);
     if (!t.is_open()) {
         TraceLog(LOG_ERROR, "Failed to open script: %s", scriptPath.c_str());
@@ -89,19 +89,17 @@ void App::BindAPI() {
     // Read file content into a string
     const std::string code((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
 
-    // 2. Evaluate the script in the QuickJS context
-    // We use JS_EVAL_TYPE_MODULE to support modern JS features
+    // Evaluate the script in the QuickJS context
     const JSValue eval_ret = JS_Eval(ctx, code.c_str(), code.length(), scriptPath.c_str(), JS_EVAL_TYPE_MODULE);
 
-    // 3. Check for syntax or evaluation errors
+    // Check for syntax or evaluation errors
     if (JS_IsException(eval_ret)) {
         HandleJSException(); // Uses the existing error handler
         return false;
     }
     JS_FreeValue(ctx, eval_ret);
 
-    // 4. Verify that the user called 'app.run(instance)' in their script
-    // This check ensures appInstance (set via js_app_run) is no longer undefined
+    // Verify that the user called 'app.run(instance)' in their script
     if (JS_IsUndefined(appInstance)) {
         TraceLog(LOG_WARNING, "No app instance found. Ensure 'app.run(new YourClass())' is called in %s", scriptPath.c_str());
         return false;
