@@ -1,4 +1,7 @@
 name: Build
+concurrency:
+  group: build
+  cancel-in-progress: true
 on:
   pull_request:
     branches:
@@ -7,6 +10,7 @@ on:
     paths:
       - src
       - xmake.lua
+      - .github/workflows/build.yml
   push:
     branches:
       - main
@@ -14,6 +18,7 @@ on:
     paths:
       - src
       - xmake.lua
+      - .github/workflows/build.yml
 jobs:
   linux-build:
     runs-on: ubuntu-latest
