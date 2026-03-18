@@ -1,0 +1,41 @@
+name: Build
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+    paths:
+      - src
+      - xmake.lua
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - src
+      - xmake.lua
+jobs:
+  linux-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Installation
+        run: sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev
+      - uses: actions/checkout@v4
+      - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+          actions-cache-folder: '.xmake-cache'
+          actions-cache-key: 'ubuntu-xmake-cache'
+      - name: Build
+        run: xmake -y
+  windows-build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+          actions-cache-folder: '.xmake-cache'
+          actions-cache-key: 'windows-xmake-cache'
+      - name: Build
+        run: xmake -y
