@@ -3,6 +3,7 @@
 #include <fstream>
 #include <utility>
 #include <raylib.h>
+#include "console.hpp"
 
 static JSValue js_app_run(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
     if (auto* engine = static_cast<App*>(JS_GetContextOpaque(ctx)); engine && argc >= 1) {
@@ -41,30 +42,6 @@ static JSValue js_app_constructor(JSContext *ctx, JSValueConst new_target, int a
     return obj;
 }
 
-static JSValue js_print(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    for (int i = 0; i < argc; i++) {
-        const char *str = JS_ToCString(ctx, argv[i]);
-        if (!str) return JS_EXCEPTION;
-        TraceLog(LOG_INFO, "%s", str);
-        JS_FreeCString(ctx, str);
-    }
-    return JS_UNDEFINED;
-}
-
-static void register_console(JSContext *ctx) {
-    const JSValue global_obj = JS_GetGlobalObject(ctx);
-    const JSValue console = JS_NewObject(ctx);
-
-    // Add 'log' method to the console object
-    JS_SetPropertyStr(ctx, console, "log",
-        JS_NewCFunction(ctx, js_print, "log", 1));
-
-    // Add the console object to the global scope
-    JS_SetPropertyStr(ctx, global_obj, "console", console);
-
-    JS_FreeValue(ctx, global_obj);
-}
-
 App::App(std::string path) : scriptPath(std::move(path)) {
 
     // Core
@@ -86,7 +63,7 @@ App::App(std::string path) : scriptPath(std::move(path)) {
 void App::BindAPI() {
 
     // Register Console
-    register_console(ctx);
+    Console::register_console(ctx);
 
     // Create Context
     jsCtxObj = JS_NewObject(ctx);
