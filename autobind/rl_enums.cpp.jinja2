@@ -1,0 +1,16 @@
+#include <quickjs.h>
+#include "rl_enums.hpp"
+
+namespace RaylibBindings {
+
+    void InitAllEnums(JSContext *ctx, JSValue ns) {
+        {% for e in enum_list %}
+        // Enum: {{ e.name }}
+        {% for v in e.vals %}
+        JS_SetPropertyStr(ctx, ns, "{{ v.name }}", JS_NewInt32(ctx, {{ v.value }}));
+        {% endfor %}
+
+        {% endfor %}
+    }
+
+}

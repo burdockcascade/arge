@@ -1,0 +1,30 @@
+// Generated for C++23 - Raylib QuickJS Bindings
+#pragma once
+
+#include <raylib.h>
+#include <quickjs.h>
+
+namespace RaylibBindings {
+
+    // Forward declarations for struct bindings
+    {% for struct in structs %}
+
+    // --- Bindings for {{ struct.name }} ---
+    inline JSClassID js_{{ struct.name }}_class_id;
+    inline JSValue JS_New{{ struct.name }}(JSContext *ctx, {{ struct.name }} data);
+
+    {% endfor %}
+
+    // Forward declarations for alias bindings
+    {% for alias in aliases %}
+    // --- Alias: {{ alias.name }} maps to {{ alias.target }} ---
+    inline JSClassID js_{{ alias.name }}_class_id;
+    inline JSValue JS_New{{ alias.name }}(JSContext *ctx, {{ alias.target }} data) {
+        return JS_New{{ alias.target }}(ctx, data);
+    }
+
+    {% endfor %}
+
+    void InitAllStructs(JSContext *ctx, JSValue ns);
+
+} // namespace RaylibBindings
