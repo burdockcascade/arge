@@ -5,5 +5,9 @@ build/
 # MacOS Cache
 .DS_Store
 
+# python
+.venv
+
+# CMake Cache
 .idea
 cmake-build-debug
