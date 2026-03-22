@@ -29,10 +29,12 @@ int main(const int argc, char** argv) {
     CLI11_PARSE(args, argc, argv);
 
     try {
-        if (App app(scriptPath); app.Initialize()) {
+        App app(scriptPath);
+        if (app.Initialize()) {
             app.Run();
+        } else {
+            TraceLog(LOG_ERROR, "Failed to initialize the app with script: %s", scriptPath.c_str());
         }
-        App::Shutdown();
     } catch (const std::exception& e) {
         TraceLog(LOG_ERROR, "%s", e.what());
     }
