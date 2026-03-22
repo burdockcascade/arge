@@ -79,7 +79,7 @@ export namespace RaylibBindings {
             return JS_ThrowTypeError(ctx, "Expected either 0 arguments or exactly 2 arguments for Vector2 constructor");
         }
         
-        Vector2 data = { 0 }; // Initialize with defaults 
+        Vector2 data = {}; // Initialize with defaults
 
         // Only populate if the user provides all fields 
         if (argc == 2) {
@@ -202,7 +202,7 @@ export namespace RaylibBindings {
             return JS_ThrowTypeError(ctx, "Expected either 0 arguments or exactly 3 arguments for Vector3 constructor");
         }
         
-        Vector3 data = { 0 }; // Initialize with defaults 
+        Vector3 data = {}; // Initialize with defaults
 
         // Only populate if the user provides all fields 
         if (argc == 3) {
@@ -350,7 +350,7 @@ export namespace RaylibBindings {
             return JS_ThrowTypeError(ctx, "Expected either 0 arguments or exactly 4 arguments for Vector4 constructor");
         }
         
-        Vector4 data = { 0 }; // Initialize with defaults 
+        Vector4 data = {}; // Initialize with defaults
 
         // Only populate if the user provides all fields 
         if (argc == 4) {
@@ -721,7 +721,7 @@ export namespace RaylibBindings {
             return JS_ThrowTypeError(ctx, "Expected either 0 arguments or exactly 16 arguments for Matrix constructor");
         }
         
-        Matrix data = { 0 }; // Initialize with defaults 
+        Matrix data = {}; // Initialize with defaults
 
         // Only populate if the user provides all fields 
         if (argc == 16) {
@@ -960,7 +960,7 @@ export namespace RaylibBindings {
             return JS_ThrowTypeError(ctx, "Expected either 0 arguments or exactly 4 arguments for Color constructor");
         }
         
-        Color data = { 0 }; // Initialize with defaults 
+        Color data = {}; // Initialize with defaults
 
         // Only populate if the user provides all fields 
         if (argc == 4) {
@@ -1115,7 +1115,7 @@ export namespace RaylibBindings {
             return JS_ThrowTypeError(ctx, "Expected either 0 arguments or exactly 4 arguments for Rectangle constructor");
         }
         
-        Rectangle data = { 0 }; // Initialize with defaults 
+        Rectangle data = {}; // Initialize with defaults
 
         // Only populate if the user provides all fields 
         if (argc == 4) {
@@ -1288,7 +1288,7 @@ export namespace RaylibBindings {
             return JS_ThrowTypeError(ctx, "Expected either 0 arguments or exactly 5 arguments for Image constructor");
         }
         
-        Image data = { 0 }; // Initialize with defaults 
+        Image data = {}; // Initialize with defaults
 
         // Only populate if the user provides all fields 
         if (argc == 5) {
@@ -1468,7 +1468,7 @@ export namespace RaylibBindings {
             return JS_ThrowTypeError(ctx, "Expected either 0 arguments or exactly 5 arguments for Texture constructor");
         }
         
-        Texture data = { 0 }; // Initialize with defaults 
+        Texture data = {}; // Initialize with defaults
 
         // Only populate if the user provides all fields 
         if (argc == 5) {
