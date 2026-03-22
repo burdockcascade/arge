@@ -1,5 +1,4 @@
 module;
-#include <raylib.h>
 #include <quickjs.h>
 
 export module API;
@@ -10,22 +9,11 @@ import <string>;
 import <vector>;
 import <string_view>;
 import RaylibBindings;
+import :Common;
 
 export import :Console;
 
 export namespace API {
-
-    struct FunctionDef {
-        std::string_view name{};
-        JSCFunction* func{};
-        int length{};
-    };
-
-    inline void register_functions(JSContext* ctx, JSValue obj, std::initializer_list<FunctionDef> funcs) {
-        for (const auto&[name, func, length] : funcs) {
-            JS_SetPropertyStr(ctx, obj, name.data(), JS_NewCFunction(ctx, func, name.data(), length));
-        }
-    }
 
     void init_raylib_enums(JSContext* ctx, JSValue global) {
         RaylibBindings::InitAllEnums(ctx, global);
