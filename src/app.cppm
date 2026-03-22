@@ -180,6 +180,3 @@ private:
         JS_SetPropertyStr(ctx, global_obj, "App", ctor);
     }
 };
-
-
-
