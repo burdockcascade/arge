@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Installation
-        run: sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev
+        run: sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev lua luajit tbox readline sv wchar
       - uses: actions/checkout@v6
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
