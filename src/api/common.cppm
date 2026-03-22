@@ -2,7 +2,6 @@ module;
 #include <quickjs.h>
 
 export module API:Common;
-
 import <string_view>;
 
 export namespace API {
