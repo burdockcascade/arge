@@ -8,10 +8,6 @@ import :Common;
 
 export namespace API {
 
-    void init_raylib_enums(JSContext* ctx, JSValue global) {
-        RaylibBindings::InitAllEnums(ctx, global);
-    }
-
     // Register the Window API functions to the JavaScript context
     void create_window_object(JSContext* ctx, JSValue system_ns) {
         JSValue window_ns = JS_NewObject(ctx);

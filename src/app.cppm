@@ -34,8 +34,8 @@ public:
 
     ~App() {
         engine->FreeValue(appInstance);
-        engine->FreeValue(jsCtxObj);
-        engine->FreeValue(jsSystemObj);
+        engine->FreeValue(jsDrawContextObj);
+        engine->FreeValue(jsSystemContextObj);
         engine->FreeAtom(initAtom);
         engine->FreeAtom(updateAtom);
         engine->FreeAtom(drawAtom);
@@ -50,6 +50,7 @@ public:
     App& operator=(const App&) = delete;
 
     bool Initialize() {
+
         std::ifstream t(scriptPath);
         if (!t.is_open()) return false;
 
@@ -62,7 +63,7 @@ public:
         InitWindow(windowWidth, windowHeight, windowTitle.c_str());
         SetTargetFPS(targetFPS);
 
-        JSValue args[] = { JS_DupValue(engine->GetContext(), jsSystemObj) };
+        JSValue args[] = { JS_DupValue(engine->GetContext(), jsSystemContextObj) };
         engine->FreeValue(engine->CallMethod(appInstance, initAtom, 1, args));
         engine->FreeValue(args[0]);
 
@@ -81,7 +82,7 @@ public:
     }
 
     // Helper to allow static callbacks to access the engine wrapper
-    [[nodiscard]]ScriptEngine& GetEngine() const { return *engine; }
+    [[nodiscard]] ScriptEngine& GetEngine() const { return *engine; }
 
     // App State
     bool isRunning = false;
@@ -91,49 +92,49 @@ public:
     Color backgroundColor = BLACK;
     std::string windowTitle = "Untitled";
 
-    // JS Object References (Managed via engine->FreeValue in destructor)
-    JSValue appInstance = JS_UNDEFINED;
-
 private:
 
     // Core Components
-    std::unique_ptr<ScriptEngine> engine{};
-    std::string scriptPath{};
+    std::unique_ptr<ScriptEngine> engine = nullptr;
+    std::string scriptPath = "";
+
+    JSValue appInstance = JS_UNDEFINED;
 
     // Cached Atoms for performance in the game loop
-    JSAtom initAtom = 0;
-    JSAtom updateAtom = 0;
-    JSAtom drawAtom = 0;
+    JSAtom initAtom = JS_ATOM_NULL;
+    JSAtom updateAtom = JS_ATOM_NULL;
+    JSAtom drawAtom = JS_ATOM_NULL;
 
     // Shared JS Objects
-    JSValue jsCtxObj = JS_UNDEFINED;
-    JSValue jsSystemObj = JS_UNDEFINED;
+    JSValue jsDrawContextObj = JS_UNDEFINED;
+    JSValue jsSystemContextObj = JS_UNDEFINED;
 
     void BindAPI() {
         JSContext* ctx = engine->GetContext();
-        const JSValue global = JS_GetGlobalObject(ctx);
+        const JSValue globalObj = JS_GetGlobalObject(ctx);
 
         // Core Systems
         API::register_console(ctx);
-        create_app_class(ctx, global);
+        create_app_class(ctx, globalObj);
 
         // Namespaces
-        jsCtxObj = JS_NewObject(ctx);
-        jsSystemObj = JS_NewObject(ctx);
+        jsDrawContextObj = JS_NewObject(ctx);
+        jsSystemContextObj = JS_NewObject(ctx);
 
         // Raylib Bindings
-        API::init_raylib_enums(ctx, global);
-        API::create_window_object(ctx, jsSystemObj);
-        API::create_input_object(ctx, jsSystemObj);
+        API::InitEverything(ctx, globalObj);
+        API::create_window_object(ctx, jsSystemContextObj);
+        API::create_input_object(ctx, jsSystemContextObj);
+        API::create_canvas_object(ctx, jsDrawContextObj);
 
-        JS_FreeValue(ctx, global);
+        JS_FreeValue(ctx, globalObj);
     }
 
     void ProcessFrame() const {
         JSContext* ctx = engine->GetContext();
 
         // Update
-        JSValue uArgs[] = { JS_NewFloat64(ctx, GetFrameTime()), JS_DupValue(ctx, jsSystemObj) };
+        JSValue uArgs[] = { JS_NewFloat64(ctx, GetFrameTime()), JS_DupValue(ctx, jsSystemContextObj) };
         engine->FreeValue(engine->CallMethod(appInstance, updateAtom, 2, uArgs));
         engine->FreeValue(uArgs[0]);
         engine->FreeValue(uArgs[1]);
@@ -143,7 +144,7 @@ private:
 
         ClearBackground(backgroundColor);
 
-        JSValue dArgs[] = { JS_DupValue(ctx, jsCtxObj) };
+        JSValue dArgs[] = { JS_DupValue(ctx, jsDrawContextObj) };
         engine->FreeValue(engine->CallMethod(appInstance, drawAtom, 1, dArgs));
         engine->FreeValue(dArgs[0]);
 

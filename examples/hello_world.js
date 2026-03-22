@@ -1,16 +1,24 @@
 class HelloWorld {
 
+    constructor() {
+
+        // rect position
+        this.pos = new Vector2(100, 400);
+        this.size = new Vector2(100, 40);
+        this.color = new Color(255, 0, 0, 255);
+
+    }
+
     init(app) {
         console.log(app.window.isReady());
     }
 
     update(dt, app) {
-        if (app.input.isKeyPressed(KEY_TAB)) {
-            console.log("Tab key pressed!");
-        }
+        // do nothing
     }
 
     draw(ctx) {
+        ctx.drawRect(this.pos, this.size, this.color);
     }
 }
 

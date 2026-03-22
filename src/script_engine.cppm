@@ -35,6 +35,7 @@ public:
     }
 
     JSValue CallMethod(JSValueConst obj, const JSAtom method, const int argc, JSValueConst* argv) const {
+        TraceLog(LOG_DEBUG, "Calling method with atom: %d", method);
         const JSValue func = JS_GetProperty(ctx, obj, method);
         JSValue ret = JS_UNDEFINED; 
         if (JS_IsFunction(ctx, func)) {
