@@ -73,14 +73,14 @@ public:
         JS_SetPropertyStr(ctx, obj, name, JS_NewCFunction(ctx, func, name, length)); 
     }
 
-    void SetStoredValue(JSValue& storage, JSValueConst newValue) const {
+    void SetStoredValue(JSValue& storage, const JSValue newValue) const {
         if (!JS_IsUndefined(storage)) {
             JS_FreeValue(ctx, storage); 
         }
         storage = JS_DupValue(ctx, newValue); 
     }
 
-    static bool IsUndefined(JSValueConst v) { return JS_IsUndefined(v); }
+    static bool IsUndefined(const JSValue v) { return JS_IsUndefined(v); }
 
     // Resource Management
     [[nodiscard]] JSAtom CreateAtom(const std::string_view name) const {
