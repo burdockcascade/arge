@@ -1,7 +1,10 @@
 #include <CLI/CLI.hpp>
 #include <raylib.h>
 #include <string>
-#include "app.hpp"
+#include <exception> // Added for std::exception
+
+// Replace internal includes with module imports
+import App;
 
 int main(const int argc, char** argv) {
 
@@ -26,11 +29,10 @@ int main(const int argc, char** argv) {
     CLI11_PARSE(args, argc, argv);
 
     try {
-        App app(scriptPath);
-        if (app.Initialize()) {
+        if (App app(scriptPath); app.Initialize()) {
             app.Run();
         }
-        app.Shutdown();
+        App::Shutdown();
     } catch (const std::exception& e) {
         TraceLog(LOG_ERROR, "%s", e.what());
     }

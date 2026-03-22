@@ -1,11 +1,14 @@
-#include <iostream>
-#include <fstream>
-#include <quickjs.h>
+module;
 #include <raylib.h>
+#include <quickjs.h>
 
-namespace Console {
+export module API:Console;
+import <iostream>;
+import <fstream>;
 
-    static JSValue js_print(JSContext *ctx, int argc, JSValueConst *argv, const int logLevel) {
+export namespace API {
+
+    JSValue js_print(JSContext *ctx, int argc, JSValueConst *argv, const int logLevel) {
         for (int i = 0; i < argc; i++) {
             const char *str = JS_ToCString(ctx, argv[i]);
             if (!str) return JS_EXCEPTION;
@@ -18,15 +21,15 @@ namespace Console {
         return JS_UNDEFINED;
     }
 
-    static JSValue js_console_log(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+    JSValue js_console_log(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
         return js_print(ctx, argc, argv, LOG_INFO);
     }
 
-    static JSValue js_console_error(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+    JSValue js_console_error(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
         return js_print(ctx, argc, argv, LOG_ERROR);
     }
 
-    static JSValue js_console_warn(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+    JSValue js_console_warn(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
         return js_print(ctx, argc, argv, LOG_WARNING);
     }
 

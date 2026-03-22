@@ -6,10 +6,10 @@ set_languages("cxx23")
 add_rules("mode.debug", "mode.release")
 
 add_requires("cli11 2.6.1")
-add_requires("raylib 5.5")
+add_requires("raylib master") -- develop against this until 6.0 is released
 add_requires("quickjs-ng 0.12.1")
 
 target("arge")
     set_kind("binary")
-    add_files("src/*.cpp")
+    add_files("src/main.cpp", "src/*.cppm", "src/**/*.cppm")
     add_packages("cli11", "raylib", "quickjs-ng")
