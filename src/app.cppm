@@ -1,5 +1,4 @@
 module;
-#include <raylib.h>
 #include <quickjs.h>
 
 export module App;
@@ -11,6 +10,13 @@ import <fstream>;
 import <sstream>;
 import ScriptEngine;
 import API;
+import Raylib;
+
+static constexpr int DEFAULT_WINDOW_HEIGHT = 600;
+static constexpr int DEFAULT_WINDOW_WIDTH = 800;
+static constexpr int DEFAULT_TARGET_FPS = 60;
+static constexpr Raylib::Color DEFAULT_BACKGROUND_COLOR = Raylib::Color { 0, 0, 0, 255};
+static constexpr std::string DEFAULT_WINDOW_TITLE = "untitled";
 
 export class App {
 public:
@@ -40,8 +46,8 @@ public:
         engine->FreeAtom(updateAtom);
         engine->FreeAtom(drawAtom);
 
-        if (IsWindowReady()) {
-            CloseWindow();
+        if (Raylib::IsWindowReady()) {
+            Raylib::CloseWindow();
         }
     }
 
@@ -60,8 +66,8 @@ public:
 
         if (!engine->EvalModule(code, scriptPath)) return false;
 
-        InitWindow(windowWidth, windowHeight, windowTitle.c_str());
-        SetTargetFPS(targetFPS);
+        Raylib::InitWindow(windowWidth, windowHeight, windowTitle.c_str());
+        Raylib::SetTargetFPS(targetFPS);
 
         JSValue args[] = { JS_DupValue(engine->GetContext(), jsSystemContextObj) };
         engine->FreeValue(engine->CallMethod(appInstance, initAtom, 1, args));
@@ -72,13 +78,13 @@ public:
     }
 
     void Run() const {
-        while (!WindowShouldClose() && isRunning) {
+        while (!Raylib::WindowShouldClose() && isRunning) {
             ProcessFrame();
         }
     }
 
     static void Shutdown() {
-        CloseWindow();
+        Raylib::CloseWindow();
     }
 
     // Helper to allow static callbacks to access the engine wrapper
@@ -86,11 +92,11 @@ public:
 
     // App State
     bool isRunning = false;
-    int windowWidth = 800;
-    int windowHeight = 600;
-    int targetFPS = 60;
-    Color backgroundColor = BLACK;
-    std::string windowTitle = "Untitled";
+    int windowWidth = DEFAULT_WINDOW_WIDTH;
+    int windowHeight = DEFAULT_WINDOW_HEIGHT;
+    int targetFPS = DEFAULT_TARGET_FPS;
+    Raylib::Color backgroundColor = DEFAULT_BACKGROUND_COLOR;
+    std::string windowTitle = DEFAULT_WINDOW_TITLE;
 
 private:
 
@@ -133,22 +139,26 @@ private:
     void ProcessFrame() const {
         JSContext* ctx = engine->GetContext();
 
+        if (int err = JS_ExecutePendingJob(JS_GetRuntime(ctx), &ctx); err < 0) {
+            engine->HandleException();
+        }
+
         // Update
-        JSValue uArgs[] = { JS_NewFloat64(ctx, GetFrameTime()), JS_DupValue(ctx, jsSystemContextObj) };
+        JSValue uArgs[] = { JS_NewFloat64(ctx, Raylib::GetFrameTime()), JS_DupValue(ctx, jsSystemContextObj) };
         engine->FreeValue(engine->CallMethod(appInstance, updateAtom, 2, uArgs));
         engine->FreeValue(uArgs[0]);
         engine->FreeValue(uArgs[1]);
 
         // Draw
-        BeginDrawing();
+        Raylib::BeginDrawing();
 
-        ClearBackground(backgroundColor);
+        Raylib::ClearBackground(backgroundColor);
 
         JSValue dArgs[] = { JS_DupValue(ctx, jsDrawContextObj) };
         engine->FreeValue(engine->CallMethod(appInstance, drawAtom, 1, dArgs));
         engine->FreeValue(dArgs[0]);
 
-        EndDrawing();
+        Raylib::EndDrawing();
     }
 
     static JSValue js_app_run(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
@@ -171,7 +181,7 @@ private:
                 app->GetEngine().GetPropertyString(argv[0], "title", app->windowTitle);
             }
         } else {
-            TraceLog(LOG_ERROR, "App constructor called but no App instance found in context opaque");
+            Raylib::TraceLog(Raylib::LOG_ERROR, "App constructor called but no App instance found in context opaque");
         }
         return obj;
     }

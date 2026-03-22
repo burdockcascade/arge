@@ -25,9 +25,10 @@ public:
 
     // Execution
     [[nodiscard]] bool EvalModule(const std::string& code, const std::string& filename) const {
-        JSValue val = JS_Eval(ctx, code.c_str(), code.length(), filename.c_str(), JS_EVAL_TYPE_MODULE);
+        const JSValue val = JS_Eval(ctx, code.c_str(), code.length(), filename.c_str(), JS_EVAL_TYPE_MODULE);
         if (JS_IsException(val)) {
-            HandleException(); 
+            HandleException();
+            JS_FreeValue(ctx, val);
             return false; 
         }
         JS_FreeValue(ctx, val); 
@@ -103,10 +104,10 @@ public:
 
     void HandleException() const {
         const JSValue exception = JS_GetException(ctx);
-        const char* msg = JS_ToCString(ctx, exception); 
-        TraceLog(LOG_ERROR, "JS ERROR: %s", msg); 
+        const char* msg = JS_ToCString(ctx, exception);
+        TraceLog(LOG_ERROR, "JS ERROR: %s", msg);
 
-        JSValue stack = JS_GetPropertyStr(ctx, exception, "stack");
+        const JSValue stack = JS_GetPropertyStr(ctx, exception, "stack");
         if (!JS_IsUndefined(stack)) {
             const char* stackStr = JS_ToCString(ctx, stack);
             TraceLog(LOG_ERROR, "Stack Trace: %s", stackStr); 

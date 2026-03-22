@@ -68,10 +68,14 @@ def process_bindings():
     known_structs = {s['name'] for s in data.get('structs', [])}
     processed_aliases = []
 
+    all_items = [];
+
     # Process Alases
     print("Processing aliases...")
     for a in data.get('aliases', []):
         clean_alias_name = a['name'].replace('*', '').strip()
+
+        all_items.append(clean_alias_name)
 
         if clean_alias_name not in STRUCT_WHITELIST:
             continue
@@ -87,6 +91,9 @@ def process_bindings():
     print("Processing structs...")
     processed_structs = []
     for s in data.get('structs', []):
+
+        all_items.append(s['name'])
+
         if s['name'] not in STRUCT_WHITELIST:
             continue
 
@@ -114,6 +121,9 @@ def process_bindings():
     print("Processing functions...")
     processed_functions = []
     for func in data.get('functions', []):
+
+        all_items.append(func['name'])
+
         if func['name'] not in FUNCTION_WHITELIST:
             continue
 
@@ -171,6 +181,7 @@ def process_bindings():
                 "name": v['name'],
                 "value": v['value']
             })
+            all_items.append(v['name'])
         processed_enums.append({
             "name": e['name'],
             "vals": values
@@ -178,6 +189,7 @@ def process_bindings():
 
     # Render
     context = {
+        "all": all_items,
         "structs": processed_structs,
         "aliases": processed_aliases,
         "functions": processed_functions,
@@ -186,14 +198,14 @@ def process_bindings():
 
     # We will assume new templates 'functions.hpp.jinja2' and 'functions.cpp.jinja2' exist
     print("Rendering templates...")
-    for file_base in ['rl_module', 'rl_structs', 'rl_functions', 'rl_enums']:
+    for file_base in ['rl_bindings', 'rl_module', 'rl_structs', 'rl_functions', 'rl_enums']:
         template_path = f'{file_base}.cppm.jinja2'
         print(f"Processing template: {template_path}")
         # Fallback to check if user updated existing templates or created new ones
         try:
             with open(template_path, 'r') as f:
                 template = Template(f.read(), trim_blocks=True, lstrip_blocks=True)
-            output_path = f'../../src/raylib/{file_base}.cppm'
+            output_path = f'../../src/wrappers/{file_base}.cppm'
             with open(output_path, 'w') as f:
                 f.write(template.render(**context))
         except FileNotFoundError:
