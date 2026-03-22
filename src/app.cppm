@@ -8,6 +8,7 @@ import <string>;
 import <memory>;
 import <vector>;
 import <fstream>;
+import <sstream>;
 import ScriptEngine;
 import API;
 
@@ -51,7 +52,10 @@ public:
     bool Initialize() {
         std::ifstream t(scriptPath);
         if (!t.is_open()) return false;
-        const std::string code((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+
+        std::stringstream buffer;
+        buffer << t.rdbuf();
+        const std::string code = buffer.str();
 
         if (!engine->EvalModule(code, scriptPath)) return false;
 
