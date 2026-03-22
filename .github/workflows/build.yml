@@ -23,6 +23,8 @@ jobs:
           xmake-version: latest
           actions-cache-folder: '.xmake-cache'
           actions-cache-key: linux-${{ hashFiles('xmake.lua') }}
+      - name: Configure xmake
+        run: xmake config --toolchain=clang -m release
       - name: Build
         run: xmake -y
   windows-build:
@@ -34,5 +36,7 @@ jobs:
           xmake-version: latest
           actions-cache-folder: '.xmake-cache'
           actions-cache-key: windows-${{ hashFiles('xmake.lua') }}
+      - name: Configure xmake
+        run: xmake config --toolchain=clang-cl -m release
       - name: Build
         run: xmake -y
