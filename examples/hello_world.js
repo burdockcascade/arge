@@ -9,12 +9,18 @@ class HelloWorld {
 
     }
 
-    init(app) {
-        console.log(app.window.isReady());
-    }
-
     update(dt, app) {
-        // do nothing
+        if (app.input.isKeyDown(KEY_RIGHT)) {
+            this.pos.x += 10;
+        } else if (app.input.isKeyDown(KEY_LEFT)) {
+            this.pos.x -= 10;
+        }
+
+        if (app.input.isKeyDown(KEY_DOWN)) {
+            this.pos.y += 10;
+        } else if (app.input.isKeyDown(KEY_UP)) {
+            this.pos.y -= 10;
+        }
     }
 
     draw(ctx) {

@@ -45,5 +45,7 @@ interface Canvas {
 const KEY_SPACE: number;
 const KEY_LEFT: number;
 const KEY_RIGHT: number;
+const KEY_UP: number;
+const KEY_DOWN: number;
 const RED: Color;
 const BLUE: Color;
