@@ -1,7 +1,7 @@
 name: Build
 concurrency:
   group: build
-  cancel-in-progress: true
+  cancel-in-progress: false
 on:
   pull_request:
     branches:
@@ -23,8 +23,6 @@ jobs:
           xmake-version: latest
           actions-cache-folder: '.xmake-cache'
           actions-cache-key: linux-${{ hashFiles('xmake.lua') }}
-      - name: Configure xmake
-        run: xmake config --toolchain=clang -m release -y
       - name: Build
         run: xmake -y
   windows-build:
@@ -36,5 +34,16 @@ jobs:
           xmake-version: latest
           actions-cache-folder: '.xmake-cache'
           actions-cache-key: windows-${{ hashFiles('xmake.lua') }}
+      - name: Build
+        run: xmake -y
+  macos-build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+          actions-cache-folder: '.xmake-cache'
+          actions-cache-key: macos-${{ hashFiles('xmake.lua') }}
       - name: Build
         run: xmake -y
