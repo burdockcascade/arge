@@ -9,8 +9,8 @@ import <string>;
 import <vector>;
 import <string_view>;
 import RaylibBindings;
-import :Common;
 
+export import :Common;
 export import :Console;
 
 export namespace API {
