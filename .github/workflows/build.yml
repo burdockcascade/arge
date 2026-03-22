@@ -36,7 +36,5 @@ jobs:
           xmake-version: latest
           actions-cache-folder: '.xmake-cache'
           actions-cache-key: windows-${{ hashFiles('xmake.lua') }}
-      - name: Configure xmake
-        run: xmake config --toolchain=clang-cl -m release -y
       - name: Build
         run: xmake -y
