@@ -205,7 +205,7 @@ def process_bindings():
         try:
             with open(template_path, 'r') as f:
                 template = Template(f.read(), trim_blocks=True, lstrip_blocks=True)
-            output_path = f'../../src/wrappers/{file_base}.cppm'
+            output_path = f'../../src/raylib/{file_base}.cppm'
             with open(output_path, 'w') as f:
                 f.write(template.render(**context))
         except FileNotFoundError:
