@@ -40,6 +40,14 @@ FUNCTION_WHITELIST = {
     "GetMonitorPhysicalWidth", "GetMonitorPhysicalHeight",
     "GetMonitorRefreshRate", "GetWindowPosition", "GetWindowScaleDPI",
 
+    # Keyboard
+    "IsKeyPressed", "IsKeyPressedRepeat", "IsKeyDown", "IsKeyReleased", "IsKeyUp", "GetKeyPressed", "SetExitKey",
+
+    # Mouse
+    "IsMouseButtonPressed", "IsMouseButtonDown", "IsMouseButtonReleased", "IsMouseButtonUp",
+    "GetMouseX", "GetMouseY", "GetMousePosition", "SetMousePosition", "SetMouseOffset", "SetMouseScale",
+    "GetMouseWheelMove", "GetMouseWheelMoveV",
+
     # Drawing related functions
     "DrawPixel", "DrawLine", "DrawCircle", "DrawRectangle", "DrawTexture", "DrawText", "DrawFPS"
 }
@@ -167,7 +175,6 @@ def process_bindings():
             "name": e['name'],
             "vals": values
         })
-        print(f"Processed enum: {e['name']} with {len(values)} values")
 
     # Render
     context = {
@@ -179,19 +186,18 @@ def process_bindings():
 
     # We will assume new templates 'functions.hpp.jinja2' and 'functions.cpp.jinja2' exist
     print("Rendering templates...")
-    for file_base in ['rl_structs', 'rl_functions', 'rl_enums']:
-        for ext in ['hpp', 'cpp']:
-            template_path = f'{file_base}.{ext}.jinja2'
-            print(f"Processing template: {template_path}")
-            # Fallback to check if user updated existing templates or created new ones
-            try:
-                with open(template_path, 'r') as f:
-                    template = Template(f.read(), trim_blocks=True, lstrip_blocks=True)
-                output_path = f'../src/raylib/{file_base}.{ext}'
-                with open(output_path, 'w') as f:
-                    f.write(template.render(**context))
-            except FileNotFoundError:
-                print(f"Skipping {template_path}, file not found.")
+    for file_base in ['rl_module', 'rl_structs', 'rl_functions', 'rl_enums']:
+        template_path = f'{file_base}.cppm.jinja2'
+        print(f"Processing template: {template_path}")
+        # Fallback to check if user updated existing templates or created new ones
+        try:
+            with open(template_path, 'r') as f:
+                template = Template(f.read(), trim_blocks=True, lstrip_blocks=True)
+            output_path = f'../../src/raylib/{file_base}.cppm'
+            with open(output_path, 'w') as f:
+                f.write(template.render(**context))
+        except FileNotFoundError:
+            print(f"Skipping {template_path}, file not found.")
 
 if __name__ == "__main__":
     print("Processing bindings...")
