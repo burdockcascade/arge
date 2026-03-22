@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Installation
-        run: sudo clang-18 apt-get install -y libgl1-mesa-dev libglu1-mesa-dev
+        run: sudo apt-get install -y clang-18 libgl1-mesa-dev libglu1-mesa-dev
       - name: Setup Clang-18
         run: |
           echo "CC=clang-18" >> $GITHUB_ENV
