@@ -5,6 +5,8 @@ module;
 
 export module RaylibBindings:Enums;
 
+import Raylib;
+
 export namespace RaylibBindings {
 
     void InitAllEnums(JSContext *ctx, JSValue ns) {
