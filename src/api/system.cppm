@@ -1,5 +1,4 @@
 module;
-#include <raylib.h>
 #include <quickjs.h>
 
 export module API:System;
