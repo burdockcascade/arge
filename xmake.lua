@@ -1,7 +1,7 @@
 set_description("Arge")
 
 set_version("0.0.0") -- x-release-please-version
-set_languages("cxx26")
+set_languages("cxx23")
 
 add_rules("mode.debug", "mode.release")
 
@@ -11,5 +11,8 @@ add_requires("quickjs-ng 0.12.1")
 
 target("arge")
     set_kind("binary")
-    add_files("src/main.cpp", "src/*.cppm", "src/**/*.cppm")
+    add_files("src/main.cpp")
+    add_files("src/*.cppm")
+    add_files("src/raylib/*.cppm")
+    add_files("src/api/*.cppm")
     add_packages("cli11", "raylib", "quickjs-ng")
