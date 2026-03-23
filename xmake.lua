@@ -1,7 +1,7 @@
 set_description("Arge")
 
 set_version("0.0.0") -- x-release-please-version
-set_languages("cxx23")
+set_languages("cxx26")
 
 add_rules("mode.debug", "mode.release")
 
