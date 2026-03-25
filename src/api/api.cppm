@@ -3,7 +3,7 @@ export module API;
 export import :Common;
 export import :Console;
 export import :System;
-export import :Canvas;
+export import :Shapes;
 
 export namespace API {
 
