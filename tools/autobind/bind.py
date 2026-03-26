@@ -49,7 +49,10 @@ FUNCTION_WHITELIST = {
     "GetMouseWheelMove", "GetMouseWheelMoveV",
 
     # Drawing related functions
-    "DrawPixel", "DrawLine", "DrawCircle", "DrawRectangle", "DrawTexture", "DrawText", "DrawFPS"
+    "DrawPixel", "DrawLine", "DrawCircle", "DrawRectangle", "DrawTexture", "DrawText", "DrawFPS",
+    
+    # Assets
+    "LoadTexture", "UnloadTexture"
 }
 
 ENUM_WHITELIST = {
@@ -60,6 +63,34 @@ ENUM_WHITELIST = {
 
 def clean_type(t):
     return t.replace("const ", "").replace("*", "").strip()
+
+def get_raylib_colors(data):
+    """Extracts Color defines from raylib.json data."""
+    colors = []
+    # These are the standard colors defined in raylib.h
+    target_colors = {
+        "LIGHTGRAY", "GRAY", "DARKGRAY", "YELLOW", "GOLD", "ORANGE", "PINK",
+        "RED", "MAROON", "GREEN", "LIME", "DARKGREEN", "SKYBLUE", "BLUE",
+        "DARKBLUE", "PURPLE", "VIOLET", "DARKPURPLE", "BEIGE", "BROWN",
+        "DARKBROWN", "WHITE", "BLACK", "BLANK", "MAGENTA", "RAYWHITE"
+    }
+
+    for define in data.get("defines", []):
+        if define["name"] in target_colors:
+            print(f"Processing color: {define['name']}")
+            # Raylib defines colors like: (Color){ 200, 200, 200, 255 }
+            # We need to extract the numbers from the 'value' string
+            import re
+            match = re.search(r'\{ *(\d+), *(\d+), *(\d+), *(\d+) *\}', define["value"])
+            if match:
+                colors.append({
+                    "name": define["name"],
+                    "r": match.group(1),
+                    "g": match.group(2),
+                    "b": match.group(3),
+                    "a": match.group(4)
+                })
+    return colors
 
 def process_bindings():
     with open('raylib.json', 'r') as f:
@@ -74,6 +105,7 @@ def process_bindings():
     print("Processing aliases...")
     for a in data.get('aliases', []):
         clean_alias_name = a['name'].replace('*', '').strip()
+        print(f"Processing alias: {clean_alias_name}")
 
         all_items.append(clean_alias_name)
 
@@ -96,6 +128,8 @@ def process_bindings():
 
         if s['name'] not in STRUCT_WHITELIST:
             continue
+
+        print(f"Processing struct: {s['name']}")
 
         struct_fields = []
         for f in s['fields']:
@@ -126,6 +160,8 @@ def process_bindings():
 
         if func['name'] not in FUNCTION_WHITELIST:
             continue
+
+        print(f"Processing function: {func['name']}")
 
         params = []
         for i, p in enumerate(func.get('params', [])):
@@ -193,7 +229,8 @@ def process_bindings():
         "structs": processed_structs,
         "aliases": processed_aliases,
         "functions": processed_functions,
-        "enum_list": processed_enums
+        "enum_list": processed_enums,
+        "color": get_raylib_colors(data)
     }
 
     # We will assume new templates 'functions.hpp.jinja2' and 'functions.cpp.jinja2' exist

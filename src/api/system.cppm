@@ -9,7 +9,7 @@ export namespace API {
 
     // Register the Window API functions to the JavaScript context
     void create_window_object(JSContext* ctx, JSValue system_ns) {
-        JSValue window_ns = JS_NewObject(ctx);
+        const JSValue window_ns = JS_NewObject(ctx);
 
         register_functions(ctx, window_ns, {
             {"isReady",         RaylibBindings::JS_IsWindowReady,     0},
@@ -33,7 +33,7 @@ export namespace API {
 
     // Register the Input API functions to the JavaScript context
     void create_input_object(JSContext* ctx, JSValue system_ns) {
-        JSValue input_ns = JS_NewObject(ctx);
+        const JSValue input_ns = JS_NewObject(ctx);
 
         register_functions(ctx, input_ns, {
             {"isKeyDown",            RaylibBindings::JS_IsKeyDown,            1},
@@ -48,6 +48,18 @@ export namespace API {
         });
 
         JS_SetPropertyStr(ctx, system_ns, "input", input_ns);
+    }
+
+    inline void create_asset_object(JSContext* ctx, JSValue system_ns) {
+
+        const JSValue assets_ns = JS_NewObject(ctx);
+
+        register_functions(ctx, assets_ns, {
+            {"loadTexture", RaylibBindings::JS_LoadTexture, 1},
+            {"unloadTexture", RaylibBindings::JS_UnloadTexture, 1}
+        });
+
+        JS_SetPropertyStr(ctx, system_ns, "assets", assets_ns);
     }
 
 }

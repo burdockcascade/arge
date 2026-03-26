@@ -27,6 +27,7 @@ declare class App {
 // System and Drawing interfaces for JSDoc
 interface Engine {
     input: { isKeyDown(key: number): boolean };
+    assets: { loadTexture(path: string): Texture2D };
     audio: { play(name: string): void };
     getMonitorCount(): number;
     getFrameTime(): number;
@@ -39,6 +40,15 @@ interface Context {
 
 interface Canvas {
     drawRect(position: Vector2, size: Vector2, color: Color, options?: object): void;
+    drawTexture(texture: Texture2D, position: Vector2): void;
+}
+
+declare class Texture2D {
+    id: number;
+    width: number;
+    height: number;
+    mipmaps: number;
+    format: number;
 }
 
 // Raylib Constants

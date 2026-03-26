@@ -721,6 +721,39 @@ export namespace RaylibBindings {
         return JS_UNDEFINED;
     }
 
+    JSValue JS_LoadTexture(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
+
+        // Parameter: fileName (Type: const char *)
+        const char *fileName = JS_ToCString(ctx, argv[0]);
+        if (!fileName) return JS_EXCEPTION;
+
+
+        // Call the Raylib function and store the struct result
+        const auto result = Raylib::LoadTexture(fileName);
+
+        
+        // Return a struct by wrapping it in a JS object
+        return JS_NewTexture2D(ctx, result);
+    }
+
+    JSValue JS_UnloadTexture(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
+
+        // Parameter: texture (Type: Texture2D)
+        // Handle struct parameters by retrieving the opaque pointer from the JS object
+        auto *texture_ptr = static_cast<Raylib::Texture2D*>(JS_GetOpaque2(ctx, argv[0], js_Texture2D_class_id));
+        if (!texture_ptr) return JS_EXCEPTION;
+        // Dereference for non-pointer struct parameters
+        Raylib::Texture2D texture = *texture_ptr;
+
+
+        // Call the Raylib function (no return value)
+        Raylib::UnloadTexture(texture);
+
+        
+        // No return value
+        return JS_UNDEFINED;
+    }
+
     JSValue JS_DrawTexture(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
 
         // Parameter: texture (Type: Texture2D)

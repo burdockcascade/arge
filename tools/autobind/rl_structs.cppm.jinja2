@@ -170,6 +170,13 @@ export namespace RaylibBindings {
         // Create the constructor function and attach it to the namespace
         JSValue ctor = JS_NewCFunction2(ctx, js_{{ struct.name }}_constructor, "{{ struct.name }}", {{ struct.fields|length }}, JS_CFUNC_constructor, 0);
         JS_SetConstructor(ctx, ctor, proto);
+
+        {% if struct.name == "Color" %}
+        {% for c in color %}
+        JS_SetPropertyStr(ctx, ctor, "{{ c.name }}", JS_NewColor(ctx, Raylib::Color{ {{ c.r }}, {{ c.g }}, {{ c.b }}, {{ c.a }} }));
+        {% endfor %}
+        {% endif %}
+
         JS_SetPropertyStr(ctx, ns, "{{ struct.name }}", ctor);
     }
 

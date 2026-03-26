@@ -36,7 +36,6 @@ public:
     }
 
     JSValue CallMethod(JSValueConst obj, const JSAtom method, const int argc, JSValueConst* argv) const {
-        TraceLog(LOG_DEBUG, "Calling method with atom: %d", method);
         const JSValue func = JS_GetProperty(ctx, obj, method);
         JSValue ret = JS_UNDEFINED; 
         if (JS_IsFunction(ctx, func)) {
@@ -72,7 +71,7 @@ public:
 
     // Utility
     void RegisterFunction(const JSValue obj, const char* name, JSCFunction* func, const int length) const {
-        JS_SetPropertyStr(ctx, obj, name, JS_NewCFunction(ctx, func, name, length)); 
+        JS_SetPropertyStr(ctx, obj, name, JS_NewCFunction2(ctx, func, name, length, JS_CFUNC_generic, 0));
     }
 
     void SetStoredValue(JSValue& storage, const JSValue newValue) const {

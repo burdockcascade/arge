@@ -8,7 +8,7 @@ import App;
 
 int main(const int argc, char** argv) {
 
-    SetTraceLogLevel(LOG_INFO);
+    SetTraceLogLevel(LOG_TRACE);
 
     CLI::App args{"QuickJS Raylib Runner"};
 

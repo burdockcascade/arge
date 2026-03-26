@@ -122,6 +122,8 @@ export namespace RaylibBindings {
         // Create the constructor function and attach it to the namespace
         JSValue ctor = JS_NewCFunction2(ctx, js_Vector2_constructor, "Vector2", 2, JS_CFUNC_constructor, 0);
         JS_SetConstructor(ctx, ctor, proto);
+
+
         JS_SetPropertyStr(ctx, ns, "Vector2", ctor);
     }
 
@@ -252,6 +254,8 @@ export namespace RaylibBindings {
         // Create the constructor function and attach it to the namespace
         JSValue ctor = JS_NewCFunction2(ctx, js_Vector3_constructor, "Vector3", 3, JS_CFUNC_constructor, 0);
         JS_SetConstructor(ctx, ctor, proto);
+
+
         JS_SetPropertyStr(ctx, ns, "Vector3", ctor);
     }
 
@@ -407,6 +411,8 @@ export namespace RaylibBindings {
         // Create the constructor function and attach it to the namespace
         JSValue ctor = JS_NewCFunction2(ctx, js_Vector4_constructor, "Vector4", 4, JS_CFUNC_constructor, 0);
         JS_SetConstructor(ctx, ctor, proto);
+
+
         JS_SetPropertyStr(ctx, ns, "Vector4", ctor);
     }
 
@@ -862,6 +868,8 @@ export namespace RaylibBindings {
         // Create the constructor function and attach it to the namespace
         JSValue ctor = JS_NewCFunction2(ctx, js_Matrix_constructor, "Matrix", 16, JS_CFUNC_constructor, 0);
         JS_SetConstructor(ctx, ctor, proto);
+
+
         JS_SetPropertyStr(ctx, ns, "Matrix", ctor);
     }
 
@@ -1017,6 +1025,34 @@ export namespace RaylibBindings {
         // Create the constructor function and attach it to the namespace
         JSValue ctor = JS_NewCFunction2(ctx, js_Color_constructor, "Color", 4, JS_CFUNC_constructor, 0);
         JS_SetConstructor(ctx, ctor, proto);
+
+        JS_SetPropertyStr(ctx, ctor, "LIGHTGRAY", JS_NewColor(ctx, Raylib::Color{ 200, 200, 200, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "GRAY", JS_NewColor(ctx, Raylib::Color{ 130, 130, 130, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "DARKGRAY", JS_NewColor(ctx, Raylib::Color{ 80, 80, 80, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "YELLOW", JS_NewColor(ctx, Raylib::Color{ 253, 249, 0, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "GOLD", JS_NewColor(ctx, Raylib::Color{ 255, 203, 0, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "ORANGE", JS_NewColor(ctx, Raylib::Color{ 255, 161, 0, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "PINK", JS_NewColor(ctx, Raylib::Color{ 255, 109, 194, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "RED", JS_NewColor(ctx, Raylib::Color{ 230, 41, 55, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "MAROON", JS_NewColor(ctx, Raylib::Color{ 190, 33, 55, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "GREEN", JS_NewColor(ctx, Raylib::Color{ 0, 228, 48, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "LIME", JS_NewColor(ctx, Raylib::Color{ 0, 158, 47, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "DARKGREEN", JS_NewColor(ctx, Raylib::Color{ 0, 117, 44, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "SKYBLUE", JS_NewColor(ctx, Raylib::Color{ 102, 191, 255, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "BLUE", JS_NewColor(ctx, Raylib::Color{ 0, 121, 241, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "DARKBLUE", JS_NewColor(ctx, Raylib::Color{ 0, 82, 172, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "PURPLE", JS_NewColor(ctx, Raylib::Color{ 200, 122, 255, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "VIOLET", JS_NewColor(ctx, Raylib::Color{ 135, 60, 190, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "DARKPURPLE", JS_NewColor(ctx, Raylib::Color{ 112, 31, 126, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "BEIGE", JS_NewColor(ctx, Raylib::Color{ 211, 176, 131, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "BROWN", JS_NewColor(ctx, Raylib::Color{ 127, 106, 79, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "DARKBROWN", JS_NewColor(ctx, Raylib::Color{ 76, 63, 47, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "WHITE", JS_NewColor(ctx, Raylib::Color{ 255, 255, 255, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "BLACK", JS_NewColor(ctx, Raylib::Color{ 0, 0, 0, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "BLANK", JS_NewColor(ctx, Raylib::Color{ 0, 0, 0, 0 }));
+        JS_SetPropertyStr(ctx, ctor, "MAGENTA", JS_NewColor(ctx, Raylib::Color{ 255, 0, 255, 255 }));
+        JS_SetPropertyStr(ctx, ctor, "RAYWHITE", JS_NewColor(ctx, Raylib::Color{ 245, 245, 245, 255 }));
+
         JS_SetPropertyStr(ctx, ns, "Color", ctor);
     }
 
@@ -1172,6 +1208,8 @@ export namespace RaylibBindings {
         // Create the constructor function and attach it to the namespace
         JSValue ctor = JS_NewCFunction2(ctx, js_Rectangle_constructor, "Rectangle", 4, JS_CFUNC_constructor, 0);
         JS_SetConstructor(ctx, ctor, proto);
+
+
         JS_SetPropertyStr(ctx, ns, "Rectangle", ctor);
     }
 
@@ -1352,6 +1390,8 @@ export namespace RaylibBindings {
         // Create the constructor function and attach it to the namespace
         JSValue ctor = JS_NewCFunction2(ctx, js_Image_constructor, "Image", 5, JS_CFUNC_constructor, 0);
         JS_SetConstructor(ctx, ctor, proto);
+
+
         JS_SetPropertyStr(ctx, ns, "Image", ctor);
     }
 
@@ -1532,6 +1572,8 @@ export namespace RaylibBindings {
         // Create the constructor function and attach it to the namespace
         JSValue ctor = JS_NewCFunction2(ctx, js_Texture_constructor, "Texture", 5, JS_CFUNC_constructor, 0);
         JS_SetConstructor(ctx, ctor, proto);
+
+
         JS_SetPropertyStr(ctx, ns, "Texture", ctor);
     }
 

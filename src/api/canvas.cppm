@@ -1,7 +1,7 @@
 module;
 #include <quickjs.h>
 
-export module API:Shapes;
+export module API:Canvas;
 import Raylib;
 import RaylibBindings;
 import :Common;
@@ -48,10 +48,28 @@ export namespace API {
         return JS_UNDEFINED;
     }
 
+    // Draw Texture
+    JSValue JS_DrawTexture(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst argv[]) {
+        if (argc < 2) {
+            return JS_DrawRectAdvanced(ctx, this_val, argc, argv);
+        }
+
+        Raylib::Texture *ptr_texture;
+        if (!try_get_opaque(ctx, ptr_texture, argv[0], RaylibBindings::js_Texture_class_id)) return JS_EXCEPTION;
+
+        Raylib::Vector2 *ptr_position;
+        if (!try_get_opaque(ctx, ptr_position, argv[1], RaylibBindings::js_Vector2_class_id)) return JS_EXCEPTION;
+
+        Raylib::DrawTextureV(*ptr_texture, *ptr_position, Raylib::Color {255, 255, 255, 255});
+
+        return JS_UNDEFINED;
+    }
+
+
     void create_canvas_object(JSContext* ctx, const JSValue draw_obj) {
         register_functions(ctx, draw_obj, {
-            {"drawRect", JS_DrawRectAdvanced, 4}
-
+            {"drawRect", JS_DrawRectAdvanced, 4},
+            {"drawTexture", JS_DrawTexture, 2}
         });
     }
 
