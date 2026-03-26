@@ -5,36 +5,35 @@ class HelloWorld {
         // rect position
         this.pos = new Vector2(100, 400);
         this.size = new Vector2(100, 40);
-        this.color = Color.SKYBLUE;
+        this.color = Color.ORANGE;
 
         this.speed = 5;
-        this.samepleTexture;
-
-    }
-
-    init(engine) {
-        this.samepleTexture = engine.assets.loadTexture("C:\\workspace\\raylib\\arge\\assets\\sample.png");
+        this.rotation = 0;
 
     }
 
     update(dt, app) {
-        if (app.input.isKeyDown(KEY_RIGHT)) {
+        if (app.input.isKeyDown(KeyboardKey.KEY_RIGHT)) {
             this.pos.x += this.speed;
         }
-        if (app.input.isKeyDown(KEY_LEFT)) {
+        if (app.input.isKeyDown(KeyboardKey.KEY_LEFT)) {
             this.pos.x -= this.speed;
         }
-        if (app.input.isKeyDown(KEY_DOWN)) {
+        if (app.input.isKeyDown(KeyboardKey.KEY_DOWN)) {
             this.pos.y += this.speed;
         }
-        if (app.input.isKeyDown(KEY_UP)) {
+        if (app.input.isKeyDown(KeyboardKey.KEY_UP)) {
             this.pos.y -= this.speed;
         }
+
+        // rotate shape
+        this.rotation += 1;
+
     }
 
     draw(ctx) {
-        ctx.drawRect(this.pos, this.size, this.color, { fill: true, rotation: 45 });
-        ctx.drawTexture(this.samepleTexture, new Vector2(10, 10));
+        ctx.drawRect(this.pos, this.size, this.color, { fill: true, rotation: this.rotation });
+        ctx.drawText("Hello!", new Vector2(50, 50), 24, Color.SKYBLUE);
     }
 }
 

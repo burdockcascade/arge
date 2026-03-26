@@ -59,7 +59,7 @@ FUNCTION_WHITELIST = {
 ENUM_WHITELIST = {
     "KeyboardKey", "MouseButton", "ShaderUniformDataV",
     "BlendMode", "GestureEvent", "CameraMode",
-    "TextureParam", "TextureWrapMode", "TextureFilterMode"
+    "TextureParam", "TextureWrapMode", "TextureFilterMode", "TraceLogLevel"
 }
 
 # --- Helper Functions ---
@@ -171,6 +171,8 @@ def process_functions(data, known_structs, all_items):
 def process_enums(data, all_items):
     processed = []
     for e in data.get('enums', []):
+        if e['name'] not in ENUM_WHITELIST:
+            continue
         values = []
         for v in e.get('values', []):
             values.append({"name": v['name'], "value": v['value']})

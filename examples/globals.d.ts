@@ -60,6 +60,7 @@ interface Context {
 interface Canvas {
     drawRect(position: Vector2, size: Vector2, color: Color, options?: object): void;
     drawTexture(texture: Texture2D, position: Vector2): void;
+    drawText(text: string, position: Vector2, fontSize: number, color: Color): void;
 }
 
 declare class Texture2D {
@@ -70,11 +71,12 @@ declare class Texture2D {
     format: number;
 }
 
+declare class KeyboardKey {
+
 // Raylib Constants
-const KEY_SPACE: number;
-const KEY_LEFT: number;
-const KEY_RIGHT: number;
-const KEY_UP: number;
-const KEY_DOWN: number;
-const RED: Color;
-const BLUE: Color;
+    static KEY_SPACE: number;
+    static KEY_LEFT: number;
+    static KEY_RIGHT: number;
+    static KEY_UP: number;
+    static KEY_DOWN: number;
+}

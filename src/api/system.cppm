@@ -2,8 +2,8 @@ module;
 #include <quickjs.h>
 
 export module API:System;
-import RaylibBindings;
 import :Common;
+import RaylibBindings;
 
 export namespace API {
 

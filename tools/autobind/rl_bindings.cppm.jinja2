@@ -303,11 +303,17 @@ export namespace RaylibBindings {
 
 // Raylib Enums
 export namespace RaylibBindings {
-    void InitAllEnums(JSContext *ctx, JSValue ns) {
+    void InitAllEnums(JSContext *ctx, JSValue global_obj) {
+
         {% for e in enum_list %}
+
+        const JSValue {{ e.name }}_ns = JS_NewObject(ctx);
+        JS_SetPropertyStr(ctx, global_obj, "{{ e.name }}", {{ e.name }}_ns);
+
+
         // Enum: {{ e.name }}
         {% for v in e.vals %}
-        JS_SetPropertyStr(ctx, ns, "{{ v.name }}", JS_NewInt32(ctx, {{ v.value }}));
+        JS_SetPropertyStr(ctx, {{ e.name }}_ns, "{{ v.name }}", JS_NewInt32(ctx, {{ v.value }}));
         {% endfor %}
 
         {% endfor %}

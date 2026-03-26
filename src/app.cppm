@@ -130,7 +130,7 @@ void App::BindAPI() {
     JSContext* ctx = qjs->GetContext();
     const JSValue globalObj = JS_GetGlobalObject(ctx);
 
-    API::register_console(ctx);
+    API::register_console(ctx, globalObj);
     create_app_class(ctx, globalObj);
 
     jsDrawContextObj = JS_NewObject(ctx);
