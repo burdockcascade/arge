@@ -61,107 +61,68 @@ ENUM_WHITELIST = {
     "TextureParam", "TextureWrapMode", "TextureFilterMode"
 }
 
+# --- Helper Functions ---
+
 def clean_type(t):
+    """Removes qualifiers to find the base type name."""
     return t.replace("const ", "").replace("*", "").strip()
 
-def get_raylib_colors(data):
-    """Extracts Color defines from raylib.json data."""
-    colors = []
-    # These are the standard colors defined in raylib.h
-    target_colors = {
-        "LIGHTGRAY", "GRAY", "DARKGRAY", "YELLOW", "GOLD", "ORANGE", "PINK",
-        "RED", "MAROON", "GREEN", "LIME", "DARKGREEN", "SKYBLUE", "BLUE",
-        "DARKBLUE", "PURPLE", "VIOLET", "DARKPURPLE", "BEIGE", "BROWN",
-        "DARKBROWN", "WHITE", "BLACK", "BLANK", "MAGENTA", "RAYWHITE"
-    }
+def get_mapping(type_str, is_struct):
+    """Retrieves the JS conversion mapping for a given type."""
+    # Logic: if it's a raw struct (not a pointer), treat as int/ID for now,
+    # otherwise look up in map.
+    key = type_str if not is_struct else "int"
+    return TYPE_MAP.get(key, TYPE_MAP.get("int"))
 
-    for define in data.get("defines", []):
-        if define["name"] in target_colors:
-            print(f"Processing color: {define['name']}")
-            # Raylib defines colors like: (Color){ 200, 200, 200, 255 }
-            # We need to extract the numbers from the 'value' string
-            import re
-            match = re.search(r'\{ *(\d+), *(\d+), *(\d+), *(\d+) *\}', define["value"])
-            if match:
-                colors.append({
-                    "name": define["name"],
-                    "r": match.group(1),
-                    "g": match.group(2),
-                    "b": match.group(3),
-                    "a": match.group(4)
-                })
-    return colors
+# --- Processing Modules ---
 
-def process_bindings():
-    with open('raylib.json', 'r') as f:
-        data = json.load(f)
-
-    known_structs = {s['name'] for s in data.get('structs', [])}
-    processed_aliases = []
-
-    all_items = [];
-
-    # Process Alases
-    print("Processing aliases...")
+def process_aliases(data, known_structs, all_items):
+    processed = []
     for a in data.get('aliases', []):
-        clean_alias_name = a['name'].replace('*', '').strip()
-        print(f"Processing alias: {clean_alias_name}")
+        name = a['name'].replace('*', '').strip()
+        all_items.append(name)
 
-        all_items.append(clean_alias_name)
+        if name in STRUCT_WHITELIST:
+            known_structs.add(name)
+            processed.append({
+                "name": name,
+                "target": a['type'],
+                "is_ptr": '*' in a['name']
+            })
+    return processed
 
-        if clean_alias_name not in STRUCT_WHITELIST:
-            continue
-
-        known_structs.add(clean_alias_name)
-        processed_aliases.append({
-            "name": clean_alias_name,
-            "target": a['type'],
-            "is_ptr": '*' in a['name']
-        })
-
-    # Process Structs (Existing logic)
-    print("Processing structs...")
-    processed_structs = []
+def process_structs(data, known_structs, all_items):
+    processed = []
     for s in data.get('structs', []):
-
         all_items.append(s['name'])
-
         if s['name'] not in STRUCT_WHITELIST:
             continue
 
-        print(f"Processing struct: {s['name']}")
-
-        struct_fields = []
+        fields = []
         for f in s['fields']:
             f_type = f['type'].replace("const ", "").strip()
-            is_ptr = '*' in f_type
             is_struct = clean_type(f_type) in known_structs
+            mapping = get_mapping(f_type, is_struct)
 
-            mapping = TYPE_MAP.get(f_type if not is_struct else "int", TYPE_MAP["int"])
-
-            struct_fields.append({
+            fields.append({
                 "name": f['name'],
                 "type": f_type,
                 "is_struct": is_struct,
-                "is_ptr": is_ptr,
+                "is_ptr": '*' in f_type,
                 "cast": mapping["cast"],
                 "to_js": mapping["to"],
                 "from_js": mapping["from"],
                 "direct_return": mapping.get("direct_return", False)
             })
-        processed_structs.append({"name": s['name'], "fields": struct_fields})
+        processed.append({"name": s['name'], "fields": fields})
+    return processed
 
-    # Process Functions
-    print("Processing functions...")
-    processed_functions = []
+def process_functions(data, known_structs, all_items):
+    processed = []
     for func in data.get('functions', []):
-
         all_items.append(func['name'])
-
         if func['name'] not in FUNCTION_WHITELIST:
             continue
-
-        print(f"Processing function: {func['name']}")
 
         params = []
         for i, p in enumerate(func.get('params', [])):
@@ -169,14 +130,11 @@ def process_bindings():
             clean_p = clean_type(p_type)
             is_struct = clean_p in known_structs
             is_ptr = '*' in p_type
-            is_buffer = p_type == "const void *"
 
-            # CHANGE: If it's a pointer to a struct, we don't want the 'int' mapping
-            # We want to use the class_id logic in the template
             if is_struct and is_ptr:
-                mapping = {"from": None, "cast": p_type} # Template will handle the rest
+                mapping = {"from": None, "cast": p_type}
             else:
-                mapping = TYPE_MAP.get(p_type if not is_struct else "int", TYPE_MAP["int"])
+                mapping = get_mapping(p_type, is_struct)
 
             params.append({
                 "name": p['name'],
@@ -184,7 +142,7 @@ def process_bindings():
                 "clean_type": clean_p,
                 "is_struct": is_struct,
                 "is_const": "const" in p_type,
-                "is_buffer": is_buffer,
+                "is_buffer": p_type == "const void *",
                 "is_ptr": is_ptr,
                 "from_js": mapping.get("from"),
                 "cast": mapping["cast"],
@@ -197,7 +155,7 @@ def process_bindings():
         is_ret_struct = clean_ret in known_structs
         ret_mapping = TYPE_MAP.get(ret_type if not is_ret_struct else "int", TYPE_MAP.get("void"))
 
-        processed_functions.append({
+        processed.append({
             "name": func['name'],
             "params": params,
             "return_type": ret_type,
@@ -207,48 +165,75 @@ def process_bindings():
             "to_js": ret_mapping["to"],
             "cast": ret_mapping.get("cast", "double")
         })
+    return processed
 
-    print("Processing enums...")
-    processed_enums = []
+def process_enums(data, all_items):
+    processed = []
     for e in data.get('enums', []):
         values = []
         for v in e.get('values', []):
-            values.append({
-                "name": v['name'],
-                "value": v['value']
-            })
+            values.append({"name": v['name'], "value": v['value']})
             all_items.append(v['name'])
-        processed_enums.append({
-            "name": e['name'],
-            "vals": values
-        })
+        processed.append({"name": e['name'], "vals": values})
+    return processed
 
-    # Render
+def get_raylib_colors(data):
+    colors = []
+    target_colors = {
+        "LIGHTGRAY", "GRAY", "DARKGRAY", "YELLOW", "GOLD", "ORANGE", "PINK",
+        "RED", "MAROON", "GREEN", "LIME", "DARKGREEN", "SKYBLUE", "BLUE",
+        "DARKBLUE", "PURPLE", "VIOLET", "DARKPURPLE", "BEIGE", "BROWN",
+        "DARKBROWN", "WHITE", "BLACK", "BLANK", "MAGENTA", "RAYWHITE"
+    }
+    for define in data.get("defines", []):
+        if define["name"] in target_colors:
+            match = re.search(r'\{ *(\d+), *(\d+), *(\d+), *(\d+) *\}', define["value"])
+            if match:
+                colors.append({
+                    "name": define["name"],
+                    "r": match.group(1), "g": match.group(2),
+                    "b": match.group(3), "a": match.group(4)
+                })
+    return colors
+
+# --- Main Execution ---
+
+def run_generator():
+    print("Loading raylib.json...")
+    with open('raylib.json', 'r') as f:
+        data = json.load(f)
+
+    # Shared state for the generation process
+    known_structs = {s['name'] for s in data.get('structs', [])}
+    all_items = []
+
+    # Execute processing steps
+    print("Processing components...")
     context = {
-        "all": all_items,
-        "structs": processed_structs,
-        "aliases": processed_aliases,
-        "functions": processed_functions,
-        "enum_list": processed_enums,
-        "color": get_raylib_colors(data)
+        "aliases": process_aliases(data, known_structs, all_items),
+        "structs": process_structs(data, known_structs, all_items),
+        "functions": process_functions(data, known_structs, all_items),
+        "enum_list": process_enums(data, all_items),
+        "color": get_raylib_colors(data),
+        "all": all_items
     }
 
-    # We will assume new templates 'functions.hpp.jinja2' and 'functions.cpp.jinja2' exist
-    print("Rendering templates...")
-    for file_base in ['rl_bindings', 'rl_module', 'rl_structs', 'rl_functions', 'rl_enums']:
+    # Render Templates
+    templates = ['rl_bindings', 'rl_module', 'rl_structs', 'rl_functions', 'rl_enums']
+    for file_base in templates:
         template_path = f'{file_base}.cppm.jinja2'
-        print(f"Processing template: {template_path}")
-        # Fallback to check if user updated existing templates or created new ones
+        output_path = f'../../src/raylib/{file_base}.cppm'
+
         try:
             with open(template_path, 'r') as f:
                 template = Template(f.read(), trim_blocks=True, lstrip_blocks=True)
-            output_path = f'../../src/raylib/{file_base}.cppm'
+
+            print(f"Generating: {output_path}")
             with open(output_path, 'w') as f:
                 f.write(template.render(**context))
         except FileNotFoundError:
-            print(f"Skipping {template_path}, file not found.")
+            print(f"Skipping {template_path} (Not found)")
 
 if __name__ == "__main__":
-    print("Processing bindings...")
-    process_bindings()
+    run_generator()
     print("Done!")
