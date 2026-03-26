@@ -11,6 +11,25 @@ declare class Vector2 {
 declare class Color {
     constructor(r: number, g: number, b: number, a: number);
     r: number; g: number; b: number; a: number;
+    static SKYBLUE: Color;
+    static GRAY: Color;
+    static BLACK: Color;
+    static WHITE: Color;
+    static RED: Color;
+    static GREEN: Color;
+    static BLUE: Color;
+    static YELLOW: Color;
+    static MAGENTA: Color;
+    static CYAN: Color;
+    static ORANGE: Color;
+    static PINK: Color;
+    static PURPLE: Color;
+    static BROWN: Color;
+    static LIGHTGRAY: Color;
+    static DARKGRAY: Color;
+    static LIGHTBLUE: Color;
+    static LIGHTGREEN: Color;
+    static LIGHTYELLOW: Color;
 }
 
 declare interface AppConfig {
