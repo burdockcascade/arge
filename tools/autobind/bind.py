@@ -238,7 +238,7 @@ def run_generator():
     templates = ['rl_bindings', 'rl_module']
     for file_base in templates:
         template_path = f'{file_base}.cppm.jinja2'
-        output_path = f'../../src/raylib/{file_base}.cppm'
+        output_path = f'../../src/wrapper/{file_base}.cppm'
 
         try:
             with open(template_path, 'r') as f:
