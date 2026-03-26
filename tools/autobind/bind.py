@@ -1,5 +1,6 @@
 import json
 import re
+import os
 from jinja2 import Template
 
 # This script processes the raylib.json file to generate C++ bindings for QuickJS.
@@ -50,7 +51,7 @@ FUNCTION_WHITELIST = {
 
     # Drawing related functions
     "DrawPixel", "DrawLine", "DrawCircle", "DrawRectangle", "DrawTexture", "DrawText", "DrawFPS",
-    
+
     # Assets
     "LoadTexture", "UnloadTexture"
 }
@@ -196,6 +197,21 @@ def get_raylib_colors(data):
                 })
     return colors
 
+def write_if_changed(file_path, new_content):
+    """Writes content to file only if it differs from existing content."""
+    if os.path.exists(file_path):
+        with open(file_path, 'r') as f:
+            existing_content = f.read()
+
+        if existing_content == new_content:
+            print(f"Skipping {os.path.basename(file_path)} (No changes)")
+            return False
+
+    # If file doesn't exist or content is different, write it
+    with open(file_path, 'w') as f:
+        f.write(new_content)
+    return True
+
 # --- Main Execution ---
 
 def run_generator():
@@ -219,7 +235,7 @@ def run_generator():
     }
 
     # Render Templates
-    templates = ['rl_bindings', 'rl_module', 'rl_structs', 'rl_functions', 'rl_enums']
+    templates = ['rl_bindings', 'rl_module']
     for file_base in templates:
         template_path = f'{file_base}.cppm.jinja2'
         output_path = f'../../src/raylib/{file_base}.cppm'
@@ -228,9 +244,12 @@ def run_generator():
             with open(template_path, 'r') as f:
                 template = Template(f.read(), trim_blocks=True, lstrip_blocks=True)
 
-            print(f"Generating: {output_path}")
-            with open(output_path, 'w') as f:
-                f.write(template.render(**context))
+            rendered_content = template.render(**context)
+
+            # Use the check-before-write logic here
+            if write_if_changed(output_path, rendered_content):
+                print(f"Updated: {output_path}")
+
         except FileNotFoundError:
             print(f"Skipping {template_path} (Not found)")
 
