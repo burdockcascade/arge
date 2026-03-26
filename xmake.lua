@@ -5,7 +5,7 @@ set_languages("cxx23")
 
 add_rules("mode.debug", "mode.release")
 
-add_requires("cli11 2.6.1")
+add_requires("cli11 2.6.2")
 add_requires("raylib master") -- develop against this until 6.0 is released
 add_requires("quickjs-ng 0.12.1")
 
