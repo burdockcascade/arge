@@ -126,12 +126,12 @@ JSValue App::js_app_constructor(JSContext *ctx, JSValueConst new_target, int arg
         if (!try_get_value(ctx, app->windowTitle, argv[2])) return JS_EXCEPTION;
 
     } else {
-        TraceLog(LOG_ERROR, "Runtime constructor called but no Runtime instance found");
+        TraceLog(LOG_ERROR, "App constructor called but no App instance found");
     }
     return obj;
 }
 
 void App::create_app_class(JSContext* ctx, JSValue global_obj) {
-    const JSValue ctor = JS_NewCFunction2(ctx, js_app_constructor, "Runtime", 1, JS_CFUNC_constructor, 0);
-    JS_SetPropertyStr(ctx, global_obj, "Runtime", ctor);
+    const JSValue ctor = JS_NewCFunction2(ctx, js_app_constructor, "App", 1, JS_CFUNC_constructor, 0);
+    JS_SetPropertyStr(ctx, global_obj, "App", ctor);
 }

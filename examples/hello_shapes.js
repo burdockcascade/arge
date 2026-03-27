@@ -52,5 +52,5 @@ class HelloWorld {
     }
 }
 
-const app = new Runtime(600, 800, "Hello World");
+const app = new App(600, 800, "Hello World");
 app.run(new HelloWorld());
