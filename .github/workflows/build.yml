@@ -2,9 +2,6 @@ name: Build
 concurrency: build-${{ github.ref }}
 on:
   push:
-    branches:
-      - main
-      - master
 
 jobs:
   build:
