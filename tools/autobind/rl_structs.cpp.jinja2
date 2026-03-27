@@ -16,7 +16,7 @@ namespace RaylibBindings {
         return obj;
     }
 
-    void js_{{ struct.name }}_finalizer(JSRuntime *rt, JSValue val) noexcept {
+    static void js_{{ struct.name }}_finalizer(JSRuntime *rt, JSValue val) noexcept {
         if (auto* s = static_cast<{{ struct.name }}*>(JS_GetOpaque(val, js_{{ struct.name }}_class_id))) {
             js_free_rt(rt, s);
         }
@@ -24,7 +24,7 @@ namespace RaylibBindings {
 
     {% for field in struct.fields %}
     // Getter for {{ field.name }}
-    JSValue js_{{ struct.name }}_get_{{ field.name }}(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_{{ struct.name }}_get_{{ field.name }}(JSContext *ctx, JSValueConst this_val) noexcept {
         const auto* s = static_cast<{{ struct.name }}*>(JS_GetOpaque2(ctx, this_val, js_{{ struct.name }}_class_id));
         if (!s) return JS_EXCEPTION;
         {% if field.is_array %}
@@ -47,7 +47,7 @@ namespace RaylibBindings {
     }
 
     // Setter for {{ field.name }}
-    JSValue js_{{ struct.name }}_set_{{ field.name }}(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_{{ struct.name }}_set_{{ field.name }}(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
         auto s = static_cast<{{ struct.name }}*>(JS_GetOpaque2(ctx, this_val, js_{{ struct.name }}_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -103,7 +103,7 @@ namespace RaylibBindings {
     {% endfor %}
 
     // Constructor for {{ struct.name }}
-    JSValue js_{{ struct.name }}_constructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv) {
+    static JSValue js_{{ struct.name }}_constructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv) {
         
         // Expect either 0 arguments (default constructor) or all fields provided
         if (argc != 0 && argc != {{ struct.fields|length }}) {
@@ -143,7 +143,7 @@ namespace RaylibBindings {
     {% endfor %}
     };
 
-    void Init{{ struct.name }}Binding(JSContext *ctx, JSValue ns) {
+    static void Init{{ struct.name }}Binding(JSContext *ctx, JSValue ns) {
         JSRuntime *rt = JS_GetRuntime(ctx);
         if (js_{{ struct.name }}_class_id == 0) {
             JS_NewClassID(rt, &js_{{ struct.name }}_class_id);
