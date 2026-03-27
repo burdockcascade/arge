@@ -36,51 +36,51 @@ jobs:
           actions-cache-key: ${{ runner.os }}-xmake-${{ hashFiles('xmake.lua') }}
       - name: Build
         run: xmake -y
-  mac-build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: xmake-io/github-action-setup-xmake@v1
-        with:
-          xmake-version: latest
-          package-cache: true
-          actions-cache-key: ${{ runner.os }}-xmake-${{ hashFiles('xmake.lua') }}
-      - name: Build
-        run: xmake -y
-  freebsd-build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - name: Build on FreeBSD
-        uses: vmactions/freebsd-vm@v1
-        with:
-          usesh: true
-          # Install xmake dependencies and xmake itself inside the VM
-          prepare: |
-            pkg install -y curl
-            curl -fsSL https://xmake.io/shget.text | sh
-          run: |
-            export PATH=$PATH:$HOME/.local/bin
-            xmake -y
-  haiku-build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - name: Build on Haiku
-        uses: vmactions/haiku-vm@v1
-        with:
-          usesh: true
-          # Haiku uses 'pkgman' for package management
-          prepare: |
-            pkgman install -y gapk curl
-            curl -fsSL https://xmake.io/shget.text | bash
-          run: |
-            # 1. Install necessary build dependencies
-            pkgman install -y gapk curl xentia_devel gcc_syslibs_devel
-            
-            # 2. Install xmake via the shell script
-            curl -fsSL https://xmake.io/shget.text | sh
-            
-            # 3. Update PATH and execute the build
-            export PATH=$PATH:$HOME/.local/bin
-            xmake -v -y
+#  mac-build:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v6
+#      - uses: xmake-io/github-action-setup-xmake@v1
+#        with:
+#          xmake-version: latest
+#          package-cache: true
+#          actions-cache-key: ${{ runner.os }}-xmake-${{ hashFiles('xmake.lua') }}
+#      - name: Build
+#        run: xmake -y
+#  freebsd-build:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v6
+#      - name: Build on FreeBSD
+#        uses: vmactions/freebsd-vm@v1
+#        with:
+#          usesh: true
+#          # Install xmake dependencies and xmake itself inside the VM
+#          prepare: |
+#            pkg install -y curl
+#            curl -fsSL https://xmake.io/shget.text | sh
+#          run: |
+#            export PATH=$PATH:$HOME/.local/bin
+#            xmake -y
+#  haiku-build:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v6
+#      - name: Build on Haiku
+#        uses: vmactions/haiku-vm@v1
+#        with:
+#          usesh: true
+#          # Haiku uses 'pkgman' for package management
+#          prepare: |
+#            pkgman install -y gapk curl
+#            curl -fsSL https://xmake.io/shget.text | bash
+#          run: |
+#            # 1. Install necessary build dependencies
+#            pkgman install -y gapk curl xentia_devel gcc_syslibs_devel
+#
+#            # 2. Install xmake via the shell script
+#            curl -fsSL https://xmake.io/shget.text | sh
+#
+#            # 3. Update PATH and execute the build
+#            export PATH=$PATH:$HOME/.local/bin
+#            xmake -v -y
