@@ -1,7 +1,7 @@
 module;
 #include <quickjs.h>
 
-export module API:Canvas;
+export module API:Canvas2d;
 import :Common;
 import Raylib;
 import RaylibBindings;
@@ -11,7 +11,7 @@ static constexpr int DEFAULT_FONT_SIZE = 24;
 export namespace API {
 
     // Draw
-    JSValue API_DrawRectAdvanced(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+    JSValue API_DrawRect(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
 
         constexpr int min_args = 3;
 
@@ -52,6 +52,56 @@ export namespace API {
         } else {
             Raylib::DrawRectanglePro({ ptr_position->x, ptr_position->y, ptr_size->x, ptr_size->y }, origin, rotation, *ptr_color);
         }
+
+        return JS_UNDEFINED;
+    }
+
+    JSValue API_DrawCircle(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst argv[]) {
+
+        constexpr int min_args = 3;
+
+        if (argc < min_args) {
+            return JS_ThrowTypeError(ctx, "DrawRectangle expects %d arguments, but got %d", min_args, argc);
+        }
+
+        // Position
+        Raylib::Vector2 *ptr_position;
+        if (!try_get_opaque(ctx, ptr_position, argv[0], RaylibBindings::js_Vector2_class_id)) return JS_EXCEPTION;
+
+        // Radius
+        float radius;
+        if (!try_get_value(ctx, radius, argv[1])) return JS_EXCEPTION;
+
+        // Color
+        Raylib::Color *ptr_color;
+        if (!try_get_opaque(ctx, ptr_color, argv[2], RaylibBindings::js_Color_class_id)) return JS_EXCEPTION;
+
+        Raylib::DrawCircleV(*ptr_position, radius, *ptr_color);
+
+        return JS_UNDEFINED;
+    }
+
+    JSValue API_DrawRing(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst argv[]) {
+
+        constexpr int min_args = 3;
+
+        if (argc < min_args) {
+            return JS_ThrowTypeError(ctx, "DrawRectangle expects %d arguments, but got %d", min_args, argc);
+        }
+
+        // Position
+        Raylib::Vector2 *ptr_position;
+        if (!try_get_opaque(ctx, ptr_position, argv[0], RaylibBindings::js_Vector2_class_id)) return JS_EXCEPTION;
+
+        // Radius
+        float radius;
+        if (!try_get_value(ctx, radius, argv[1])) return JS_EXCEPTION;
+
+        // Color
+        Raylib::Color *ptr_color;
+        if (!try_get_opaque(ctx, ptr_color, argv[2], RaylibBindings::js_Color_class_id)) return JS_EXCEPTION;
+
+        Raylib::DrawCircleLinesV(*ptr_position, radius, *ptr_color);
 
         return JS_UNDEFINED;
     }
@@ -120,7 +170,9 @@ export namespace API {
 
     void create_canvas_object(JSContext* ctx, const JSValue draw_obj) {
         register_functions(ctx, draw_obj, {
-            {"drawRect", API_DrawRectAdvanced, 4},
+            {"drawRect", API_DrawRect, 4},
+            {"drawCircle", API_DrawCircle, 3},
+            {"drawRing", API_DrawRing, 4},
             {"drawTexture", API_DrawTexture, 2},
             {"drawText", API_DrawText, 2},
         });
