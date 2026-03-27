@@ -46,94 +46,66 @@ namespace API {
 
     template <typename T>
     bool try_get_value(JSContext* ctx, T& out_ptr, JSValue const val) {
-        // 1. Handle Booleans
-        if constexpr (std::is_same_v<T, bool>) {
+        // 1. Handle Vector2 (Moved from get_prop)
+        if constexpr (std::is_same_v<T, Vector2>) {
+            if (JS_IsObject(val)) {
+                out_ptr = to_vector2(ctx, val);
+                return true;
+            }
+            return false;
+        }
+        // 2. Handle Booleans
+        else if constexpr (std::is_same_v<T, bool>) {
             int res = JS_ToBool(ctx, val);
-            if (res < 0) return false; // Error state
+            if (res < 0) return false;
             out_ptr = (res != 0);
             return true;
         }
-        // 2. Handle Integrals (int, int32_t, etc.)
+        // 3. Handle Integrals
         else if constexpr (std::is_integral_v<T>) {
             int32_t i;
             if (JS_ToInt32(ctx, &i, val) != 0) return false;
             out_ptr = static_cast<T>(i);
             return true;
         }
-        // 3. Handle Floating Point (float, double)
+        // 4. Handle Floating Point
         else if constexpr (std::is_floating_point_v<T>) {
             double d;
             if (JS_ToFloat64(ctx, &d, val) != 0) return false;
             out_ptr = static_cast<T>(d);
             return true;
         }
-        // 4. Handle Strings
+        // 5. Handle Strings
         else if constexpr (std::is_same_v<T, std::string>) {
             size_t len;
             const char* str = JS_ToCStringLen(ctx, &len, val);
             if (!str) return false;
             out_ptr = std::string(str, len);
-            JS_FreeCString(ctx, str); // Clean up the QuickJS allocated string
+            JS_FreeCString(ctx, str);
             return true;
         }
-        // 5. Fallback for Unsupported Types
         else {
-            JS_ThrowTypeError(ctx, "Unsupported type for try_get_value");
             return false;
         }
     }
 
     template <typename T>
     bool get_prop(JSContext* ctx, JSValueConst obj, const char* prop, T& out) {
+        // Fetch the property value from the object
         const JSValue val = JS_GetPropertyStr(ctx, obj, prop);
+
         bool success = false;
 
-        // We check for undefined/null first to ensure the property actually exists
+        // QuickJS returns an 'exception' or 'undefined' if property access fails
+        // We only attempt conversion if the value is not null/undefined
         if (!JS_IsUndefined(val) && !JS_IsNull(val)) {
-
-            // 1. Handle Vector2
-            if constexpr (std::is_same_v<T, Vector2>) {
-                if (JS_IsObject(val)) {
-                    out = to_vector2(ctx, val);
-                    success = true;
-                }
-            }
-            // 2. Handle Booleans
-            else if constexpr (std::is_same_v<T, bool>) {
-                out = (JS_ToBool(ctx, val) != 0);
-                success = true;
-            }
-            // 3. Handle Integrals
-            else if constexpr (std::is_integral_v<T>) {
-                if (JS_IsNumber(val)) {
-                    int32_t i;
-                    JS_ToInt32(ctx, &i, val);
-                    out = static_cast<T>(i);
-                    success = true;
-                }
-            }
-            // 4. Handle Floating Point
-            else if constexpr (std::is_floating_point_v<T>) {
-                if (JS_IsNumber(val)) {
-                    double d;
-                    JS_ToFloat64(ctx, &d, val);
-                    out = static_cast<T>(d);
-                    success = true;
-                }
-            }
-            // 5. Handle std::string (Optional but recommended)
-            else if constexpr (std::is_same_v<T, std::string>) {
-                size_t len;
-                const char* str = JS_ToCStringLen(ctx, &len, val);
-                if (str) {
-                    out = std::string(str, len);
-                    JS_FreeCString(ctx, str);
-                    success = true;
-                }
-            }
+            success = try_get_value<T>(ctx, out, val);
         }
 
+        // IMPORTANT: JS_GetPropertyStr increments the ref count.
+        // We must free it to avoid memory leaks!
         JS_FreeValue(ctx, val);
+
         return success;
     }
 

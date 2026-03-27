@@ -5,7 +5,7 @@
 
 namespace API {
 
-    JSValue JS_Print(JSContext *ctx, int argc, JSValueConst *argv, const int logLevel) {
+    static JSValue JS_Print(JSContext *ctx, int argc, JSValueConst *argv, const int logLevel) {
         for (int i = 0; i < argc; i++) {
 
             std::string text;
@@ -17,15 +17,15 @@ namespace API {
         return JS_UNDEFINED;
     }
 
-    JSValue JS_Console_Log(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+    static JSValue JS_Console_Log(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
         return JS_Print(ctx, argc, argv, LOG_INFO);
     }
 
-    JSValue JS_Console_Error(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+    static JSValue JS_Console_Error(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
         return JS_Print(ctx, argc, argv, LOG_ERROR);
     }
 
-    JSValue JS_Console_Warn(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+    static JSValue JS_Console_Warn(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
         return JS_Print(ctx, argc, argv, LOG_WARNING);
     }
 
