@@ -17,12 +17,6 @@ namespace API {
 
     void register_console(JSContext *ctx, JSValue global_obj);
 
-    inline void register_functions(JSContext* ctx, JSValue obj, std::initializer_list<FunctionDef> funcs) {
-        for (const auto&[name, func, length] : funcs) {
-            JS_SetPropertyStr(ctx, obj, name.data(), JS_NewCFunction2(ctx, func, name.data(), length, JS_CFUNC_generic, 0));
-        }
-    }
-
     inline Vector2 to_vector2(JSContext* ctx, JSValueConst val) {
         // 1. Try to get it as an opaque C++ struct (fastest)
         if (const auto* ptr = static_cast<Vector2*>(JS_GetOpaque(val, RaylibBindings::js_Vector2_class_id))) return *ptr;
