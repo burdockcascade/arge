@@ -7,8 +7,28 @@ namespace RaylibBindings {
 
     void InitAllEnums(JSContext *ctx, JSValue global_obj) {
 
+        // Enum: ConfigFlags
+        const JSValue ConfigFlags_ns = JS_NewObject(ctx);
+        JS_SetPropertyStr(ctx, global_obj, "ConfigFlags", ConfigFlags_ns);
+        JS_SetPropertyStr(ctx, ConfigFlags_ns, "FLAG_VSYNC_HINT", JS_NewInt32(ctx, 64));
+        JS_SetPropertyStr(ctx, ConfigFlags_ns, "FLAG_FULLSCREEN_MODE", JS_NewInt32(ctx, 2));
+        JS_SetPropertyStr(ctx, ConfigFlags_ns, "FLAG_WINDOW_RESIZABLE", JS_NewInt32(ctx, 4));
+        JS_SetPropertyStr(ctx, ConfigFlags_ns, "FLAG_WINDOW_UNDECORATED", JS_NewInt32(ctx, 8));
+        JS_SetPropertyStr(ctx, ConfigFlags_ns, "FLAG_WINDOW_HIDDEN", JS_NewInt32(ctx, 128));
+        JS_SetPropertyStr(ctx, ConfigFlags_ns, "FLAG_WINDOW_MINIMIZED", JS_NewInt32(ctx, 512));
+        JS_SetPropertyStr(ctx, ConfigFlags_ns, "FLAG_WINDOW_MAXIMIZED", JS_NewInt32(ctx, 1024));
+        JS_SetPropertyStr(ctx, ConfigFlags_ns, "FLAG_WINDOW_UNFOCUSED", JS_NewInt32(ctx, 2048));
+        JS_SetPropertyStr(ctx, ConfigFlags_ns, "FLAG_WINDOW_TOPMOST", JS_NewInt32(ctx, 4096));
+        JS_SetPropertyStr(ctx, ConfigFlags_ns, "FLAG_WINDOW_ALWAYS_RUN", JS_NewInt32(ctx, 256));
+        JS_SetPropertyStr(ctx, ConfigFlags_ns, "FLAG_WINDOW_TRANSPARENT", JS_NewInt32(ctx, 16));
+        JS_SetPropertyStr(ctx, ConfigFlags_ns, "FLAG_WINDOW_HIGHDPI", JS_NewInt32(ctx, 8192));
+        JS_SetPropertyStr(ctx, ConfigFlags_ns, "FLAG_WINDOW_MOUSE_PASSTHROUGH", JS_NewInt32(ctx, 16384));
+        JS_SetPropertyStr(ctx, ConfigFlags_ns, "FLAG_BORDERLESS_WINDOWED_MODE", JS_NewInt32(ctx, 32768));
+        JS_SetPropertyStr(ctx, ConfigFlags_ns, "FLAG_MSAA_4X_HINT", JS_NewInt32(ctx, 32));
+        JS_SetPropertyStr(ctx, ConfigFlags_ns, "FLAG_INTERLACED_HINT", JS_NewInt32(ctx, 65536));
+
         // Enum: TraceLogLevel
-        JSValue TraceLogLevel_ns = JS_NewObject(ctx);
+        const JSValue TraceLogLevel_ns = JS_NewObject(ctx);
         JS_SetPropertyStr(ctx, global_obj, "TraceLogLevel", TraceLogLevel_ns);
         JS_SetPropertyStr(ctx, TraceLogLevel_ns, "LOG_ALL", JS_NewInt32(ctx, 0));
         JS_SetPropertyStr(ctx, TraceLogLevel_ns, "LOG_TRACE", JS_NewInt32(ctx, 1));
@@ -20,7 +40,7 @@ namespace RaylibBindings {
         JS_SetPropertyStr(ctx, TraceLogLevel_ns, "LOG_NONE", JS_NewInt32(ctx, 7));
 
         // Enum: KeyboardKey
-        JSValue KeyboardKey_ns = JS_NewObject(ctx);
+        const JSValue KeyboardKey_ns = JS_NewObject(ctx);
         JS_SetPropertyStr(ctx, global_obj, "KeyboardKey", KeyboardKey_ns);
         JS_SetPropertyStr(ctx, KeyboardKey_ns, "KEY_NULL", JS_NewInt32(ctx, 0));
         JS_SetPropertyStr(ctx, KeyboardKey_ns, "KEY_APOSTROPHE", JS_NewInt32(ctx, 39));
@@ -134,7 +154,7 @@ namespace RaylibBindings {
         JS_SetPropertyStr(ctx, KeyboardKey_ns, "KEY_VOLUME_DOWN", JS_NewInt32(ctx, 25));
 
         // Enum: MouseButton
-        JSValue MouseButton_ns = JS_NewObject(ctx);
+        const JSValue MouseButton_ns = JS_NewObject(ctx);
         JS_SetPropertyStr(ctx, global_obj, "MouseButton", MouseButton_ns);
         JS_SetPropertyStr(ctx, MouseButton_ns, "MOUSE_BUTTON_LEFT", JS_NewInt32(ctx, 0));
         JS_SetPropertyStr(ctx, MouseButton_ns, "MOUSE_BUTTON_RIGHT", JS_NewInt32(ctx, 1));
@@ -144,26 +164,67 @@ namespace RaylibBindings {
         JS_SetPropertyStr(ctx, MouseButton_ns, "MOUSE_BUTTON_FORWARD", JS_NewInt32(ctx, 5));
         JS_SetPropertyStr(ctx, MouseButton_ns, "MOUSE_BUTTON_BACK", JS_NewInt32(ctx, 6));
 
-        // Enum: BlendMode
-        JSValue BlendMode_ns = JS_NewObject(ctx);
-        JS_SetPropertyStr(ctx, global_obj, "BlendMode", BlendMode_ns);
-        JS_SetPropertyStr(ctx, BlendMode_ns, "BLEND_ALPHA", JS_NewInt32(ctx, 0));
-        JS_SetPropertyStr(ctx, BlendMode_ns, "BLEND_ADDITIVE", JS_NewInt32(ctx, 1));
-        JS_SetPropertyStr(ctx, BlendMode_ns, "BLEND_MULTIPLIED", JS_NewInt32(ctx, 2));
-        JS_SetPropertyStr(ctx, BlendMode_ns, "BLEND_ADD_COLORS", JS_NewInt32(ctx, 3));
-        JS_SetPropertyStr(ctx, BlendMode_ns, "BLEND_SUBTRACT_COLORS", JS_NewInt32(ctx, 4));
-        JS_SetPropertyStr(ctx, BlendMode_ns, "BLEND_ALPHA_PREMULTIPLY", JS_NewInt32(ctx, 5));
-        JS_SetPropertyStr(ctx, BlendMode_ns, "BLEND_CUSTOM", JS_NewInt32(ctx, 6));
-        JS_SetPropertyStr(ctx, BlendMode_ns, "BLEND_CUSTOM_SEPARATE", JS_NewInt32(ctx, 7));
+        // Enum: MouseCursor
+        const JSValue MouseCursor_ns = JS_NewObject(ctx);
+        JS_SetPropertyStr(ctx, global_obj, "MouseCursor", MouseCursor_ns);
+        JS_SetPropertyStr(ctx, MouseCursor_ns, "MOUSE_CURSOR_DEFAULT", JS_NewInt32(ctx, 0));
+        JS_SetPropertyStr(ctx, MouseCursor_ns, "MOUSE_CURSOR_ARROW", JS_NewInt32(ctx, 1));
+        JS_SetPropertyStr(ctx, MouseCursor_ns, "MOUSE_CURSOR_IBEAM", JS_NewInt32(ctx, 2));
+        JS_SetPropertyStr(ctx, MouseCursor_ns, "MOUSE_CURSOR_CROSSHAIR", JS_NewInt32(ctx, 3));
+        JS_SetPropertyStr(ctx, MouseCursor_ns, "MOUSE_CURSOR_POINTING_HAND", JS_NewInt32(ctx, 4));
+        JS_SetPropertyStr(ctx, MouseCursor_ns, "MOUSE_CURSOR_RESIZE_EW", JS_NewInt32(ctx, 5));
+        JS_SetPropertyStr(ctx, MouseCursor_ns, "MOUSE_CURSOR_RESIZE_NS", JS_NewInt32(ctx, 6));
+        JS_SetPropertyStr(ctx, MouseCursor_ns, "MOUSE_CURSOR_RESIZE_NWSE", JS_NewInt32(ctx, 7));
+        JS_SetPropertyStr(ctx, MouseCursor_ns, "MOUSE_CURSOR_RESIZE_NESW", JS_NewInt32(ctx, 8));
+        JS_SetPropertyStr(ctx, MouseCursor_ns, "MOUSE_CURSOR_RESIZE_ALL", JS_NewInt32(ctx, 9));
+        JS_SetPropertyStr(ctx, MouseCursor_ns, "MOUSE_CURSOR_NOT_ALLOWED", JS_NewInt32(ctx, 10));
+
+        // Enum: GamepadButton
+        const JSValue GamepadButton_ns = JS_NewObject(ctx);
+        JS_SetPropertyStr(ctx, global_obj, "GamepadButton", GamepadButton_ns);
+        JS_SetPropertyStr(ctx, GamepadButton_ns, "GAMEPAD_BUTTON_UNKNOWN", JS_NewInt32(ctx, 0));
+        JS_SetPropertyStr(ctx, GamepadButton_ns, "GAMEPAD_BUTTON_LEFT_FACE_UP", JS_NewInt32(ctx, 1));
+        JS_SetPropertyStr(ctx, GamepadButton_ns, "GAMEPAD_BUTTON_LEFT_FACE_RIGHT", JS_NewInt32(ctx, 2));
+        JS_SetPropertyStr(ctx, GamepadButton_ns, "GAMEPAD_BUTTON_LEFT_FACE_DOWN", JS_NewInt32(ctx, 3));
+        JS_SetPropertyStr(ctx, GamepadButton_ns, "GAMEPAD_BUTTON_LEFT_FACE_LEFT", JS_NewInt32(ctx, 4));
+        JS_SetPropertyStr(ctx, GamepadButton_ns, "GAMEPAD_BUTTON_RIGHT_FACE_UP", JS_NewInt32(ctx, 5));
+        JS_SetPropertyStr(ctx, GamepadButton_ns, "GAMEPAD_BUTTON_RIGHT_FACE_RIGHT", JS_NewInt32(ctx, 6));
+        JS_SetPropertyStr(ctx, GamepadButton_ns, "GAMEPAD_BUTTON_RIGHT_FACE_DOWN", JS_NewInt32(ctx, 7));
+        JS_SetPropertyStr(ctx, GamepadButton_ns, "GAMEPAD_BUTTON_RIGHT_FACE_LEFT", JS_NewInt32(ctx, 8));
+        JS_SetPropertyStr(ctx, GamepadButton_ns, "GAMEPAD_BUTTON_LEFT_TRIGGER_1", JS_NewInt32(ctx, 9));
+        JS_SetPropertyStr(ctx, GamepadButton_ns, "GAMEPAD_BUTTON_LEFT_TRIGGER_2", JS_NewInt32(ctx, 10));
+        JS_SetPropertyStr(ctx, GamepadButton_ns, "GAMEPAD_BUTTON_RIGHT_TRIGGER_1", JS_NewInt32(ctx, 11));
+        JS_SetPropertyStr(ctx, GamepadButton_ns, "GAMEPAD_BUTTON_RIGHT_TRIGGER_2", JS_NewInt32(ctx, 12));
+        JS_SetPropertyStr(ctx, GamepadButton_ns, "GAMEPAD_BUTTON_MIDDLE_LEFT", JS_NewInt32(ctx, 13));
+        JS_SetPropertyStr(ctx, GamepadButton_ns, "GAMEPAD_BUTTON_MIDDLE", JS_NewInt32(ctx, 14));
+        JS_SetPropertyStr(ctx, GamepadButton_ns, "GAMEPAD_BUTTON_MIDDLE_RIGHT", JS_NewInt32(ctx, 15));
+        JS_SetPropertyStr(ctx, GamepadButton_ns, "GAMEPAD_BUTTON_LEFT_THUMB", JS_NewInt32(ctx, 16));
+        JS_SetPropertyStr(ctx, GamepadButton_ns, "GAMEPAD_BUTTON_RIGHT_THUMB", JS_NewInt32(ctx, 17));
+
+        // Enum: GamepadAxis
+        const JSValue GamepadAxis_ns = JS_NewObject(ctx);
+        JS_SetPropertyStr(ctx, global_obj, "GamepadAxis", GamepadAxis_ns);
+        JS_SetPropertyStr(ctx, GamepadAxis_ns, "GAMEPAD_AXIS_LEFT_X", JS_NewInt32(ctx, 0));
+        JS_SetPropertyStr(ctx, GamepadAxis_ns, "GAMEPAD_AXIS_LEFT_Y", JS_NewInt32(ctx, 1));
+        JS_SetPropertyStr(ctx, GamepadAxis_ns, "GAMEPAD_AXIS_RIGHT_X", JS_NewInt32(ctx, 2));
+        JS_SetPropertyStr(ctx, GamepadAxis_ns, "GAMEPAD_AXIS_RIGHT_Y", JS_NewInt32(ctx, 3));
+        JS_SetPropertyStr(ctx, GamepadAxis_ns, "GAMEPAD_AXIS_LEFT_TRIGGER", JS_NewInt32(ctx, 4));
+        JS_SetPropertyStr(ctx, GamepadAxis_ns, "GAMEPAD_AXIS_RIGHT_TRIGGER", JS_NewInt32(ctx, 5));
 
         // Enum: CameraMode
-        JSValue CameraMode_ns = JS_NewObject(ctx);
+        const JSValue CameraMode_ns = JS_NewObject(ctx);
         JS_SetPropertyStr(ctx, global_obj, "CameraMode", CameraMode_ns);
         JS_SetPropertyStr(ctx, CameraMode_ns, "CAMERA_CUSTOM", JS_NewInt32(ctx, 0));
         JS_SetPropertyStr(ctx, CameraMode_ns, "CAMERA_FREE", JS_NewInt32(ctx, 1));
         JS_SetPropertyStr(ctx, CameraMode_ns, "CAMERA_ORBITAL", JS_NewInt32(ctx, 2));
         JS_SetPropertyStr(ctx, CameraMode_ns, "CAMERA_FIRST_PERSON", JS_NewInt32(ctx, 3));
         JS_SetPropertyStr(ctx, CameraMode_ns, "CAMERA_THIRD_PERSON", JS_NewInt32(ctx, 4));
+
+        // Enum: CameraProjection
+        const JSValue CameraProjection_ns = JS_NewObject(ctx);
+        JS_SetPropertyStr(ctx, global_obj, "CameraProjection", CameraProjection_ns);
+        JS_SetPropertyStr(ctx, CameraProjection_ns, "CAMERA_PERSPECTIVE", JS_NewInt32(ctx, 0));
+        JS_SetPropertyStr(ctx, CameraProjection_ns, "CAMERA_ORTHOGRAPHIC", JS_NewInt32(ctx, 1));
 
     }
 

@@ -57,9 +57,11 @@ FUNCTION_WHITELIST = {
 }
 
 ENUM_WHITELIST = {
-    "KeyboardKey", "MouseButton", "ShaderUniformDataV",
-    "BlendMode", "GestureEvent", "CameraMode",
-    "TextureParam", "TextureWrapMode", "TextureFilterMode", "TraceLogLevel"
+    "KeyboardKey", "GamepadButton", "GamepadAxis",
+    "MouseButton", "MouseCursor",
+    "ConfigFlags",
+    "CameraMode", "CameraProjection",
+    "TraceLogLevel"
 }
 
 # --- Helper Functions ---
