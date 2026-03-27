@@ -2,7 +2,6 @@
 
 #include <quickjs.h>
 #include <raylib.h>
-#include <string>
 #include <vector>
 #include <memory>
 #include "rl_bindings.hpp"
