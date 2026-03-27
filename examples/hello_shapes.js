@@ -15,17 +15,20 @@ class HelloWorld {
 
     }
 
-    update(dt, engine) {
-        if (engine.input.isKeyDown(KeyboardKey.KEY_RIGHT)) {
+    update(dt, ctx) {
+
+        const { input } = ctx;
+
+        if (input.isKeyDown(KeyboardKey.KEY_RIGHT)) {
             this.pos.x += this.speed;
         }
-        if (engine.input.isKeyDown(KeyboardKey.KEY_LEFT)) {
+        if (input.isKeyDown(KeyboardKey.KEY_LEFT)) {
             this.pos.x -= this.speed;
         }
-        if (engine.input.isKeyDown(KeyboardKey.KEY_DOWN)) {
+        if (input.isKeyDown(KeyboardKey.KEY_DOWN)) {
             this.pos.y += this.speed;
         }
-        if (engine.input.isKeyDown(KeyboardKey.KEY_UP)) {
+        if (input.isKeyDown(KeyboardKey.KEY_UP)) {
             this.pos.y -= this.speed;
         }
 
@@ -49,5 +52,5 @@ class HelloWorld {
     }
 }
 
-const app = new App({ width: 800, height: 600, title: "Hello World" });
+const app = new Runtime(600, 800, "Hello World");
 app.run(new HelloWorld());

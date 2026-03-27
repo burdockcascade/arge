@@ -35,12 +35,7 @@ JSValue ScriptEngine::CallMethod(JSValueConst obj, const JSAtom method, const in
 }
 
 // Property Helpers
-bool ScriptEngine::GetPropertyInt(const JSValue obj, const char *prop, int *out_val) const {
-    JSValue val = JS_GetPropertyStr(ctx, obj, prop);
-    bool success = JS_IsNumber(val) && JS_ToInt32(ctx, out_val, val) == 0;
-    JS_FreeValue(ctx, val);
-    return success;
-}
+
 
 bool ScriptEngine::GetPropertyString(const JSValue obj, const char *prop, std::string &out_val) const {
     JSValue val = JS_GetPropertyStr(ctx, obj, prop);
@@ -92,6 +87,15 @@ void ScriptEngine::SetHostInstance(void *instance) const {
 [[nodiscard]] JSContext *ScriptEngine::GetContext() const {
     return ctx;
 }
+
+[[nodiscard]] JSValue ScriptEngine::GetGlobalObject() const {
+    return JS_GetGlobalObject(ctx);
+}
+
+[[nodiscard]] JSValue ScriptEngine::MakeNewObject() const {
+    return JS_NewObject(ctx);
+}
+
 
 void ScriptEngine::SetOpaque(void *data) const {
     JS_SetContextOpaque(ctx, data);

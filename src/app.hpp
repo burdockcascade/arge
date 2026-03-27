@@ -23,6 +23,8 @@ public:
     void Run() const;
     static void Shutdown();
 
+    void BindAPI();
+
     // Accessors
     [[nodiscard]] ScriptEngine& GetEngine() const { return *qjs; }
 
@@ -36,7 +38,6 @@ public:
 
 private:
     // Internal Logic
-    void BindAPI();
     void ProcessFrame() const;
 
     // Internal Resources
@@ -54,7 +55,12 @@ private:
     JSValue jsSystemContextObj = JS_UNDEFINED;
 
     // QuickJS Static Callbacks
-    static void create_app_class(JSContext* ctx, JSValue global_obj);
     static JSValue js_app_run(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv);
     static JSValue js_app_constructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv);
+
+    static void create_app_class(JSContext *ctx, JSValue global_obj);
+
+    static JSValue js_sandbox_constructor(JSContext *ctx, JSValue new_target, int argc, JSValue *argv);
+
+
 };

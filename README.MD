@@ -5,6 +5,7 @@ Another Raylib Game Engine
 ARGE is currently in early development, and is not yet ready for production use.
 
 ## Example
+
 ```js
 class HelloWorld {
 
@@ -30,6 +31,6 @@ class HelloWorld {
     }
 }
 
-const app = new App({ width: 800, height: 600, title: "Hello World" });
+const app = new Runtime({width: 800, height: 600, title: "Hello World"});
 app.run(new HelloWorld());
 ```

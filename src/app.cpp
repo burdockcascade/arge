@@ -8,6 +8,7 @@
 #include "app.hpp"
 #include "script_engine.hpp"
 #include "api/api.hpp"
+#include "utils.hpp"
 
 App::App(std::string path) : scriptPath(std::move(path)) {
     qjs = std::make_unique<ScriptEngine>();
@@ -40,9 +41,10 @@ bool App::Initialize() {
 
     std::stringstream buffer;
     buffer << t.rdbuf();
-    const std::string code = buffer.str();
 
-    if (!qjs->EvalModule(code, scriptPath)) return false;
+    if (const std::string code = buffer.str(); !qjs->EvalModule(code, scriptPath)) {
+        return false;
+    }
 
     InitWindow(windowWidth, windowHeight, windowTitle.c_str());
     SetTargetFPS(targetFPS);
@@ -119,18 +121,17 @@ JSValue App::js_app_constructor(JSContext *ctx, JSValueConst new_target, int arg
     if (auto* app = ScriptEngine::GetHostInstance<App>(ctx); app) {
         app->GetEngine().RegisterFunction(obj, "run", js_app_run, 1);
 
-        if (argc >= 1 && JS_IsObject(argv[0])) {
-            app->GetEngine().GetPropertyInt(argv[0], "width", &app->windowWidth);
-            app->GetEngine().GetPropertyInt(argv[0], "height", &app->windowHeight);
-            app->GetEngine().GetPropertyString(argv[0], "title", app->windowTitle);
-        }
+        if (!try_get_value(ctx, app->windowHeight, argv[0])) return JS_EXCEPTION;
+        if (!try_get_value(ctx, app->windowWidth, argv[1])) return JS_EXCEPTION;
+        if (!try_get_value(ctx, app->windowTitle, argv[2])) return JS_EXCEPTION;
+
     } else {
-        TraceLog(LOG_ERROR, "App constructor called but no App instance found");
+        TraceLog(LOG_ERROR, "Runtime constructor called but no Runtime instance found");
     }
     return obj;
 }
 
 void App::create_app_class(JSContext* ctx, JSValue global_obj) {
-    const JSValue ctor = JS_NewCFunction2(ctx, js_app_constructor, "App", 1, JS_CFUNC_constructor, 0);
-    JS_SetPropertyStr(ctx, global_obj, "App", ctor);
+    const JSValue ctor = JS_NewCFunction2(ctx, js_app_constructor, "Runtime", 1, JS_CFUNC_constructor, 0);
+    JS_SetPropertyStr(ctx, global_obj, "Runtime", ctor);
 }

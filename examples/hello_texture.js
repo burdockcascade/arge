@@ -1,9 +1,5 @@
 class ExampleApp {
 
-    constructor() {
-        this.samepleTexture;
-    }
-
     init(engine) {
         this.samepleTexture = engine.assets.loadTexture("C:\\workspace\\raylib\\arge\\assets\\sample.png");
 
@@ -14,5 +10,5 @@ class ExampleApp {
     }
 }
 
-const app = new App({ width: 800, height: 600, title: "Hello Texture" });
+const app = new Runtime(600, 800, "Hello World");
 app.run(new ExampleApp());

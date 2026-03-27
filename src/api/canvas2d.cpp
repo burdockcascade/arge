@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include "api.hpp"
 #include "../wrapper/rl_bindings.hpp"
+#include "../utils.hpp"
 
 namespace API {
 
@@ -76,31 +77,6 @@ namespace API {
         return JS_UNDEFINED;
     }
 
-    JSValue API_DrawRing(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst argv[]) {
-
-        constexpr int min_args = 3;
-
-        if (argc < min_args) {
-            return JS_ThrowTypeError(ctx, "DrawRectangle expects %d arguments, but got %d", min_args, argc);
-        }
-
-        // Position
-        Vector2 *ptr_position;
-        if (!try_get_opaque(ctx, ptr_position, argv[0], RaylibBindings::js_Vector2_class_id)) return JS_EXCEPTION;
-
-        // Radius
-        float radius;
-        if (!try_get_value(ctx, radius, argv[1])) return JS_EXCEPTION;
-
-        // Color
-        Color *ptr_color;
-        if (!try_get_opaque(ctx, ptr_color, argv[2], RaylibBindings::js_Color_class_id)) return JS_EXCEPTION;
-
-        DrawCircleLinesV(*ptr_position, radius, *ptr_color);
-
-        return JS_UNDEFINED;
-    }
-
     // Draw Texture
     JSValue API_DrawTexture(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst argv[]) {
         if (constexpr int min_args = 2; argc < min_args) {
@@ -167,7 +143,6 @@ namespace API {
         register_functions(ctx, draw_obj, {
             {"drawRect", API_DrawRect, 4},
             {"drawCircle", API_DrawCircle, 3},
-            {"drawRing", API_DrawRing, 4},
             {"drawTexture", API_DrawTexture, 2},
             {"drawText", API_DrawText, 2},
         });

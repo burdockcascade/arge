@@ -39,18 +39,8 @@ declare interface AppConfig {
 }
 
 declare class App {
-    constructor(config: AppConfig);
-    run(instance: any): void;
-}
-
-// System and Drawing interfaces for JSDoc
-interface Engine {
-    input: { isKeyDown(key: number): boolean };
-    assets: { loadTexture(path: string): Texture2D };
-    audio: { play(name: string): void };
-    getMonitorCount(): number;
-    getFrameTime(): number;
-    isWindowFocused(): boolean;
+    constructor(height: number, width: number, title: string);
+    run(instance: Sandbox): void;
 }
 
 interface Context {
@@ -80,4 +70,25 @@ declare class KeyboardKey {
     static KEY_RIGHT: number;
     static KEY_UP: number;
     static KEY_DOWN: number;
+}
+
+declare class Sandbox {
+
+    /** Called once when the game starts */
+    init?(): void;
+
+    /** Called every frame for logic. 'dt' is delta time. */
+    update(dt: number, ctx: UpdateContext): void;
+
+    /** Called every frame for rendering. */
+    draw(ctx: Canvas): void;
+}
+
+type SandboxClass = new () => Sandbox;
+
+interface UpdateContext {
+    input: {
+        isKeyDown(key: string | number): boolean;
+        getMousePosition(): { x: number, y: number };
+    };
 }

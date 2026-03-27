@@ -2,6 +2,7 @@
 #include <quickjs.h>
 #include <raylib.h>
 #include <string>
+#include "../utils.hpp"
 
 namespace API {
 

@@ -10,6 +10,8 @@ public:
     ScriptEngine();
     ~ScriptEngine();
 
+    [[nodiscard]] JSValue MakeNewObject() const;
+
     // Prevent copying
     ScriptEngine(const ScriptEngine&) = delete;
     ScriptEngine& operator=(const ScriptEngine&) = delete;
@@ -18,9 +20,6 @@ public:
     [[nodiscard]] bool EvalModule(const std::string& code, const std::string& filename) const;
 
     JSValue CallMethod(JSValueConst obj, JSAtom method, int argc, JSValueConst* argv) const;
-
-    // Property Helpers
-    bool GetPropertyInt(JSValue obj, const char* prop, int* out_val) const;
 
     bool GetPropertyString(JSValue obj, const char* prop, std::string& out_val) const;
 
@@ -45,6 +44,9 @@ public:
     }
 
     [[nodiscard]] JSContext* GetContext() const;
+
+    [[nodiscard]] JSValue GetGlobalObject() const;
+
     void SetOpaque(void* data) const;
 
     void HandleException() const;
