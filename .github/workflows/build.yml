@@ -75,11 +75,11 @@ jobs:
         shell: bash
         run: |
           if [ "$RUNNER_OS" == "Windows" ]; then
-            if [ ! -f "build/windows/x64/release/xray.exe" ]; then echo "Binary missing!"; exit 1; fi
+            if [ ! -f "build/windows/x64/release/arge.exe" ]; then echo "Binary missing!"; exit 1; fi
           elif [ "$RUNNER_OS" == "macOS" ]; then
             # macOS path might vary between x64/arm64 depending on the runner hardware
-            find build -name "xray" -type f | grep -q . || exit 1
+            find build -name "RGE" -type f | grep -q . || exit 1
           else
-            if [ ! -f "build/linux/x86_64/release/xray" ]; then echo "Binary missing!"; exit 1; fi
+            if [ ! -f "build/linux/x86_64/release/arge" ]; then echo "Binary missing!"; exit 1; fi
           fi
           echo "Build successful."
