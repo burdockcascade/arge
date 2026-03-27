@@ -1,14 +1,9 @@
-module;
 #include <quickjs.h>
 #include <raylib.h>
+#include "api.hpp"
+#include "../wrapper/rl_bindings.hpp"
 
-export module API:Canvas2d;
-import :Common;
-import RaylibBindings;
-
-static constexpr int DEFAULT_FONT_SIZE = 24;
-
-export namespace API {
+namespace API {
 
     // Draw
     JSValue API_DrawRect(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
@@ -142,7 +137,7 @@ export namespace API {
         if (!try_get_opaque(ctx, ptr_position, argv[1], RaylibBindings::js_Vector2_class_id)) return JS_EXCEPTION;
 
         // Font Size
-        int32_t font_size;
+        float font_size;
         if (!try_get_value(ctx, font_size, argv[2])) return JS_EXCEPTION;
 
         // Color

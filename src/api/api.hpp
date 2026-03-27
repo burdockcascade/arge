@@ -1,21 +1,21 @@
-module;
+#pragma once
 #include <quickjs.h>
 #include <raylib.h>
+#include <string>
+#include "../wrapper/rl_bindings.hpp"
 
-export module API:Common;
-import RaylibBindings;
-import <string>;
-import <string_view>;
-import <optional>;
-import <type_traits>;
 
-export namespace API {
+static constexpr int DEFAULT_FONT_SIZE = 24;
+
+namespace API {
 
     struct FunctionDef {
         std::string_view name{};
         JSCFunction* func{};
         int length{};
     };
+
+    void register_console(JSContext *ctx, JSValue global_obj);
 
     inline void register_functions(JSContext* ctx, JSValue obj, std::initializer_list<FunctionDef> funcs) {
         for (const auto&[name, func, length] : funcs) {
@@ -144,5 +144,15 @@ export namespace API {
         return success;
     }
 
+    void InitEverything(JSContext* ctx, JSValue global);
+    void RegisterSystemNamespace(JSContext* ctx, JSValue jsSystemContextObj);
+    void RegisterDrawNamespace(JSContext* ctx, JSValue jsDrawContextObj);
+    void register_functions(JSContext* ctx, JSValue obj, std::initializer_list<FunctionDef> funcs);
+
+    void create_canvas_object(JSContext* ctx, JSValue draw_obj);
+
+    void create_asset_object(JSContext* ctx, JSValue system_ns);
+    void create_window_object(JSContext* ctx, JSValue system_ns);
+    void create_input_object(JSContext* ctx, JSValue system_ns);
 
 }

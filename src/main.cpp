@@ -2,9 +2,7 @@
 #include <raylib.h>
 #include <string>
 #include <exception> // Added for std::exception
-
-// Replace internal includes with module imports
-import App;
+#include "app.hpp"
 
 int main(const int argc, char** argv) {
 

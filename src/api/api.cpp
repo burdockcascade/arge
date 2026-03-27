@@ -1,11 +1,6 @@
-export module API;
+#include "api.hpp"
 
-export import :Common;
-export import :Console;
-export import :System;
-export import :Canvas2d;
-
-export namespace API {
+namespace API {
 
     void InitEverything(JSContext* ctx, JSValue global) {
         RaylibBindings::InitAllStructs(ctx, global);
@@ -19,7 +14,7 @@ export namespace API {
     }
 
     void RegisterDrawNamespace(JSContext* ctx, JSValue jsDrawContextObj) {
-        API::create_canvas_object(ctx, jsDrawContextObj);
+        create_canvas_object(ctx, jsDrawContextObj);
     }
 
 }

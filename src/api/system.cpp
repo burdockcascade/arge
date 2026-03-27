@@ -1,11 +1,9 @@
-module;
 #include <quickjs.h>
+#include "api.hpp"
+#include "../wrapper/rl_bindings.hpp"
 
-export module API:System;
-import :Common;
-import RaylibBindings;
 
-export namespace API {
+namespace API {
 
     // Register the Window API functions to the JavaScript context
     void create_window_object(JSContext* ctx, JSValue system_ns) {
@@ -50,7 +48,7 @@ export namespace API {
         JS_SetPropertyStr(ctx, system_ns, "input", input_ns);
     }
 
-    inline void create_asset_object(JSContext* ctx, JSValue system_ns) {
+    void create_asset_object(JSContext* ctx, JSValue system_ns) {
 
         const JSValue assets_ns = JS_NewObject(ctx);
 

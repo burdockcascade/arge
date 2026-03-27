@@ -1,14 +1,9 @@
-module;
+#include "api.hpp"
 #include <quickjs.h>
 #include <raylib.h>
+#include <string>
 
-export module API:Console;
-import :Common;
-import <iostream>;
-import <fstream>;
-
-
-export namespace API {
+namespace API {
 
     JSValue JS_Print(JSContext *ctx, int argc, JSValueConst *argv, const int logLevel) {
         for (int i = 0; i < argc; i++) {

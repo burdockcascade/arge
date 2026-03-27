@@ -237,23 +237,23 @@ def run_generator():
     }
 
     # Render Templates
-    templates = ['rl_bindings', 'rl_module']
-    for file_base in templates:
-        template_path = f'{file_base}.cppm.jinja2'
-        output_path = f'../../src/wrapper/{file_base}.cppm'
+    for file_base in ['rl_bindings', 'rl_structs', 'rl_enums', 'rl_functions']:
+        for ext in ['hpp', 'cpp']:
+            template_path = f'{file_base}.{ext}.jinja2'
+            output_path = f'../../src/wrapper/{file_base}.{ext}'
 
-        try:
-            with open(template_path, 'r') as f:
-                template = Template(f.read(), trim_blocks=True, lstrip_blocks=True)
+            try:
+                with open(template_path, 'r') as f:
+                    template = Template(f.read(), trim_blocks=True, lstrip_blocks=True)
 
-            rendered_content = template.render(**context)
+                rendered_content = template.render(**context)
 
-            # Use the check-before-write logic here
-            if write_if_changed(output_path, rendered_content):
-                print(f"Updated: {output_path}")
+                # Use the check-before-write logic here
+                if write_if_changed(output_path, rendered_content):
+                    print(f"Updated: {output_path}")
 
-        except FileNotFoundError:
-            print(f"Skipping {template_path} (Not found)")
+            except FileNotFoundError:
+                print(f"Skipping {template_path} (Not found)")
 
 if __name__ == "__main__":
     run_generator()
