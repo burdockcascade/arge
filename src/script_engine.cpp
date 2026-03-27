@@ -69,21 +69,33 @@ void ScriptEngine::SetStoredValue(JSValue &storage, const JSValue newValue) cons
     storage = JS_DupValue(ctx, newValue);
 }
 
-bool ScriptEngine::IsUndefined(const JSValue v) { return JS_IsUndefined(v); }
+bool ScriptEngine::IsUndefined(const JSValue v) {
+    return JS_IsUndefined(v);
+}
 
 // Resource Management
 [[nodiscard]] JSAtom ScriptEngine::CreateAtom(const std::string_view name) const {
     return JS_NewAtomLen(ctx, name.data(), name.size());
 }
 
-void ScriptEngine::FreeValue(const JSValue v) const { JS_FreeValue(ctx, v); }
-void ScriptEngine::FreeAtom(const JSAtom a) const { JS_FreeAtom(ctx, a); }
+void ScriptEngine::FreeValue(const JSValue v) const {
+    JS_FreeValue(ctx, v);
+}
+void ScriptEngine::FreeAtom(const JSAtom a) const {
+    JS_FreeAtom(ctx, a);
+}
 
-void ScriptEngine::SetHostInstance(void *instance) const { JS_SetContextOpaque(ctx, instance); }
+void ScriptEngine::SetHostInstance(void *instance) const {
+    JS_SetContextOpaque(ctx, instance);
+}
 
-[[nodiscard]] JSContext *ScriptEngine::GetContext() const { return ctx; }
+[[nodiscard]] JSContext *ScriptEngine::GetContext() const {
+    return ctx;
+}
 
-void ScriptEngine::SetOpaque(void *data) const { JS_SetContextOpaque(ctx, data); }
+void ScriptEngine::SetOpaque(void *data) const {
+    JS_SetContextOpaque(ctx, data);
+}
 
 void ScriptEngine::HandleException() const {
     const JSValue exception = JS_GetException(ctx);
