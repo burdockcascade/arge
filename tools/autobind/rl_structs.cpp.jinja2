@@ -7,7 +7,7 @@
 namespace RaylibBindings {
 
     {% for struct in structs %}
-    JSValue JS_New{{ struct.name }}(JSContext *ctx, {{ struct.name }} data) {
+    JSValue JS_New{{ struct.name }}(JSContext *ctx, const {{ struct.name }} data) {
         const JSValue obj = JS_NewObjectClass(ctx, js_{{ struct.name }}_class_id);
         if (auto* s = static_cast<{{ struct.name }}*>(js_malloc(ctx, sizeof({{ struct.name }})))) {
             *s = data;
@@ -16,7 +16,7 @@ namespace RaylibBindings {
         return obj;
     }
 
-    static void js_{{ struct.name }}_finalizer(JSRuntime *rt, JSValue val) noexcept {
+    static void js_{{ struct.name }}_finalizer(JSRuntime *rt, const JSValue val) noexcept {
         if (auto* s = static_cast<{{ struct.name }}*>(JS_GetOpaque(val, js_{{ struct.name }}_class_id))) {
             js_free_rt(rt, s);
         }
@@ -24,7 +24,7 @@ namespace RaylibBindings {
 
     {% for field in struct.fields %}
     // Getter for {{ field.name }}
-    static JSValue js_{{ struct.name }}_get_{{ field.name }}(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_{{ struct.name }}_get_{{ field.name }}(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<{{ struct.name }}*>(JS_GetOpaque2(ctx, this_val, js_{{ struct.name }}_class_id));
         if (!s) return JS_EXCEPTION;
         {% if field.is_array %}
@@ -47,7 +47,7 @@ namespace RaylibBindings {
     }
 
     // Setter for {{ field.name }}
-    static JSValue js_{{ struct.name }}_set_{{ field.name }}(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_{{ struct.name }}_set_{{ field.name }}(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<{{ struct.name }}*>(JS_GetOpaque2(ctx, this_val, js_{{ struct.name }}_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -103,7 +103,7 @@ namespace RaylibBindings {
     {% endfor %}
 
     // Constructor for {{ struct.name }}
-    static JSValue js_{{ struct.name }}_constructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv) {
+    static JSValue js_{{ struct.name }}_constructor(JSContext *ctx, JSValue new_target, int argc, JSValue *argv) {
         
         // Expect either 0 arguments (default constructor) or all fields provided
         if (argc != 0 && argc != {{ struct.fields|length }}) {
@@ -143,21 +143,21 @@ namespace RaylibBindings {
     {% endfor %}
     };
 
-    static void Init{{ struct.name }}Binding(JSContext *ctx, JSValue ns) {
+    static void Init{{ struct.name }}Binding(JSContext *ctx, const JSValue ns) {
         JSRuntime *rt = JS_GetRuntime(ctx);
         if (js_{{ struct.name }}_class_id == 0) {
             JS_NewClassID(rt, &js_{{ struct.name }}_class_id);
         }
 
-        JSClassDef def{ .class_name = "{{ struct.name }}", .finalizer = js_{{ struct.name }}_finalizer };
+        constexpr JSClassDef def{ .class_name = "{{ struct.name }}", .finalizer = js_{{ struct.name }}_finalizer };
         JS_NewClass(rt, js_{{ struct.name }}_class_id, &def);
 
-        JSValue proto = JS_NewObject(ctx);
+        const JSValue proto = JS_NewObject(ctx);
         JS_SetPropertyFunctionList(ctx, proto, js_{{ struct.name }}_proto_funcs, {{ struct.fields|length }});
         JS_SetClassProto(ctx, js_{{ struct.name }}_class_id, proto);
 
         // Create the constructor function and attach it to the namespace
-        JSValue ctor = JS_NewCFunction2(ctx, js_{{ struct.name }}_constructor, "{{ struct.name }}", {{ struct.fields|length }}, JS_CFUNC_constructor, 0);
+        const JSValue ctor = JS_NewCFunction2(ctx, js_{{ struct.name }}_constructor, "{{ struct.name }}", {{ struct.fields|length }}, JS_CFUNC_constructor, 0);
         JS_SetConstructor(ctx, ctor, proto);
 
         {% if struct.name == "Color" %}

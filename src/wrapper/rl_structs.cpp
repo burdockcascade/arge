@@ -6,7 +6,7 @@
 
 namespace RaylibBindings {
 
-    JSValue JS_NewVector2(JSContext *ctx, Vector2 data) {
+    JSValue JS_NewVector2(JSContext *ctx, const Vector2 data) {
         const JSValue obj = JS_NewObjectClass(ctx, js_Vector2_class_id);
         if (auto* s = static_cast<Vector2*>(js_malloc(ctx, sizeof(Vector2)))) {
             *s = data;
@@ -15,21 +15,21 @@ namespace RaylibBindings {
         return obj;
     }
 
-    static void js_Vector2_finalizer(JSRuntime *rt, JSValue val) noexcept {
+    static void js_Vector2_finalizer(JSRuntime *rt, const JSValue val) noexcept {
         if (auto* s = static_cast<Vector2*>(JS_GetOpaque(val, js_Vector2_class_id))) {
             js_free_rt(rt, s);
         }
     }
 
     // Getter for x
-    static JSValue js_Vector2_get_x(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Vector2_get_x(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Vector2*>(JS_GetOpaque2(ctx, this_val, js_Vector2_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->x));
     }
 
     // Setter for x
-    static JSValue js_Vector2_set_x(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Vector2_set_x(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Vector2*>(JS_GetOpaque2(ctx, this_val, js_Vector2_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -40,14 +40,14 @@ namespace RaylibBindings {
     }
 
     // Getter for y
-    static JSValue js_Vector2_get_y(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Vector2_get_y(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Vector2*>(JS_GetOpaque2(ctx, this_val, js_Vector2_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->y));
     }
 
     // Setter for y
-    static JSValue js_Vector2_set_y(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Vector2_set_y(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Vector2*>(JS_GetOpaque2(ctx, this_val, js_Vector2_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -59,7 +59,7 @@ namespace RaylibBindings {
 
 
     // Constructor for Vector2
-    static JSValue js_Vector2_constructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv) {
+    static JSValue js_Vector2_constructor(JSContext *ctx, JSValue new_target, int argc, JSValue *argv) {
         
         // Expect either 0 arguments (default constructor) or all fields provided
         if (argc != 0 && argc != 2) {
@@ -92,28 +92,28 @@ namespace RaylibBindings {
         JS_CGETSET_DEF("y", js_Vector2_get_y, js_Vector2_set_y),
     };
 
-    static void InitVector2Binding(JSContext *ctx, JSValue ns) {
+    static void InitVector2Binding(JSContext *ctx, const JSValue ns) {
         JSRuntime *rt = JS_GetRuntime(ctx);
         if (js_Vector2_class_id == 0) {
             JS_NewClassID(rt, &js_Vector2_class_id);
         }
 
-        JSClassDef def{ .class_name = "Vector2", .finalizer = js_Vector2_finalizer };
+        constexpr JSClassDef def{ .class_name = "Vector2", .finalizer = js_Vector2_finalizer };
         JS_NewClass(rt, js_Vector2_class_id, &def);
 
-        JSValue proto = JS_NewObject(ctx);
+        const JSValue proto = JS_NewObject(ctx);
         JS_SetPropertyFunctionList(ctx, proto, js_Vector2_proto_funcs, 2);
         JS_SetClassProto(ctx, js_Vector2_class_id, proto);
 
         // Create the constructor function and attach it to the namespace
-        JSValue ctor = JS_NewCFunction2(ctx, js_Vector2_constructor, "Vector2", 2, JS_CFUNC_constructor, 0);
+        const JSValue ctor = JS_NewCFunction2(ctx, js_Vector2_constructor, "Vector2", 2, JS_CFUNC_constructor, 0);
         JS_SetConstructor(ctx, ctor, proto);
 
 
         JS_SetPropertyStr(ctx, ns, "Vector2", ctor);
     }
 
-    JSValue JS_NewVector3(JSContext *ctx, Vector3 data) {
+    JSValue JS_NewVector3(JSContext *ctx, const Vector3 data) {
         const JSValue obj = JS_NewObjectClass(ctx, js_Vector3_class_id);
         if (auto* s = static_cast<Vector3*>(js_malloc(ctx, sizeof(Vector3)))) {
             *s = data;
@@ -122,21 +122,21 @@ namespace RaylibBindings {
         return obj;
     }
 
-    static void js_Vector3_finalizer(JSRuntime *rt, JSValue val) noexcept {
+    static void js_Vector3_finalizer(JSRuntime *rt, const JSValue val) noexcept {
         if (auto* s = static_cast<Vector3*>(JS_GetOpaque(val, js_Vector3_class_id))) {
             js_free_rt(rt, s);
         }
     }
 
     // Getter for x
-    static JSValue js_Vector3_get_x(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Vector3_get_x(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Vector3*>(JS_GetOpaque2(ctx, this_val, js_Vector3_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->x));
     }
 
     // Setter for x
-    static JSValue js_Vector3_set_x(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Vector3_set_x(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Vector3*>(JS_GetOpaque2(ctx, this_val, js_Vector3_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -147,14 +147,14 @@ namespace RaylibBindings {
     }
 
     // Getter for y
-    static JSValue js_Vector3_get_y(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Vector3_get_y(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Vector3*>(JS_GetOpaque2(ctx, this_val, js_Vector3_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->y));
     }
 
     // Setter for y
-    static JSValue js_Vector3_set_y(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Vector3_set_y(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Vector3*>(JS_GetOpaque2(ctx, this_val, js_Vector3_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -165,14 +165,14 @@ namespace RaylibBindings {
     }
 
     // Getter for z
-    static JSValue js_Vector3_get_z(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Vector3_get_z(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Vector3*>(JS_GetOpaque2(ctx, this_val, js_Vector3_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->z));
     }
 
     // Setter for z
-    static JSValue js_Vector3_set_z(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Vector3_set_z(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Vector3*>(JS_GetOpaque2(ctx, this_val, js_Vector3_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -184,7 +184,7 @@ namespace RaylibBindings {
 
 
     // Constructor for Vector3
-    static JSValue js_Vector3_constructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv) {
+    static JSValue js_Vector3_constructor(JSContext *ctx, JSValue new_target, int argc, JSValue *argv) {
         
         // Expect either 0 arguments (default constructor) or all fields provided
         if (argc != 0 && argc != 3) {
@@ -224,28 +224,28 @@ namespace RaylibBindings {
         JS_CGETSET_DEF("z", js_Vector3_get_z, js_Vector3_set_z),
     };
 
-    static void InitVector3Binding(JSContext *ctx, JSValue ns) {
+    static void InitVector3Binding(JSContext *ctx, const JSValue ns) {
         JSRuntime *rt = JS_GetRuntime(ctx);
         if (js_Vector3_class_id == 0) {
             JS_NewClassID(rt, &js_Vector3_class_id);
         }
 
-        JSClassDef def{ .class_name = "Vector3", .finalizer = js_Vector3_finalizer };
+        constexpr JSClassDef def{ .class_name = "Vector3", .finalizer = js_Vector3_finalizer };
         JS_NewClass(rt, js_Vector3_class_id, &def);
 
-        JSValue proto = JS_NewObject(ctx);
+        const JSValue proto = JS_NewObject(ctx);
         JS_SetPropertyFunctionList(ctx, proto, js_Vector3_proto_funcs, 3);
         JS_SetClassProto(ctx, js_Vector3_class_id, proto);
 
         // Create the constructor function and attach it to the namespace
-        JSValue ctor = JS_NewCFunction2(ctx, js_Vector3_constructor, "Vector3", 3, JS_CFUNC_constructor, 0);
+        const JSValue ctor = JS_NewCFunction2(ctx, js_Vector3_constructor, "Vector3", 3, JS_CFUNC_constructor, 0);
         JS_SetConstructor(ctx, ctor, proto);
 
 
         JS_SetPropertyStr(ctx, ns, "Vector3", ctor);
     }
 
-    JSValue JS_NewVector4(JSContext *ctx, Vector4 data) {
+    JSValue JS_NewVector4(JSContext *ctx, const Vector4 data) {
         const JSValue obj = JS_NewObjectClass(ctx, js_Vector4_class_id);
         if (auto* s = static_cast<Vector4*>(js_malloc(ctx, sizeof(Vector4)))) {
             *s = data;
@@ -254,21 +254,21 @@ namespace RaylibBindings {
         return obj;
     }
 
-    static void js_Vector4_finalizer(JSRuntime *rt, JSValue val) noexcept {
+    static void js_Vector4_finalizer(JSRuntime *rt, const JSValue val) noexcept {
         if (auto* s = static_cast<Vector4*>(JS_GetOpaque(val, js_Vector4_class_id))) {
             js_free_rt(rt, s);
         }
     }
 
     // Getter for x
-    static JSValue js_Vector4_get_x(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Vector4_get_x(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Vector4*>(JS_GetOpaque2(ctx, this_val, js_Vector4_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->x));
     }
 
     // Setter for x
-    static JSValue js_Vector4_set_x(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Vector4_set_x(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Vector4*>(JS_GetOpaque2(ctx, this_val, js_Vector4_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -279,14 +279,14 @@ namespace RaylibBindings {
     }
 
     // Getter for y
-    static JSValue js_Vector4_get_y(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Vector4_get_y(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Vector4*>(JS_GetOpaque2(ctx, this_val, js_Vector4_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->y));
     }
 
     // Setter for y
-    static JSValue js_Vector4_set_y(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Vector4_set_y(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Vector4*>(JS_GetOpaque2(ctx, this_val, js_Vector4_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -297,14 +297,14 @@ namespace RaylibBindings {
     }
 
     // Getter for z
-    static JSValue js_Vector4_get_z(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Vector4_get_z(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Vector4*>(JS_GetOpaque2(ctx, this_val, js_Vector4_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->z));
     }
 
     // Setter for z
-    static JSValue js_Vector4_set_z(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Vector4_set_z(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Vector4*>(JS_GetOpaque2(ctx, this_val, js_Vector4_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -315,14 +315,14 @@ namespace RaylibBindings {
     }
 
     // Getter for w
-    static JSValue js_Vector4_get_w(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Vector4_get_w(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Vector4*>(JS_GetOpaque2(ctx, this_val, js_Vector4_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->w));
     }
 
     // Setter for w
-    static JSValue js_Vector4_set_w(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Vector4_set_w(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Vector4*>(JS_GetOpaque2(ctx, this_val, js_Vector4_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -334,7 +334,7 @@ namespace RaylibBindings {
 
 
     // Constructor for Vector4
-    static JSValue js_Vector4_constructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv) {
+    static JSValue js_Vector4_constructor(JSContext *ctx, JSValue new_target, int argc, JSValue *argv) {
         
         // Expect either 0 arguments (default constructor) or all fields provided
         if (argc != 0 && argc != 4) {
@@ -381,28 +381,28 @@ namespace RaylibBindings {
         JS_CGETSET_DEF("w", js_Vector4_get_w, js_Vector4_set_w),
     };
 
-    static void InitVector4Binding(JSContext *ctx, JSValue ns) {
+    static void InitVector4Binding(JSContext *ctx, const JSValue ns) {
         JSRuntime *rt = JS_GetRuntime(ctx);
         if (js_Vector4_class_id == 0) {
             JS_NewClassID(rt, &js_Vector4_class_id);
         }
 
-        JSClassDef def{ .class_name = "Vector4", .finalizer = js_Vector4_finalizer };
+        constexpr JSClassDef def{ .class_name = "Vector4", .finalizer = js_Vector4_finalizer };
         JS_NewClass(rt, js_Vector4_class_id, &def);
 
-        JSValue proto = JS_NewObject(ctx);
+        const JSValue proto = JS_NewObject(ctx);
         JS_SetPropertyFunctionList(ctx, proto, js_Vector4_proto_funcs, 4);
         JS_SetClassProto(ctx, js_Vector4_class_id, proto);
 
         // Create the constructor function and attach it to the namespace
-        JSValue ctor = JS_NewCFunction2(ctx, js_Vector4_constructor, "Vector4", 4, JS_CFUNC_constructor, 0);
+        const JSValue ctor = JS_NewCFunction2(ctx, js_Vector4_constructor, "Vector4", 4, JS_CFUNC_constructor, 0);
         JS_SetConstructor(ctx, ctor, proto);
 
 
         JS_SetPropertyStr(ctx, ns, "Vector4", ctor);
     }
 
-    JSValue JS_NewMatrix(JSContext *ctx, Matrix data) {
+    JSValue JS_NewMatrix(JSContext *ctx, const Matrix data) {
         const JSValue obj = JS_NewObjectClass(ctx, js_Matrix_class_id);
         if (auto* s = static_cast<Matrix*>(js_malloc(ctx, sizeof(Matrix)))) {
             *s = data;
@@ -411,21 +411,21 @@ namespace RaylibBindings {
         return obj;
     }
 
-    static void js_Matrix_finalizer(JSRuntime *rt, JSValue val) noexcept {
+    static void js_Matrix_finalizer(JSRuntime *rt, const JSValue val) noexcept {
         if (auto* s = static_cast<Matrix*>(JS_GetOpaque(val, js_Matrix_class_id))) {
             js_free_rt(rt, s);
         }
     }
 
     // Getter for m0
-    static JSValue js_Matrix_get_m0(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Matrix_get_m0(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->m0));
     }
 
     // Setter for m0
-    static JSValue js_Matrix_set_m0(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Matrix_set_m0(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -436,14 +436,14 @@ namespace RaylibBindings {
     }
 
     // Getter for m4
-    static JSValue js_Matrix_get_m4(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Matrix_get_m4(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->m4));
     }
 
     // Setter for m4
-    static JSValue js_Matrix_set_m4(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Matrix_set_m4(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -454,14 +454,14 @@ namespace RaylibBindings {
     }
 
     // Getter for m8
-    static JSValue js_Matrix_get_m8(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Matrix_get_m8(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->m8));
     }
 
     // Setter for m8
-    static JSValue js_Matrix_set_m8(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Matrix_set_m8(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -472,14 +472,14 @@ namespace RaylibBindings {
     }
 
     // Getter for m12
-    static JSValue js_Matrix_get_m12(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Matrix_get_m12(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->m12));
     }
 
     // Setter for m12
-    static JSValue js_Matrix_set_m12(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Matrix_set_m12(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -490,14 +490,14 @@ namespace RaylibBindings {
     }
 
     // Getter for m1
-    static JSValue js_Matrix_get_m1(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Matrix_get_m1(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->m1));
     }
 
     // Setter for m1
-    static JSValue js_Matrix_set_m1(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Matrix_set_m1(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -508,14 +508,14 @@ namespace RaylibBindings {
     }
 
     // Getter for m5
-    static JSValue js_Matrix_get_m5(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Matrix_get_m5(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->m5));
     }
 
     // Setter for m5
-    static JSValue js_Matrix_set_m5(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Matrix_set_m5(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -526,14 +526,14 @@ namespace RaylibBindings {
     }
 
     // Getter for m9
-    static JSValue js_Matrix_get_m9(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Matrix_get_m9(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->m9));
     }
 
     // Setter for m9
-    static JSValue js_Matrix_set_m9(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Matrix_set_m9(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -544,14 +544,14 @@ namespace RaylibBindings {
     }
 
     // Getter for m13
-    static JSValue js_Matrix_get_m13(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Matrix_get_m13(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->m13));
     }
 
     // Setter for m13
-    static JSValue js_Matrix_set_m13(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Matrix_set_m13(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -562,14 +562,14 @@ namespace RaylibBindings {
     }
 
     // Getter for m2
-    static JSValue js_Matrix_get_m2(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Matrix_get_m2(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->m2));
     }
 
     // Setter for m2
-    static JSValue js_Matrix_set_m2(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Matrix_set_m2(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -580,14 +580,14 @@ namespace RaylibBindings {
     }
 
     // Getter for m6
-    static JSValue js_Matrix_get_m6(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Matrix_get_m6(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->m6));
     }
 
     // Setter for m6
-    static JSValue js_Matrix_set_m6(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Matrix_set_m6(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -598,14 +598,14 @@ namespace RaylibBindings {
     }
 
     // Getter for m10
-    static JSValue js_Matrix_get_m10(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Matrix_get_m10(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->m10));
     }
 
     // Setter for m10
-    static JSValue js_Matrix_set_m10(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Matrix_set_m10(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -616,14 +616,14 @@ namespace RaylibBindings {
     }
 
     // Getter for m14
-    static JSValue js_Matrix_get_m14(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Matrix_get_m14(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->m14));
     }
 
     // Setter for m14
-    static JSValue js_Matrix_set_m14(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Matrix_set_m14(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -634,14 +634,14 @@ namespace RaylibBindings {
     }
 
     // Getter for m3
-    static JSValue js_Matrix_get_m3(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Matrix_get_m3(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->m3));
     }
 
     // Setter for m3
-    static JSValue js_Matrix_set_m3(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Matrix_set_m3(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -652,14 +652,14 @@ namespace RaylibBindings {
     }
 
     // Getter for m7
-    static JSValue js_Matrix_get_m7(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Matrix_get_m7(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->m7));
     }
 
     // Setter for m7
-    static JSValue js_Matrix_set_m7(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Matrix_set_m7(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -670,14 +670,14 @@ namespace RaylibBindings {
     }
 
     // Getter for m11
-    static JSValue js_Matrix_get_m11(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Matrix_get_m11(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->m11));
     }
 
     // Setter for m11
-    static JSValue js_Matrix_set_m11(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Matrix_set_m11(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -688,14 +688,14 @@ namespace RaylibBindings {
     }
 
     // Getter for m15
-    static JSValue js_Matrix_get_m15(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Matrix_get_m15(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->m15));
     }
 
     // Setter for m15
-    static JSValue js_Matrix_set_m15(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Matrix_set_m15(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Matrix*>(JS_GetOpaque2(ctx, this_val, js_Matrix_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -707,7 +707,7 @@ namespace RaylibBindings {
 
 
     // Constructor for Matrix
-    static JSValue js_Matrix_constructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv) {
+    static JSValue js_Matrix_constructor(JSContext *ctx, JSValue new_target, int argc, JSValue *argv) {
         
         // Expect either 0 arguments (default constructor) or all fields provided
         if (argc != 0 && argc != 16) {
@@ -838,28 +838,28 @@ namespace RaylibBindings {
         JS_CGETSET_DEF("m15", js_Matrix_get_m15, js_Matrix_set_m15),
     };
 
-    static void InitMatrixBinding(JSContext *ctx, JSValue ns) {
+    static void InitMatrixBinding(JSContext *ctx, const JSValue ns) {
         JSRuntime *rt = JS_GetRuntime(ctx);
         if (js_Matrix_class_id == 0) {
             JS_NewClassID(rt, &js_Matrix_class_id);
         }
 
-        JSClassDef def{ .class_name = "Matrix", .finalizer = js_Matrix_finalizer };
+        constexpr JSClassDef def{ .class_name = "Matrix", .finalizer = js_Matrix_finalizer };
         JS_NewClass(rt, js_Matrix_class_id, &def);
 
-        JSValue proto = JS_NewObject(ctx);
+        const JSValue proto = JS_NewObject(ctx);
         JS_SetPropertyFunctionList(ctx, proto, js_Matrix_proto_funcs, 16);
         JS_SetClassProto(ctx, js_Matrix_class_id, proto);
 
         // Create the constructor function and attach it to the namespace
-        JSValue ctor = JS_NewCFunction2(ctx, js_Matrix_constructor, "Matrix", 16, JS_CFUNC_constructor, 0);
+        const JSValue ctor = JS_NewCFunction2(ctx, js_Matrix_constructor, "Matrix", 16, JS_CFUNC_constructor, 0);
         JS_SetConstructor(ctx, ctor, proto);
 
 
         JS_SetPropertyStr(ctx, ns, "Matrix", ctor);
     }
 
-    JSValue JS_NewColor(JSContext *ctx, Color data) {
+    JSValue JS_NewColor(JSContext *ctx, const Color data) {
         const JSValue obj = JS_NewObjectClass(ctx, js_Color_class_id);
         if (auto* s = static_cast<Color*>(js_malloc(ctx, sizeof(Color)))) {
             *s = data;
@@ -868,21 +868,21 @@ namespace RaylibBindings {
         return obj;
     }
 
-    static void js_Color_finalizer(JSRuntime *rt, JSValue val) noexcept {
+    static void js_Color_finalizer(JSRuntime *rt, const JSValue val) noexcept {
         if (auto* s = static_cast<Color*>(JS_GetOpaque(val, js_Color_class_id))) {
             js_free_rt(rt, s);
         }
     }
 
     // Getter for r
-    static JSValue js_Color_get_r(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Color_get_r(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Color*>(JS_GetOpaque2(ctx, this_val, js_Color_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewInt32(ctx, static_cast<int32_t>(s->r));
     }
 
     // Setter for r
-    static JSValue js_Color_set_r(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Color_set_r(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Color*>(JS_GetOpaque2(ctx, this_val, js_Color_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -893,14 +893,14 @@ namespace RaylibBindings {
     }
 
     // Getter for g
-    static JSValue js_Color_get_g(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Color_get_g(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Color*>(JS_GetOpaque2(ctx, this_val, js_Color_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewInt32(ctx, static_cast<int32_t>(s->g));
     }
 
     // Setter for g
-    static JSValue js_Color_set_g(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Color_set_g(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Color*>(JS_GetOpaque2(ctx, this_val, js_Color_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -911,14 +911,14 @@ namespace RaylibBindings {
     }
 
     // Getter for b
-    static JSValue js_Color_get_b(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Color_get_b(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Color*>(JS_GetOpaque2(ctx, this_val, js_Color_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewInt32(ctx, static_cast<int32_t>(s->b));
     }
 
     // Setter for b
-    static JSValue js_Color_set_b(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Color_set_b(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Color*>(JS_GetOpaque2(ctx, this_val, js_Color_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -929,14 +929,14 @@ namespace RaylibBindings {
     }
 
     // Getter for a
-    static JSValue js_Color_get_a(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Color_get_a(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Color*>(JS_GetOpaque2(ctx, this_val, js_Color_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewInt32(ctx, static_cast<int32_t>(s->a));
     }
 
     // Setter for a
-    static JSValue js_Color_set_a(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Color_set_a(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Color*>(JS_GetOpaque2(ctx, this_val, js_Color_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -948,7 +948,7 @@ namespace RaylibBindings {
 
 
     // Constructor for Color
-    static JSValue js_Color_constructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv) {
+    static JSValue js_Color_constructor(JSContext *ctx, JSValue new_target, int argc, JSValue *argv) {
         
         // Expect either 0 arguments (default constructor) or all fields provided
         if (argc != 0 && argc != 4) {
@@ -995,21 +995,21 @@ namespace RaylibBindings {
         JS_CGETSET_DEF("a", js_Color_get_a, js_Color_set_a),
     };
 
-    static void InitColorBinding(JSContext *ctx, JSValue ns) {
+    static void InitColorBinding(JSContext *ctx, const JSValue ns) {
         JSRuntime *rt = JS_GetRuntime(ctx);
         if (js_Color_class_id == 0) {
             JS_NewClassID(rt, &js_Color_class_id);
         }
 
-        JSClassDef def{ .class_name = "Color", .finalizer = js_Color_finalizer };
+        constexpr JSClassDef def{ .class_name = "Color", .finalizer = js_Color_finalizer };
         JS_NewClass(rt, js_Color_class_id, &def);
 
-        JSValue proto = JS_NewObject(ctx);
+        const JSValue proto = JS_NewObject(ctx);
         JS_SetPropertyFunctionList(ctx, proto, js_Color_proto_funcs, 4);
         JS_SetClassProto(ctx, js_Color_class_id, proto);
 
         // Create the constructor function and attach it to the namespace
-        JSValue ctor = JS_NewCFunction2(ctx, js_Color_constructor, "Color", 4, JS_CFUNC_constructor, 0);
+        const JSValue ctor = JS_NewCFunction2(ctx, js_Color_constructor, "Color", 4, JS_CFUNC_constructor, 0);
         JS_SetConstructor(ctx, ctor, proto);
 
         JS_SetPropertyStr(ctx, ctor, "LIGHTGRAY", JS_NewColor(ctx, Color{ 200, 200, 200, 255 }));
@@ -1042,7 +1042,7 @@ namespace RaylibBindings {
         JS_SetPropertyStr(ctx, ns, "Color", ctor);
     }
 
-    JSValue JS_NewRectangle(JSContext *ctx, Rectangle data) {
+    JSValue JS_NewRectangle(JSContext *ctx, const Rectangle data) {
         const JSValue obj = JS_NewObjectClass(ctx, js_Rectangle_class_id);
         if (auto* s = static_cast<Rectangle*>(js_malloc(ctx, sizeof(Rectangle)))) {
             *s = data;
@@ -1051,21 +1051,21 @@ namespace RaylibBindings {
         return obj;
     }
 
-    static void js_Rectangle_finalizer(JSRuntime *rt, JSValue val) noexcept {
+    static void js_Rectangle_finalizer(JSRuntime *rt, const JSValue val) noexcept {
         if (auto* s = static_cast<Rectangle*>(JS_GetOpaque(val, js_Rectangle_class_id))) {
             js_free_rt(rt, s);
         }
     }
 
     // Getter for x
-    static JSValue js_Rectangle_get_x(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Rectangle_get_x(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Rectangle*>(JS_GetOpaque2(ctx, this_val, js_Rectangle_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->x));
     }
 
     // Setter for x
-    static JSValue js_Rectangle_set_x(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Rectangle_set_x(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Rectangle*>(JS_GetOpaque2(ctx, this_val, js_Rectangle_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -1076,14 +1076,14 @@ namespace RaylibBindings {
     }
 
     // Getter for y
-    static JSValue js_Rectangle_get_y(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Rectangle_get_y(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Rectangle*>(JS_GetOpaque2(ctx, this_val, js_Rectangle_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->y));
     }
 
     // Setter for y
-    static JSValue js_Rectangle_set_y(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Rectangle_set_y(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Rectangle*>(JS_GetOpaque2(ctx, this_val, js_Rectangle_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -1094,14 +1094,14 @@ namespace RaylibBindings {
     }
 
     // Getter for width
-    static JSValue js_Rectangle_get_width(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Rectangle_get_width(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Rectangle*>(JS_GetOpaque2(ctx, this_val, js_Rectangle_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->width));
     }
 
     // Setter for width
-    static JSValue js_Rectangle_set_width(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Rectangle_set_width(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Rectangle*>(JS_GetOpaque2(ctx, this_val, js_Rectangle_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -1112,14 +1112,14 @@ namespace RaylibBindings {
     }
 
     // Getter for height
-    static JSValue js_Rectangle_get_height(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Rectangle_get_height(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Rectangle*>(JS_GetOpaque2(ctx, this_val, js_Rectangle_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewFloat64(ctx, static_cast<double>(s->height));
     }
 
     // Setter for height
-    static JSValue js_Rectangle_set_height(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Rectangle_set_height(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Rectangle*>(JS_GetOpaque2(ctx, this_val, js_Rectangle_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -1131,7 +1131,7 @@ namespace RaylibBindings {
 
 
     // Constructor for Rectangle
-    static JSValue js_Rectangle_constructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv) {
+    static JSValue js_Rectangle_constructor(JSContext *ctx, JSValue new_target, int argc, JSValue *argv) {
         
         // Expect either 0 arguments (default constructor) or all fields provided
         if (argc != 0 && argc != 4) {
@@ -1178,28 +1178,28 @@ namespace RaylibBindings {
         JS_CGETSET_DEF("height", js_Rectangle_get_height, js_Rectangle_set_height),
     };
 
-    static void InitRectangleBinding(JSContext *ctx, JSValue ns) {
+    static void InitRectangleBinding(JSContext *ctx, const JSValue ns) {
         JSRuntime *rt = JS_GetRuntime(ctx);
         if (js_Rectangle_class_id == 0) {
             JS_NewClassID(rt, &js_Rectangle_class_id);
         }
 
-        JSClassDef def{ .class_name = "Rectangle", .finalizer = js_Rectangle_finalizer };
+        constexpr JSClassDef def{ .class_name = "Rectangle", .finalizer = js_Rectangle_finalizer };
         JS_NewClass(rt, js_Rectangle_class_id, &def);
 
-        JSValue proto = JS_NewObject(ctx);
+        const JSValue proto = JS_NewObject(ctx);
         JS_SetPropertyFunctionList(ctx, proto, js_Rectangle_proto_funcs, 4);
         JS_SetClassProto(ctx, js_Rectangle_class_id, proto);
 
         // Create the constructor function and attach it to the namespace
-        JSValue ctor = JS_NewCFunction2(ctx, js_Rectangle_constructor, "Rectangle", 4, JS_CFUNC_constructor, 0);
+        const JSValue ctor = JS_NewCFunction2(ctx, js_Rectangle_constructor, "Rectangle", 4, JS_CFUNC_constructor, 0);
         JS_SetConstructor(ctx, ctor, proto);
 
 
         JS_SetPropertyStr(ctx, ns, "Rectangle", ctor);
     }
 
-    JSValue JS_NewImage(JSContext *ctx, Image data) {
+    JSValue JS_NewImage(JSContext *ctx, const Image data) {
         const JSValue obj = JS_NewObjectClass(ctx, js_Image_class_id);
         if (auto* s = static_cast<Image*>(js_malloc(ctx, sizeof(Image)))) {
             *s = data;
@@ -1208,21 +1208,21 @@ namespace RaylibBindings {
         return obj;
     }
 
-    static void js_Image_finalizer(JSRuntime *rt, JSValue val) noexcept {
+    static void js_Image_finalizer(JSRuntime *rt, const JSValue val) noexcept {
         if (auto* s = static_cast<Image*>(JS_GetOpaque(val, js_Image_class_id))) {
             js_free_rt(rt, s);
         }
     }
 
     // Getter for data
-    static JSValue js_Image_get_data(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Image_get_data(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Image*>(JS_GetOpaque2(ctx, this_val, js_Image_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewInt64(ctx, reinterpret_cast<int64_t>(s->data));
     }
 
     // Setter for data
-    static JSValue js_Image_set_data(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Image_set_data(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Image*>(JS_GetOpaque2(ctx, this_val, js_Image_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -1233,14 +1233,14 @@ namespace RaylibBindings {
     }
 
     // Getter for width
-    static JSValue js_Image_get_width(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Image_get_width(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Image*>(JS_GetOpaque2(ctx, this_val, js_Image_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewInt32(ctx, static_cast<int32_t>(s->width));
     }
 
     // Setter for width
-    static JSValue js_Image_set_width(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Image_set_width(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Image*>(JS_GetOpaque2(ctx, this_val, js_Image_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -1251,14 +1251,14 @@ namespace RaylibBindings {
     }
 
     // Getter for height
-    static JSValue js_Image_get_height(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Image_get_height(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Image*>(JS_GetOpaque2(ctx, this_val, js_Image_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewInt32(ctx, static_cast<int32_t>(s->height));
     }
 
     // Setter for height
-    static JSValue js_Image_set_height(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Image_set_height(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Image*>(JS_GetOpaque2(ctx, this_val, js_Image_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -1269,14 +1269,14 @@ namespace RaylibBindings {
     }
 
     // Getter for mipmaps
-    static JSValue js_Image_get_mipmaps(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Image_get_mipmaps(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Image*>(JS_GetOpaque2(ctx, this_val, js_Image_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewInt32(ctx, static_cast<int32_t>(s->mipmaps));
     }
 
     // Setter for mipmaps
-    static JSValue js_Image_set_mipmaps(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Image_set_mipmaps(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Image*>(JS_GetOpaque2(ctx, this_val, js_Image_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -1287,14 +1287,14 @@ namespace RaylibBindings {
     }
 
     // Getter for format
-    static JSValue js_Image_get_format(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Image_get_format(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Image*>(JS_GetOpaque2(ctx, this_val, js_Image_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewInt32(ctx, static_cast<int32_t>(s->format));
     }
 
     // Setter for format
-    static JSValue js_Image_set_format(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Image_set_format(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Image*>(JS_GetOpaque2(ctx, this_val, js_Image_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -1306,7 +1306,7 @@ namespace RaylibBindings {
 
 
     // Constructor for Image
-    static JSValue js_Image_constructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv) {
+    static JSValue js_Image_constructor(JSContext *ctx, JSValue new_target, int argc, JSValue *argv) {
         
         // Expect either 0 arguments (default constructor) or all fields provided
         if (argc != 0 && argc != 5) {
@@ -1360,28 +1360,28 @@ namespace RaylibBindings {
         JS_CGETSET_DEF("format", js_Image_get_format, js_Image_set_format),
     };
 
-    static void InitImageBinding(JSContext *ctx, JSValue ns) {
+    static void InitImageBinding(JSContext *ctx, const JSValue ns) {
         JSRuntime *rt = JS_GetRuntime(ctx);
         if (js_Image_class_id == 0) {
             JS_NewClassID(rt, &js_Image_class_id);
         }
 
-        JSClassDef def{ .class_name = "Image", .finalizer = js_Image_finalizer };
+        constexpr JSClassDef def{ .class_name = "Image", .finalizer = js_Image_finalizer };
         JS_NewClass(rt, js_Image_class_id, &def);
 
-        JSValue proto = JS_NewObject(ctx);
+        const JSValue proto = JS_NewObject(ctx);
         JS_SetPropertyFunctionList(ctx, proto, js_Image_proto_funcs, 5);
         JS_SetClassProto(ctx, js_Image_class_id, proto);
 
         // Create the constructor function and attach it to the namespace
-        JSValue ctor = JS_NewCFunction2(ctx, js_Image_constructor, "Image", 5, JS_CFUNC_constructor, 0);
+        const JSValue ctor = JS_NewCFunction2(ctx, js_Image_constructor, "Image", 5, JS_CFUNC_constructor, 0);
         JS_SetConstructor(ctx, ctor, proto);
 
 
         JS_SetPropertyStr(ctx, ns, "Image", ctor);
     }
 
-    JSValue JS_NewTexture(JSContext *ctx, Texture data) {
+    JSValue JS_NewTexture(JSContext *ctx, const Texture data) {
         const JSValue obj = JS_NewObjectClass(ctx, js_Texture_class_id);
         if (auto* s = static_cast<Texture*>(js_malloc(ctx, sizeof(Texture)))) {
             *s = data;
@@ -1390,21 +1390,21 @@ namespace RaylibBindings {
         return obj;
     }
 
-    static void js_Texture_finalizer(JSRuntime *rt, JSValue val) noexcept {
+    static void js_Texture_finalizer(JSRuntime *rt, const JSValue val) noexcept {
         if (auto* s = static_cast<Texture*>(JS_GetOpaque(val, js_Texture_class_id))) {
             js_free_rt(rt, s);
         }
     }
 
     // Getter for id
-    static JSValue js_Texture_get_id(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Texture_get_id(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Texture*>(JS_GetOpaque2(ctx, this_val, js_Texture_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewInt64(ctx, static_cast<int64_t>(s->id));
     }
 
     // Setter for id
-    static JSValue js_Texture_set_id(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Texture_set_id(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Texture*>(JS_GetOpaque2(ctx, this_val, js_Texture_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -1415,14 +1415,14 @@ namespace RaylibBindings {
     }
 
     // Getter for width
-    static JSValue js_Texture_get_width(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Texture_get_width(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Texture*>(JS_GetOpaque2(ctx, this_val, js_Texture_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewInt32(ctx, static_cast<int32_t>(s->width));
     }
 
     // Setter for width
-    static JSValue js_Texture_set_width(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Texture_set_width(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Texture*>(JS_GetOpaque2(ctx, this_val, js_Texture_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -1433,14 +1433,14 @@ namespace RaylibBindings {
     }
 
     // Getter for height
-    static JSValue js_Texture_get_height(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Texture_get_height(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Texture*>(JS_GetOpaque2(ctx, this_val, js_Texture_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewInt32(ctx, static_cast<int32_t>(s->height));
     }
 
     // Setter for height
-    static JSValue js_Texture_set_height(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Texture_set_height(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Texture*>(JS_GetOpaque2(ctx, this_val, js_Texture_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -1451,14 +1451,14 @@ namespace RaylibBindings {
     }
 
     // Getter for mipmaps
-    static JSValue js_Texture_get_mipmaps(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Texture_get_mipmaps(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Texture*>(JS_GetOpaque2(ctx, this_val, js_Texture_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewInt32(ctx, static_cast<int32_t>(s->mipmaps));
     }
 
     // Setter for mipmaps
-    static JSValue js_Texture_set_mipmaps(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Texture_set_mipmaps(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Texture*>(JS_GetOpaque2(ctx, this_val, js_Texture_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -1469,14 +1469,14 @@ namespace RaylibBindings {
     }
 
     // Getter for format
-    static JSValue js_Texture_get_format(JSContext *ctx, JSValueConst this_val) noexcept {
+    static JSValue js_Texture_get_format(JSContext *ctx, const JSValue this_val) noexcept {
         const auto* s = static_cast<Texture*>(JS_GetOpaque2(ctx, this_val, js_Texture_class_id));
         if (!s) return JS_EXCEPTION;
         return JS_NewInt32(ctx, static_cast<int32_t>(s->format));
     }
 
     // Setter for format
-    static JSValue js_Texture_set_format(JSContext *ctx, JSValueConst this_val, JSValueConst val) noexcept {
+    static JSValue js_Texture_set_format(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
         auto s = static_cast<Texture*>(JS_GetOpaque2(ctx, this_val, js_Texture_class_id));
         if (!s) return JS_EXCEPTION;
 
@@ -1488,7 +1488,7 @@ namespace RaylibBindings {
 
 
     // Constructor for Texture
-    static JSValue js_Texture_constructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv) {
+    static JSValue js_Texture_constructor(JSContext *ctx, JSValue new_target, int argc, JSValue *argv) {
         
         // Expect either 0 arguments (default constructor) or all fields provided
         if (argc != 0 && argc != 5) {
@@ -1542,21 +1542,21 @@ namespace RaylibBindings {
         JS_CGETSET_DEF("format", js_Texture_get_format, js_Texture_set_format),
     };
 
-    static void InitTextureBinding(JSContext *ctx, JSValue ns) {
+    static void InitTextureBinding(JSContext *ctx, const JSValue ns) {
         JSRuntime *rt = JS_GetRuntime(ctx);
         if (js_Texture_class_id == 0) {
             JS_NewClassID(rt, &js_Texture_class_id);
         }
 
-        JSClassDef def{ .class_name = "Texture", .finalizer = js_Texture_finalizer };
+        constexpr JSClassDef def{ .class_name = "Texture", .finalizer = js_Texture_finalizer };
         JS_NewClass(rt, js_Texture_class_id, &def);
 
-        JSValue proto = JS_NewObject(ctx);
+        const JSValue proto = JS_NewObject(ctx);
         JS_SetPropertyFunctionList(ctx, proto, js_Texture_proto_funcs, 5);
         JS_SetClassProto(ctx, js_Texture_class_id, proto);
 
         // Create the constructor function and attach it to the namespace
-        JSValue ctor = JS_NewCFunction2(ctx, js_Texture_constructor, "Texture", 5, JS_CFUNC_constructor, 0);
+        const JSValue ctor = JS_NewCFunction2(ctx, js_Texture_constructor, "Texture", 5, JS_CFUNC_constructor, 0);
         JS_SetConstructor(ctx, ctor, proto);
 
 
