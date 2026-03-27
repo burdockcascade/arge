@@ -1,5 +1,6 @@
 module;
 #include <quickjs.h>
+#include <raylib.h>
 
 export module App;
 
@@ -11,12 +12,11 @@ import <sstream>;
 import <ranges>;
 import ScriptEngine;
 import API;
-import Raylib;
 
 static constexpr int DEFAULT_WINDOW_HEIGHT = 600;
 static constexpr int DEFAULT_WINDOW_WIDTH = 800;
 static constexpr int DEFAULT_TARGET_FPS = 60;
-static constexpr Raylib::Color DEFAULT_BACKGROUND_COLOR = Raylib::Color { 0, 0, 0, 255 };
+static constexpr Color DEFAULT_BACKGROUND_COLOR = Color { 0, 0, 0, 255 };
 static constexpr std::string DEFAULT_WINDOW_TITLE = "untitled";
 
 export class App {
@@ -42,7 +42,7 @@ public:
     int windowWidth = DEFAULT_WINDOW_WIDTH;
     int windowHeight = DEFAULT_WINDOW_HEIGHT;
     int targetFPS = DEFAULT_TARGET_FPS;
-    Raylib::Color backgroundColor = DEFAULT_BACKGROUND_COLOR;
+    Color backgroundColor = DEFAULT_BACKGROUND_COLOR;
     std::string windowTitle = DEFAULT_WINDOW_TITLE;
 
 private:
@@ -90,8 +90,8 @@ App::~App() {
     qjs->FreeAtom(updateAtom);
     qjs->FreeAtom(drawAtom);
 
-    if (Raylib::IsWindowReady()) {
-        Raylib::CloseWindow();
+    if (IsWindowReady()) {
+        CloseWindow();
     }
 }
 
@@ -105,8 +105,8 @@ bool App::Initialize() {
 
     if (!qjs->EvalModule(code, scriptPath)) return false;
 
-    Raylib::InitWindow(windowWidth, windowHeight, windowTitle.c_str());
-    Raylib::SetTargetFPS(targetFPS);
+    InitWindow(windowWidth, windowHeight, windowTitle.c_str());
+    SetTargetFPS(targetFPS);
 
     JSValue args[] = { JS_DupValue(qjs->GetContext(), jsSystemContextObj) };
     qjs->FreeValue(qjs->CallMethod(appInstance, initAtom, 1, args));
@@ -117,13 +117,13 @@ bool App::Initialize() {
 }
 
 void App::Run() const {
-    while (!Raylib::WindowShouldClose() && isRunning) {
+    while (!WindowShouldClose() && isRunning) {
         ProcessFrame();
     }
 }
 
 void App::Shutdown() {
-    Raylib::CloseWindow();
+    CloseWindow();
 }
 
 void App::BindAPI() {
@@ -151,20 +151,20 @@ void App::ProcessFrame() const {
     }
 
     // Update
-    JSValue uArgs[] = { JS_NewFloat64(ctx, Raylib::GetFrameTime()), JS_DupValue(ctx, jsSystemContextObj) };
+    JSValue uArgs[] = { JS_NewFloat64(ctx, GetFrameTime()), JS_DupValue(ctx, jsSystemContextObj) };
     qjs->FreeValue(qjs->CallMethod(appInstance, updateAtom, 2, uArgs));
     qjs->FreeValue(uArgs[0]);
     qjs->FreeValue(uArgs[1]);
 
     // Draw
-    Raylib::BeginDrawing();
-    Raylib::ClearBackground(backgroundColor);
+    BeginDrawing();
+    ClearBackground(backgroundColor);
 
     JSValue dArgs[] = { JS_DupValue(ctx, jsDrawContextObj) };
     qjs->FreeValue(qjs->CallMethod(appInstance, drawAtom, 1, dArgs));
     qjs->FreeValue(dArgs[0]);
 
-    Raylib::EndDrawing();
+    EndDrawing();
 }
 
 JSValue App::js_app_run(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
@@ -186,7 +186,7 @@ JSValue App::js_app_constructor(JSContext *ctx, JSValueConst new_target, int arg
             app->GetEngine().GetPropertyString(argv[0], "title", app->windowTitle);
         }
     } else {
-        Raylib::TraceLog(Raylib::LOG_ERROR, "App constructor called but no App instance found");
+        TraceLog(LOG_ERROR, "App constructor called but no App instance found");
     }
     return obj;
 }
