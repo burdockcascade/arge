@@ -4,10 +4,9 @@
 #include <string>
 #include "../wrapper/rl_bindings.hpp"
 
-
-static constexpr int DEFAULT_FONT_SIZE = 24;
-
 namespace API {
+
+    static constexpr int DEFAULT_FONT_SIZE = 24;
 
     struct FunctionDef {
         std::string_view name{};
