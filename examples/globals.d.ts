@@ -61,6 +61,7 @@ interface Canvas {
     drawRect(position: Vector2, size: Vector2, color: Color, options?: object): void;
     drawTexture(texture: Texture2D, position: Vector2): void;
     drawText(text: string, position: Vector2, fontSize: number, color: Color): void;
+    drawCircle(position: Vector2, radius: number, color: Color): void;
 }
 
 declare class Texture2D {
