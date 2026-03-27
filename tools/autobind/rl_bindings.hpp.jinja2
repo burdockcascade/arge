@@ -17,7 +17,6 @@ namespace RaylibBindings {
 
     {% for struct in structs %}
     JSValue JS_New{{ struct.name }}(JSContext *ctx, {{ struct.name }} data);
-    void Init{{ struct.name }}Binding(JSContext *ctx, JSValue ns);
     {% endfor %}
 
     {% for alias in aliases %}

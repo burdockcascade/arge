@@ -19,21 +19,13 @@ namespace RaylibBindings {
     inline JSClassID js_Texture2D_class_id;
 
     JSValue JS_NewVector2(JSContext *ctx, Vector2 data);
-    void InitVector2Binding(JSContext *ctx, JSValue ns);
     JSValue JS_NewVector3(JSContext *ctx, Vector3 data);
-    void InitVector3Binding(JSContext *ctx, JSValue ns);
     JSValue JS_NewVector4(JSContext *ctx, Vector4 data);
-    void InitVector4Binding(JSContext *ctx, JSValue ns);
     JSValue JS_NewMatrix(JSContext *ctx, Matrix data);
-    void InitMatrixBinding(JSContext *ctx, JSValue ns);
     JSValue JS_NewColor(JSContext *ctx, Color data);
-    void InitColorBinding(JSContext *ctx, JSValue ns);
     JSValue JS_NewRectangle(JSContext *ctx, Rectangle data);
-    void InitRectangleBinding(JSContext *ctx, JSValue ns);
     JSValue JS_NewImage(JSContext *ctx, Image data);
-    void InitImageBinding(JSContext *ctx, JSValue ns);
     JSValue JS_NewTexture(JSContext *ctx, Texture data);
-    void InitTextureBinding(JSContext *ctx, JSValue ns);
 
     JSValue JS_NewTexture2D(JSContext *ctx, Texture data);
 
