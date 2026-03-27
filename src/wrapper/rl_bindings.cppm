@@ -2,6 +2,7 @@
 
 module;
 #include <quickjs.h>
+#include <raylib.h>
 
 export module RaylibBindings;
 import Raylib;
