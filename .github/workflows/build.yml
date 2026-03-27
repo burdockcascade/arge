@@ -1,49 +1,85 @@
 name: Build
-concurrency:
-  group: build
-  cancel-in-progress: false
+concurrency: build-${{ github.ref }}
 on:
-  pull_request:
-    branches:
-      - main
-      - master
   push:
     branches:
       - main
       - master
+
 jobs:
-  windows-build:
-    runs-on: windows-latest
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
     steps:
-      - uses: actions/checkout@v6
-      - uses: xmake-io/github-action-setup-xmake@v1
+      - uses: actions/checkout@v4
+
+      # 1. Install Xmake (Official Action)
+      - name: Setup Xmake
+        uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: latest
           package-cache: true
           actions-cache-key: ${{ runner.os }}-xmake-${{ hashFiles('xmake.lua') }}
-      - name: Build
-        run: xmake -y
-  windows-vs26-build:
-    runs-on: windows-2025-vs2026
-    steps:
-      - uses: actions/checkout@v6
-      - uses: xmake-io/github-action-setup-xmake@v1
+
+      # 2. Install Linux System Dependencies
+      # Raylib requires these OpenGL/Windowing headers to compile on Linux
+      - name: Install Linux Dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dev libxi-dev libxcursor-dev libxrandr-dev libxinerama-dev libx11-dev libwayland-dev libxkbcommon-dev
+
+      # 3. Cache Xmake Packages
+      # This caches downloaded libs (Raylib, spdlog) so you don't recompile them every time.
+      - name: Retrieve Cache
+        uses: actions/cache@v4
         with:
-          xmake-version: latest
-          package-cache: true
-          actions-cache-key: ${{ runner.os }}-xmake-${{ hashFiles('xmake.lua') }}
+          path: |
+            ~/.xmake
+            build/.deps
+          key: ${{ runner.os }}-xmake-${{ hashFiles('**/xmake.lua') }}
+          restore-keys: |
+            ${{ runner.os }}-xmake-
+
+      # 4. Configure Project
+      # -y auto-confirms package installation
+      - name: Configure (Windows)
+        if: runner.os == 'Windows'
+        run: xmake f --toolchain=msvc -y -m release
+
+      # 4. Configure Project
+      # -y auto-confirms package installation
+      - name: Configure (MacOS)
+        if: runner.os == 'macOS'
+        run: xmake f --toolchain=clang --cxx=clang++ --cc=clang --ld=clang++ -y -m release
+
+      # 4. Configure Project
+      # -y auto-confirms package installation
+      - name: Configure (Linux)
+        if: runner.os == 'Linux'
+        run: xmake f --toolchain=clang --cxx=clang++ --cc=clang --ld=clang++ -y -m release
+
+      # 5. Build
       - name: Build
-        run: xmake -y
-  linux-build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Installation
-        run: sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev
-      - uses: actions/checkout@v6
-      - uses: xmake-io/github-action-setup-xmake@v1
-        with:
-          xmake-version: latest
-          package-cache: true
-          actions-cache-key: ${{ runner.os }}-xmake-${{ hashFiles('xmake.lua') }}
-      - name: Build
-        run: xmake -y
+        run: xmake
+
+      # 6. Verify Build Artifacts
+      # We verify the binary exists. Note: We cannot run the app because CI runners are headless (no screen).
+      - name: Verify Binary
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            if [ ! -f "build/windows/x64/release/xray.exe" ]; then echo "Binary missing!"; exit 1; fi
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            # macOS path might vary between x64/arm64 depending on the runner hardware
+            find build -name "xray" -type f | grep -q . || exit 1
+          else
+            if [ ! -f "build/linux/x86_64/release/xray" ]; then echo "Binary missing!"; exit 1; fi
+          fi
+          echo "Build successful."
