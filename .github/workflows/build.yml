@@ -58,7 +58,7 @@ jobs:
           # Install xmake dependencies and xmake itself inside the VM
           prepare: |
             pkg install -y curl
-            curl -fsSL https://xmake.io/shget.text | bash
+            curl -fsSL https://xmake.io/shget.text | sh
           run: |
             export PATH=$PATH:$HOME/.local/bin
             xmake -y
@@ -75,5 +75,12 @@ jobs:
             pkgman install -y gapk curl
             curl -fsSL https://xmake.io/shget.text | bash
           run: |
+            # 1. Install necessary build dependencies
+            pkgman install -y gapk curl xentia_devel gcc_syslibs_devel
+            
+            # 2. Install xmake via the shell script
+            curl -fsSL https://xmake.io/shget.text | sh
+            
+            # 3. Update PATH and execute the build
             export PATH=$PATH:$HOME/.local/bin
-            xmake -y
+            xmake -v -y
