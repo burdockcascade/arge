@@ -1,9 +1,9 @@
 module;
 #include <quickjs.h>
+#include <raylib.h>
 
 export module API:Canvas2d;
 import :Common;
-import Raylib;
 import RaylibBindings;
 
 static constexpr int DEFAULT_FONT_SIZE = 24;
@@ -20,22 +20,22 @@ export namespace API {
         }
 
         // Position
-        Raylib::Vector2 *ptr_position;
+        Vector2 *ptr_position;
         if (!try_get_opaque(ctx, ptr_position, argv[0], RaylibBindings::js_Vector2_class_id)) return JS_EXCEPTION;
 
         // Size
-        Raylib::Vector2 *ptr_size;
+        Vector2 *ptr_size;
         if (!try_get_opaque(ctx, ptr_size, argv[1], RaylibBindings::js_Vector2_class_id)) return JS_EXCEPTION;
 
         // Color
-        Raylib::Color *ptr_color;
+        Color *ptr_color;
         if (!try_get_opaque(ctx, ptr_color, argv[2], RaylibBindings::js_Color_class_id)) return JS_EXCEPTION;
 
         // Default Optional Values
         float rotation = 0.0f;
         float roundness = 0.0f;
         int segments = 10;
-        Raylib::Vector2 origin = { ptr_size->x / 2, ptr_size->y / 2 };
+        Vector2 origin = { ptr_size->x / 2, ptr_size->y / 2 };
 
         // Check for Options Object (Argument 5)
         if (argc == min_args + 1 && JS_IsObject(argv[3])) {
@@ -48,9 +48,9 @@ export namespace API {
 
         // Raylib logic: Decide which function to call
         if (roundness > 0.0f) {
-            Raylib::DrawRectangleRounded({ ptr_position->x, ptr_position->y, ptr_size->x, ptr_size->y }, roundness, segments, *ptr_color);
+            DrawRectangleRounded({ ptr_position->x, ptr_position->y, ptr_size->x, ptr_size->y }, roundness, segments, *ptr_color);
         } else {
-            Raylib::DrawRectanglePro({ ptr_position->x, ptr_position->y, ptr_size->x, ptr_size->y }, origin, rotation, *ptr_color);
+            DrawRectanglePro({ ptr_position->x, ptr_position->y, ptr_size->x, ptr_size->y }, origin, rotation, *ptr_color);
         }
 
         return JS_UNDEFINED;
@@ -65,7 +65,7 @@ export namespace API {
         }
 
         // Position
-        Raylib::Vector2 *ptr_position;
+        Vector2 *ptr_position;
         if (!try_get_opaque(ctx, ptr_position, argv[0], RaylibBindings::js_Vector2_class_id)) return JS_EXCEPTION;
 
         // Radius
@@ -73,10 +73,10 @@ export namespace API {
         if (!try_get_value(ctx, radius, argv[1])) return JS_EXCEPTION;
 
         // Color
-        Raylib::Color *ptr_color;
+        Color *ptr_color;
         if (!try_get_opaque(ctx, ptr_color, argv[2], RaylibBindings::js_Color_class_id)) return JS_EXCEPTION;
 
-        Raylib::DrawCircleV(*ptr_position, radius, *ptr_color);
+        DrawCircleV(*ptr_position, radius, *ptr_color);
 
         return JS_UNDEFINED;
     }
@@ -90,7 +90,7 @@ export namespace API {
         }
 
         // Position
-        Raylib::Vector2 *ptr_position;
+        Vector2 *ptr_position;
         if (!try_get_opaque(ctx, ptr_position, argv[0], RaylibBindings::js_Vector2_class_id)) return JS_EXCEPTION;
 
         // Radius
@@ -98,10 +98,10 @@ export namespace API {
         if (!try_get_value(ctx, radius, argv[1])) return JS_EXCEPTION;
 
         // Color
-        Raylib::Color *ptr_color;
+        Color *ptr_color;
         if (!try_get_opaque(ctx, ptr_color, argv[2], RaylibBindings::js_Color_class_id)) return JS_EXCEPTION;
 
-        Raylib::DrawCircleLinesV(*ptr_position, radius, *ptr_color);
+        DrawCircleLinesV(*ptr_position, radius, *ptr_color);
 
         return JS_UNDEFINED;
     }
@@ -113,15 +113,15 @@ export namespace API {
         }
 
         // Texture
-        Raylib::Texture *ptr_texture;
+        Texture *ptr_texture;
         if (!try_get_opaque(ctx, ptr_texture, argv[0], RaylibBindings::js_Texture_class_id)) return JS_EXCEPTION;
 
         // Position
-        Raylib::Vector2 *ptr_position;
+        Vector2 *ptr_position;
         if (!try_get_opaque(ctx, ptr_position, argv[1], RaylibBindings::js_Vector2_class_id)) return JS_EXCEPTION;
 
         // Call
-        Raylib::DrawTextureV(*ptr_texture, *ptr_position, Raylib::Color {255, 255, 255, 255});
+        DrawTextureV(*ptr_texture, *ptr_position, Color {255, 255, 255, 255});
 
         return JS_UNDEFINED;
     }
@@ -138,7 +138,7 @@ export namespace API {
         if (!try_get_value(ctx, text, argv[0])) return JS_EXCEPTION;
 
         // Position
-        Raylib::Vector2 *ptr_position;
+        Vector2 *ptr_position;
         if (!try_get_opaque(ctx, ptr_position, argv[1], RaylibBindings::js_Vector2_class_id)) return JS_EXCEPTION;
 
         // Font Size
@@ -146,12 +146,12 @@ export namespace API {
         if (!try_get_value(ctx, font_size, argv[2])) return JS_EXCEPTION;
 
         // Color
-        Raylib::Color *ptr_color;
+        Color *ptr_color;
         if (!try_get_opaque(ctx, ptr_color, argv[3], RaylibBindings::js_Color_class_id)) return JS_EXCEPTION;
 
         // Defaults
-        Raylib::Font font = Raylib::GetFontDefault();
-        Raylib::Vector2 origin = { 0, 0 };
+        Font font = GetFontDefault();
+        Vector2 origin = { 0, 0 };
         float rotation = 0.0f;
         float spacing = 2.0f;
 
@@ -163,7 +163,7 @@ export namespace API {
             get_prop(ctx, options, "spacing", spacing);
         }
 
-        Raylib::DrawTextPro(font, text.c_str(), *ptr_position, origin, rotation, font_size, spacing, *ptr_color);
+        DrawTextPro(font, text.c_str(), *ptr_position, origin, rotation, font_size, spacing, *ptr_color);
 
         return JS_UNDEFINED;
     }

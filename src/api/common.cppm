@@ -1,8 +1,8 @@
 module;
 #include <quickjs.h>
+#include <raylib.h>
 
 export module API:Common;
-import Raylib;
 import RaylibBindings;
 import <string>;
 import <string_view>;
@@ -23,12 +23,12 @@ export namespace API {
         }
     }
 
-    inline Raylib::Vector2 to_vector2(JSContext* ctx, JSValueConst val) {
+    inline Vector2 to_vector2(JSContext* ctx, JSValueConst val) {
         // 1. Try to get it as an opaque C++ struct (fastest)
-        if (const auto* ptr = static_cast<Raylib::Vector2*>(JS_GetOpaque(val, RaylibBindings::js_Vector2_class_id))) return *ptr;
+        if (const auto* ptr = static_cast<Vector2*>(JS_GetOpaque(val, RaylibBindings::js_Vector2_class_id))) return *ptr;
 
         // 2. Fallback: Try to read it as a plain JS object {x: 10, y: 20}
-        Raylib::Vector2 vec = { 0, 0 };
+        Vector2 vec = { 0, 0 };
         const JSValue x_val = JS_GetPropertyStr(ctx, val, "x");
         const JSValue y_val = JS_GetPropertyStr(ctx, val, "y");
 
@@ -98,8 +98,8 @@ export namespace API {
         // We check for undefined/null first to ensure the property actually exists
         if (!JS_IsUndefined(val) && !JS_IsNull(val)) {
 
-            // 1. Handle Raylib::Vector2
-            if constexpr (std::is_same_v<T, Raylib::Vector2>) {
+            // 1. Handle Vector2
+            if constexpr (std::is_same_v<T, Vector2>) {
                 if (JS_IsObject(val)) {
                     out = to_vector2(ctx, val);
                     success = true;

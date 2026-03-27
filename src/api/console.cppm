@@ -1,9 +1,9 @@
 module;
 #include <quickjs.h>
+#include <raylib.h>
 
 export module API:Console;
 import :Common;
-import Raylib;
 import <iostream>;
 import <fstream>;
 
@@ -17,21 +17,21 @@ export namespace API {
             if (!try_get_value(ctx, text, argv[i])) return JS_EXCEPTION;
 
             // Using %s prevents issues if the JS string contains '%' characters
-            Raylib::TraceLog(logLevel, "%s", text.c_str());
+            TraceLog(logLevel, "%s", text.c_str());
         }
         return JS_UNDEFINED;
     }
 
     JSValue JS_Console_Log(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-        return JS_Print(ctx, argc, argv, Raylib::LOG_INFO);
+        return JS_Print(ctx, argc, argv, LOG_INFO);
     }
 
     JSValue JS_Console_Error(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-        return JS_Print(ctx, argc, argv, Raylib::LOG_ERROR);
+        return JS_Print(ctx, argc, argv, LOG_ERROR);
     }
 
     JSValue JS_Console_Warn(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-        return JS_Print(ctx, argc, argv, Raylib::LOG_WARNING);
+        return JS_Print(ctx, argc, argv, LOG_WARNING);
     }
 
     void register_console(JSContext *ctx, JSValue global_obj) {
