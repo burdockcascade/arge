@@ -30,7 +30,7 @@ STRUCT_WHITELIST = {
 FUNCTION_WHITELIST = {
 
     # Init
-    "InitWindow", "BeginDrawing", "EndDrawing", "CloseWindow", "WindowShouldClose", "SetTargetFPS",
+    "InitWindow", "BeginDrawing", "EndDrawing", "CloseWindow", "WindowShouldClose", "SetTargetFPS", "GetFrameTime",
 
     # Window related functions
     "IsWindowReady", "IsWindowFullscreen", "IsWindowHidden", "IsWindowMinimized", "IsWindowMaximized", "IsWindowResized", "IsWindowFocused",
@@ -53,7 +53,13 @@ FUNCTION_WHITELIST = {
     "GetMouseWheelMove", "GetMouseWheelMoveV",
 
     # Drawing related functions
-    "DrawPixel", "DrawLine", "DrawCircle", "DrawRectangle", "DrawTexture", "DrawText", "DrawFPS",
+    "DrawPixel", "DrawPixelV",
+    "DrawLine", "DrawLineV", "DrawLineEx", "DrawLineStrip", "DrawLineBezier",
+    "DrawCircle",
+    "DrawRectangle",
+    "DrawTexture",
+    "DrawText",
+    "DrawFPS",
 
     # Assets
     "LoadTexture", "UnloadTexture"

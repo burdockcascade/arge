@@ -375,6 +375,17 @@ namespace RaylibBindings {
         return JS_UNDEFINED;
     }
 
+    JSValue JS_GetFrameTime(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
+
+
+        // Call the Raylib function and store the result
+        const auto result = GetFrameTime();
+
+        
+        // Return a primitive type
+        return JS_NewFloat64(ctx, result);
+    }
+
     JSValue JS_IsKeyPressed(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
 
         // Parameter: key (Type: int)
@@ -692,6 +703,31 @@ namespace RaylibBindings {
         return JS_UNDEFINED;
     }
 
+    JSValue JS_DrawPixelV(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
+
+        // Parameter: position (Type: Vector2)
+        // Handle struct parameters by retrieving the opaque pointer from the JS object
+        auto *position_ptr = static_cast<Vector2*>(JS_GetOpaque2(ctx, argv[0], js_Vector2_class_id));
+        if (!position_ptr) return JS_EXCEPTION;
+        // Dereference for non-pointer struct parameters
+        Vector2 position = *position_ptr;
+
+        // Parameter: color (Type: Color)
+        // Handle struct parameters by retrieving the opaque pointer from the JS object
+        auto *color_ptr = static_cast<Color*>(JS_GetOpaque2(ctx, argv[1], js_Color_class_id));
+        if (!color_ptr) return JS_EXCEPTION;
+        // Dereference for non-pointer struct parameters
+        Color color = *color_ptr;
+
+
+        // Call the Raylib function (no return value)
+        DrawPixelV(position, color);
+
+        
+        // No return value
+        return JS_UNDEFINED;
+    }
+
     JSValue JS_DrawLine(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
 
         // Parameter: startPosX (Type: int)
@@ -724,6 +760,142 @@ namespace RaylibBindings {
 
         // Call the Raylib function (no return value)
         DrawLine(startPosX, startPosY, endPosX, endPosY, color);
+
+        
+        // No return value
+        return JS_UNDEFINED;
+    }
+
+    JSValue JS_DrawLineV(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
+
+        // Parameter: startPos (Type: Vector2)
+        // Handle struct parameters by retrieving the opaque pointer from the JS object
+        auto *startPos_ptr = static_cast<Vector2*>(JS_GetOpaque2(ctx, argv[0], js_Vector2_class_id));
+        if (!startPos_ptr) return JS_EXCEPTION;
+        // Dereference for non-pointer struct parameters
+        Vector2 startPos = *startPos_ptr;
+
+        // Parameter: endPos (Type: Vector2)
+        // Handle struct parameters by retrieving the opaque pointer from the JS object
+        auto *endPos_ptr = static_cast<Vector2*>(JS_GetOpaque2(ctx, argv[1], js_Vector2_class_id));
+        if (!endPos_ptr) return JS_EXCEPTION;
+        // Dereference for non-pointer struct parameters
+        Vector2 endPos = *endPos_ptr;
+
+        // Parameter: color (Type: Color)
+        // Handle struct parameters by retrieving the opaque pointer from the JS object
+        auto *color_ptr = static_cast<Color*>(JS_GetOpaque2(ctx, argv[2], js_Color_class_id));
+        if (!color_ptr) return JS_EXCEPTION;
+        // Dereference for non-pointer struct parameters
+        Color color = *color_ptr;
+
+
+        // Call the Raylib function (no return value)
+        DrawLineV(startPos, endPos, color);
+
+        
+        // No return value
+        return JS_UNDEFINED;
+    }
+
+    JSValue JS_DrawLineEx(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
+
+        // Parameter: startPos (Type: Vector2)
+        // Handle struct parameters by retrieving the opaque pointer from the JS object
+        auto *startPos_ptr = static_cast<Vector2*>(JS_GetOpaque2(ctx, argv[0], js_Vector2_class_id));
+        if (!startPos_ptr) return JS_EXCEPTION;
+        // Dereference for non-pointer struct parameters
+        Vector2 startPos = *startPos_ptr;
+
+        // Parameter: endPos (Type: Vector2)
+        // Handle struct parameters by retrieving the opaque pointer from the JS object
+        auto *endPos_ptr = static_cast<Vector2*>(JS_GetOpaque2(ctx, argv[1], js_Vector2_class_id));
+        if (!endPos_ptr) return JS_EXCEPTION;
+        // Dereference for non-pointer struct parameters
+        Vector2 endPos = *endPos_ptr;
+
+        // Parameter: thick (Type: float)
+        // Handle other parameter types by converting from JS to C++
+        double thick;
+        if (JS_ToFloat64(ctx, &thick, argv[2])) return JS_EXCEPTION;
+
+        // Parameter: color (Type: Color)
+        // Handle struct parameters by retrieving the opaque pointer from the JS object
+        auto *color_ptr = static_cast<Color*>(JS_GetOpaque2(ctx, argv[3], js_Color_class_id));
+        if (!color_ptr) return JS_EXCEPTION;
+        // Dereference for non-pointer struct parameters
+        Color color = *color_ptr;
+
+
+        // Call the Raylib function (no return value)
+        DrawLineEx(startPos, endPos, thick, color);
+
+        
+        // No return value
+        return JS_UNDEFINED;
+    }
+
+    JSValue JS_DrawLineStrip(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
+
+        // Parameter: points (Type: const Vector2 *)
+        // Handle struct parameters by retrieving the opaque pointer from the JS object
+        auto *points_ptr = static_cast<Vector2*>(JS_GetOpaque2(ctx, argv[0], js_Vector2_class_id));
+        if (!points_ptr) return JS_EXCEPTION;
+        // Pass the pointer directly for pointer parameters
+        const Vector2 * points = points_ptr;
+
+        // Parameter: pointCount (Type: int)
+        // Handle other parameter types by converting from JS to C++
+        int32_t pointCount;
+        if (JS_ToInt32(ctx, &pointCount, argv[1])) return JS_EXCEPTION;
+
+        // Parameter: color (Type: Color)
+        // Handle struct parameters by retrieving the opaque pointer from the JS object
+        auto *color_ptr = static_cast<Color*>(JS_GetOpaque2(ctx, argv[2], js_Color_class_id));
+        if (!color_ptr) return JS_EXCEPTION;
+        // Dereference for non-pointer struct parameters
+        Color color = *color_ptr;
+
+
+        // Call the Raylib function (no return value)
+        DrawLineStrip(points, pointCount, color);
+
+        
+        // No return value
+        return JS_UNDEFINED;
+    }
+
+    JSValue JS_DrawLineBezier(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
+
+        // Parameter: startPos (Type: Vector2)
+        // Handle struct parameters by retrieving the opaque pointer from the JS object
+        auto *startPos_ptr = static_cast<Vector2*>(JS_GetOpaque2(ctx, argv[0], js_Vector2_class_id));
+        if (!startPos_ptr) return JS_EXCEPTION;
+        // Dereference for non-pointer struct parameters
+        Vector2 startPos = *startPos_ptr;
+
+        // Parameter: endPos (Type: Vector2)
+        // Handle struct parameters by retrieving the opaque pointer from the JS object
+        auto *endPos_ptr = static_cast<Vector2*>(JS_GetOpaque2(ctx, argv[1], js_Vector2_class_id));
+        if (!endPos_ptr) return JS_EXCEPTION;
+        // Dereference for non-pointer struct parameters
+        Vector2 endPos = *endPos_ptr;
+
+        // Parameter: thick (Type: float)
+        // Handle other parameter types by converting from JS to C++
+        double thick;
+        if (JS_ToFloat64(ctx, &thick, argv[2])) return JS_EXCEPTION;
+
+        // Parameter: color (Type: Color)
+        // Handle struct parameters by retrieving the opaque pointer from the JS object
+        auto *color_ptr = static_cast<Color*>(JS_GetOpaque2(ctx, argv[3], js_Color_class_id));
+        if (!color_ptr) return JS_EXCEPTION;
+        // Dereference for non-pointer struct parameters
+        Color color = *color_ptr;
+
+
+        // Call the Raylib function (no return value)
+        DrawLineBezier(startPos, endPos, thick, color);
 
         
         // No return value
@@ -957,6 +1129,7 @@ namespace RaylibBindings {
         JS_CFUNC_DEF("BeginDrawing", 0, JS_BeginDrawing),
         JS_CFUNC_DEF("EndDrawing", 0, JS_EndDrawing),
         JS_CFUNC_DEF("SetTargetFPS", 1, JS_SetTargetFPS),
+        JS_CFUNC_DEF("GetFrameTime", 0, JS_GetFrameTime),
         JS_CFUNC_DEF("IsKeyPressed", 1, JS_IsKeyPressed),
         JS_CFUNC_DEF("IsKeyPressedRepeat", 1, JS_IsKeyPressedRepeat),
         JS_CFUNC_DEF("IsKeyDown", 1, JS_IsKeyDown),
@@ -977,7 +1150,12 @@ namespace RaylibBindings {
         JS_CFUNC_DEF("GetMouseWheelMove", 0, JS_GetMouseWheelMove),
         JS_CFUNC_DEF("GetMouseWheelMoveV", 0, JS_GetMouseWheelMoveV),
         JS_CFUNC_DEF("DrawPixel", 3, JS_DrawPixel),
+        JS_CFUNC_DEF("DrawPixelV", 2, JS_DrawPixelV),
         JS_CFUNC_DEF("DrawLine", 5, JS_DrawLine),
+        JS_CFUNC_DEF("DrawLineV", 3, JS_DrawLineV),
+        JS_CFUNC_DEF("DrawLineEx", 4, JS_DrawLineEx),
+        JS_CFUNC_DEF("DrawLineStrip", 3, JS_DrawLineStrip),
+        JS_CFUNC_DEF("DrawLineBezier", 4, JS_DrawLineBezier),
         JS_CFUNC_DEF("DrawCircle", 4, JS_DrawCircle),
         JS_CFUNC_DEF("DrawRectangle", 5, JS_DrawRectangle),
         JS_CFUNC_DEF("LoadTexture", 1, JS_LoadTexture),
@@ -988,7 +1166,7 @@ namespace RaylibBindings {
     };
 
     void InitAllFunctions(JSContext *ctx, JSValue ns) {
-        JS_SetPropertyFunctionList(ctx, ns, js_raylib_funcs, 56);
+        JS_SetPropertyFunctionList(ctx, ns, js_raylib_funcs, 62);
     }
 
 } // namespace RaylibBindings

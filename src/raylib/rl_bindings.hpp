@@ -58,6 +58,7 @@ namespace RaylibBindings {
     JSValue JS_BeginDrawing(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_EndDrawing(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_SetTargetFPS(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
+    JSValue JS_GetFrameTime(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_IsKeyPressed(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_IsKeyPressedRepeat(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_IsKeyDown(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
@@ -78,7 +79,12 @@ namespace RaylibBindings {
     JSValue JS_GetMouseWheelMove(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_GetMouseWheelMoveV(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_DrawPixel(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
+    JSValue JS_DrawPixelV(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_DrawLine(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
+    JSValue JS_DrawLineV(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
+    JSValue JS_DrawLineEx(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
+    JSValue JS_DrawLineStrip(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
+    JSValue JS_DrawLineBezier(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_DrawCircle(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_DrawRectangle(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_LoadTexture(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
