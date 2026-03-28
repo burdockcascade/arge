@@ -24,7 +24,7 @@ public:
     void Run() const;
     static void Shutdown();
 
-    void BindAPI();
+    void BindAPI() const;
 
     // Accessors
     [[nodiscard]] ScriptEngine& GetEngine() const { return *qjs; }
@@ -45,9 +45,5 @@ private:
     std::string scriptPath;
 
     std::unique_ptr<API::App> app;
-
-    // Shared JS Objects
-    JSValue jsDrawContextObj = JS_UNDEFINED;
-    JSValue jsSystemContextObj = JS_UNDEFINED;
 
 };

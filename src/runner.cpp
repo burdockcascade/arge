@@ -22,8 +22,9 @@ Runner::Runner(std::string path) : scriptPath(std::move(path)), app(std::make_un
 Runner::~Runner() {
 
     qjs->FreeValue(app->instance);
-    qjs->FreeValue(jsDrawContextObj);
-    qjs->FreeValue(jsSystemContextObj);
+    qjs->FreeValue(app->jsDrawContextObj);
+    qjs->FreeValue(app->jsSystemContextObj);
+
     qjs->FreeAtom(app->initAtom);
     qjs->FreeAtom(app->updateAtom);
     qjs->FreeAtom(app->drawAtom);
@@ -47,7 +48,7 @@ bool Runner::Initialize() {
     InitWindow(app->windowWidth, app->windowHeight, app->windowTitle.c_str());
     SetTargetFPS(targetFPS);
 
-    JSValue args[] = { JS_DupValue(qjs->GetContext(), jsSystemContextObj) };
+    JSValue args[] = { JS_DupValue(qjs->GetContext(), app->jsSystemContextObj) };
     qjs->FreeValue(qjs->CallMethod(app->instance, app->initAtom, 1, args));
     qjs->FreeValue(args[0]);
 
@@ -65,18 +66,18 @@ void Runner::Shutdown() {
     CloseWindow();
 }
 
-void Runner::BindAPI() {
+void Runner::BindAPI() const {
     JSContext* ctx = qjs->GetContext();
     const JSValue globalObj = JS_GetGlobalObject(ctx);
 
     API::register_console(ctx, globalObj);
 
-    jsDrawContextObj = JS_NewObject(ctx);
-    jsSystemContextObj = JS_NewObject(ctx);
+    app->jsDrawContextObj = JS_NewObject(ctx);
+    app->jsSystemContextObj = JS_NewObject(ctx);
 
     API::InitEverything(ctx, globalObj);
-    API::RegisterSystemNamespace(ctx, jsSystemContextObj);
-    API::RegisterDrawNamespace(ctx, jsDrawContextObj);
+    API::RegisterSystemNamespace(ctx, app->jsSystemContextObj);
+    API::RegisterDrawNamespace(ctx, app->jsDrawContextObj);
 
     JS_FreeValue(ctx, globalObj);
 }
@@ -89,7 +90,7 @@ void Runner::ProcessFrame() const {
     }
 
     // Update
-    JSValue uArgs[] = { JS_NewFloat64(ctx, GetFrameTime()), JS_DupValue(ctx, jsSystemContextObj) };
+    JSValue uArgs[] = { JS_NewFloat64(ctx, GetFrameTime()), JS_DupValue(ctx, app->jsSystemContextObj) };
     qjs->FreeValue(qjs->CallMethod(app->instance, app->updateAtom, 2, uArgs));
     qjs->FreeValue(uArgs[0]);
     qjs->FreeValue(uArgs[1]);
@@ -98,7 +99,7 @@ void Runner::ProcessFrame() const {
     BeginDrawing();
     ClearBackground(backgroundColor);
 
-    JSValue dArgs[] = { JS_DupValue(ctx, jsDrawContextObj) };
+    JSValue dArgs[] = { JS_DupValue(ctx, app->jsDrawContextObj) };
     qjs->FreeValue(qjs->CallMethod(app->instance, app->drawAtom, 1, dArgs));
     qjs->FreeValue(dArgs[0]);
 
