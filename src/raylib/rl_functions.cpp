@@ -8,6 +8,53 @@
 
 namespace RaylibBindings {
 
+    JSValue JS_InitWindow(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
+
+        // Parameter: width (Type: int)
+        // Handle other parameter types by converting from JS to C++
+        int32_t width;
+        if (JS_ToInt32(ctx, &width, argv[0])) return JS_EXCEPTION;
+
+        // Parameter: height (Type: int)
+        // Handle other parameter types by converting from JS to C++
+        int32_t height;
+        if (JS_ToInt32(ctx, &height, argv[1])) return JS_EXCEPTION;
+
+        // Parameter: title (Type: const char *)
+        const char *title = JS_ToCString(ctx, argv[2]);
+        if (!title) return JS_EXCEPTION;
+
+
+        // Call the Raylib function (no return value)
+        InitWindow(width, height, title);
+
+        
+        // No return value
+        return JS_UNDEFINED;
+    }
+
+    JSValue JS_CloseWindow(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
+
+
+        // Call the Raylib function (no return value)
+        CloseWindow();
+
+        
+        // No return value
+        return JS_UNDEFINED;
+    }
+
+    JSValue JS_WindowShouldClose(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
+
+
+        // Call the Raylib function and store the result
+        const auto result = WindowShouldClose();
+
+        
+        // Return a primitive type
+        return JS_NewBool(ctx, result);
+    }
+
     JSValue JS_IsWindowReady(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
 
 
@@ -288,6 +335,44 @@ namespace RaylibBindings {
         
         // Return a struct by wrapping it in a JS object
         return JS_NewVector2(ctx, result);
+    }
+
+    JSValue JS_BeginDrawing(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
+
+
+        // Call the Raylib function (no return value)
+        BeginDrawing();
+
+        
+        // No return value
+        return JS_UNDEFINED;
+    }
+
+    JSValue JS_EndDrawing(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
+
+
+        // Call the Raylib function (no return value)
+        EndDrawing();
+
+        
+        // No return value
+        return JS_UNDEFINED;
+    }
+
+    JSValue JS_SetTargetFPS(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
+
+        // Parameter: fps (Type: int)
+        // Handle other parameter types by converting from JS to C++
+        int32_t fps;
+        if (JS_ToInt32(ctx, &fps, argv[0])) return JS_EXCEPTION;
+
+
+        // Call the Raylib function (no return value)
+        SetTargetFPS(fps);
+
+        
+        // No return value
+        return JS_UNDEFINED;
     }
 
     JSValue JS_IsKeyPressed(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
@@ -843,5 +928,67 @@ namespace RaylibBindings {
     }
 
 
+    static constexpr JSCFunctionListEntry js_raylib_funcs[] = {
+        JS_CFUNC_DEF("InitWindow", 3, JS_InitWindow),
+        JS_CFUNC_DEF("CloseWindow", 0, JS_CloseWindow),
+        JS_CFUNC_DEF("WindowShouldClose", 0, JS_WindowShouldClose),
+        JS_CFUNC_DEF("IsWindowReady", 0, JS_IsWindowReady),
+        JS_CFUNC_DEF("IsWindowFullscreen", 0, JS_IsWindowFullscreen),
+        JS_CFUNC_DEF("IsWindowHidden", 0, JS_IsWindowHidden),
+        JS_CFUNC_DEF("IsWindowMinimized", 0, JS_IsWindowMinimized),
+        JS_CFUNC_DEF("IsWindowMaximized", 0, JS_IsWindowMaximized),
+        JS_CFUNC_DEF("IsWindowFocused", 0, JS_IsWindowFocused),
+        JS_CFUNC_DEF("IsWindowResized", 0, JS_IsWindowResized),
+        JS_CFUNC_DEF("IsWindowState", 1, JS_IsWindowState),
+        JS_CFUNC_DEF("SetWindowState", 1, JS_SetWindowState),
+        JS_CFUNC_DEF("ClearWindowState", 1, JS_ClearWindowState),
+        JS_CFUNC_DEF("GetScreenWidth", 0, JS_GetScreenWidth),
+        JS_CFUNC_DEF("GetScreenHeight", 0, JS_GetScreenHeight),
+        JS_CFUNC_DEF("GetRenderWidth", 0, JS_GetRenderWidth),
+        JS_CFUNC_DEF("GetRenderHeight", 0, JS_GetRenderHeight),
+        JS_CFUNC_DEF("GetMonitorCount", 0, JS_GetMonitorCount),
+        JS_CFUNC_DEF("GetMonitorWidth", 1, JS_GetMonitorWidth),
+        JS_CFUNC_DEF("GetMonitorHeight", 1, JS_GetMonitorHeight),
+        JS_CFUNC_DEF("GetMonitorPhysicalWidth", 1, JS_GetMonitorPhysicalWidth),
+        JS_CFUNC_DEF("GetMonitorPhysicalHeight", 1, JS_GetMonitorPhysicalHeight),
+        JS_CFUNC_DEF("GetMonitorRefreshRate", 1, JS_GetMonitorRefreshRate),
+        JS_CFUNC_DEF("GetWindowPosition", 0, JS_GetWindowPosition),
+        JS_CFUNC_DEF("GetWindowScaleDPI", 0, JS_GetWindowScaleDPI),
+        JS_CFUNC_DEF("BeginDrawing", 0, JS_BeginDrawing),
+        JS_CFUNC_DEF("EndDrawing", 0, JS_EndDrawing),
+        JS_CFUNC_DEF("SetTargetFPS", 1, JS_SetTargetFPS),
+        JS_CFUNC_DEF("IsKeyPressed", 1, JS_IsKeyPressed),
+        JS_CFUNC_DEF("IsKeyPressedRepeat", 1, JS_IsKeyPressedRepeat),
+        JS_CFUNC_DEF("IsKeyDown", 1, JS_IsKeyDown),
+        JS_CFUNC_DEF("IsKeyReleased", 1, JS_IsKeyReleased),
+        JS_CFUNC_DEF("IsKeyUp", 1, JS_IsKeyUp),
+        JS_CFUNC_DEF("GetKeyPressed", 0, JS_GetKeyPressed),
+        JS_CFUNC_DEF("SetExitKey", 1, JS_SetExitKey),
+        JS_CFUNC_DEF("IsMouseButtonPressed", 1, JS_IsMouseButtonPressed),
+        JS_CFUNC_DEF("IsMouseButtonDown", 1, JS_IsMouseButtonDown),
+        JS_CFUNC_DEF("IsMouseButtonReleased", 1, JS_IsMouseButtonReleased),
+        JS_CFUNC_DEF("IsMouseButtonUp", 1, JS_IsMouseButtonUp),
+        JS_CFUNC_DEF("GetMouseX", 0, JS_GetMouseX),
+        JS_CFUNC_DEF("GetMouseY", 0, JS_GetMouseY),
+        JS_CFUNC_DEF("GetMousePosition", 0, JS_GetMousePosition),
+        JS_CFUNC_DEF("SetMousePosition", 2, JS_SetMousePosition),
+        JS_CFUNC_DEF("SetMouseOffset", 2, JS_SetMouseOffset),
+        JS_CFUNC_DEF("SetMouseScale", 2, JS_SetMouseScale),
+        JS_CFUNC_DEF("GetMouseWheelMove", 0, JS_GetMouseWheelMove),
+        JS_CFUNC_DEF("GetMouseWheelMoveV", 0, JS_GetMouseWheelMoveV),
+        JS_CFUNC_DEF("DrawPixel", 3, JS_DrawPixel),
+        JS_CFUNC_DEF("DrawLine", 5, JS_DrawLine),
+        JS_CFUNC_DEF("DrawCircle", 4, JS_DrawCircle),
+        JS_CFUNC_DEF("DrawRectangle", 5, JS_DrawRectangle),
+        JS_CFUNC_DEF("LoadTexture", 1, JS_LoadTexture),
+        JS_CFUNC_DEF("UnloadTexture", 1, JS_UnloadTexture),
+        JS_CFUNC_DEF("DrawTexture", 4, JS_DrawTexture),
+        JS_CFUNC_DEF("DrawFPS", 2, JS_DrawFPS),
+        JS_CFUNC_DEF("DrawText", 5, JS_DrawText),
+    };
+
+    void InitAllFunctions(JSContext *ctx, JSValue ns) {
+        JS_SetPropertyFunctionList(ctx, ns, js_raylib_funcs, 56);
+    }
 
 } // namespace RaylibBindings

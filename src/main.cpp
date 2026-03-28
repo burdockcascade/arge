@@ -28,12 +28,7 @@ int main(const int argc, char** argv) {
 
     try {
         Runner runner(scriptPath);
-        if (runner.Initialize()) {
-            runner.Run();
-        } else {
-            TraceLog(LOG_ERROR, "Failed to initialize the app with script: %s", scriptPath.c_str());
-            return 1;
-        }
+        runner.Run();
     } catch (const std::exception& e) {
         TraceLog(LOG_ERROR, "%s", e.what());
         return 1;

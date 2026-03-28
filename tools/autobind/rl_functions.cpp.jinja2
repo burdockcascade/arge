@@ -90,14 +90,14 @@ namespace RaylibBindings {
 
     {% endfor %}
 
-    {# static constexpr JSCFunctionListEntry js_raylib_funcs[] = {
+    static constexpr JSCFunctionListEntry js_raylib_funcs[] = {
     {% for func in functions %}
-        JS_CFUNC_DEF("{{ func.name }}", {{ func.params|length }}, js_{{ func.name }}),
+        JS_CFUNC_DEF("{{ func.name }}", {{ func.params|length }}, JS_{{ func.name }}),
     {% endfor %}
     };
 
     void InitAllFunctions(JSContext *ctx, JSValue ns) {
         JS_SetPropertyFunctionList(ctx, ns, js_raylib_funcs, {{ functions|length }});
-    } #}
+    }
 
 } // namespace RaylibBindings

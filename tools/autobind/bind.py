@@ -29,6 +29,9 @@ STRUCT_WHITELIST = {
 # Full binding is too complex for a first version, so we want to focus on the core window and drawing functions first.
 FUNCTION_WHITELIST = {
 
+    # Init
+    "InitWindow", "BeginDrawing", "EndDrawing", "CloseWindow", "WindowShouldClose", "SetTargetFPS",
+
     # Window related functions
     "IsWindowReady", "IsWindowFullscreen", "IsWindowHidden", "IsWindowMinimized", "IsWindowMaximized", "IsWindowResized", "IsWindowFocused",
     "IsWindowState", "SetWindowState", "ClearWindowState",
@@ -242,7 +245,7 @@ def run_generator():
     for file_base in ['rl_bindings', 'rl_structs', 'rl_enums', 'rl_functions']:
         for ext in ['hpp', 'cpp']:
             template_path = f'{file_base}.{ext}.jinja2'
-            output_path = f'../../src/wrapper/{file_base}.{ext}'
+            output_path = f'../../src/raylib/{file_base}.{ext}'
 
             try:
                 with open(template_path, 'r') as f:
