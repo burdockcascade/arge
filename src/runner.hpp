@@ -8,15 +8,15 @@ static constexpr int DEFAULT_TARGET_FPS = 60;
 static constexpr Color DEFAULT_BACKGROUND_COLOR = Color { 0, 0, 0, 255 };
 static constexpr std::string DEFAULT_WINDOW_TITLE = "untitled";
 
-class App {
+class Runner {
 public:
     // Lifecycle
-    explicit App(std::string path);
-    ~App();
+    explicit Runner(std::string path);
+    ~Runner();
 
     // Deleted Copy/Assignment
-    App(const App&) = delete;
-    App& operator=(const App&) = delete;
+    Runner(const Runner&) = delete;
+    Runner& operator=(const Runner&) = delete;
 
     // Execution
     bool Initialize();
@@ -59,8 +59,5 @@ private:
     static JSValue js_app_constructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv);
 
     static void create_app_class(JSContext *ctx, JSValue global_obj);
-
-    static JSValue js_sandbox_constructor(JSContext *ctx, JSValue new_target, int argc, JSValue *argv);
-
 
 };

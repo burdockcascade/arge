@@ -2,7 +2,7 @@
 #include <raylib.h>
 #include <string>
 #include <exception> // Added for std::exception
-#include "app.hpp"
+#include "runner.hpp"
 
 int main(const int argc, char** argv) {
 
@@ -27,9 +27,9 @@ int main(const int argc, char** argv) {
     CLI11_PARSE(args, argc, argv);
 
     try {
-        App app(scriptPath);
-        if (app.Initialize()) {
-            app.Run();
+        Runner runner(scriptPath);
+        if (runner.Initialize()) {
+            runner.Run();
         } else {
             TraceLog(LOG_ERROR, "Failed to initialize the app with script: %s", scriptPath.c_str());
             return 1;

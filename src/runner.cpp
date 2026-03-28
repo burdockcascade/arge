@@ -5,12 +5,12 @@
 #include <fstream>
 #include <sstream>
 #include <ranges>
-#include "app.hpp"
+#include "runner.hpp"
 #include "script_engine.hpp"
 #include "api/api.hpp"
 #include "utils.hpp"
 
-App::App(std::string path) : scriptPath(std::move(path)) {
+Runner::Runner(std::string path) : scriptPath(std::move(path)) {
     qjs = std::make_unique<ScriptEngine>();
 
     initAtom = qjs->CreateAtom("init");
@@ -21,7 +21,7 @@ App::App(std::string path) : scriptPath(std::move(path)) {
     BindAPI();
 }
 
-App::~App() {
+Runner::~Runner() {
 
     qjs->FreeValue(appInstance);
     qjs->FreeValue(jsDrawContextObj);
@@ -35,7 +35,7 @@ App::~App() {
     }
 }
 
-bool App::Initialize() {
+bool Runner::Initialize() {
     std::ifstream t(scriptPath);
     if (!t.is_open()) return false;
 
@@ -57,17 +57,17 @@ bool App::Initialize() {
     return true;
 }
 
-void App::Run() const {
+void Runner::Run() const {
     while (!WindowShouldClose() && isRunning) {
         ProcessFrame();
     }
 }
 
-void App::Shutdown() {
+void Runner::Shutdown() {
     CloseWindow();
 }
 
-void App::BindAPI() {
+void Runner::BindAPI() {
     JSContext* ctx = qjs->GetContext();
     const JSValue globalObj = JS_GetGlobalObject(ctx);
 
@@ -84,7 +84,7 @@ void App::BindAPI() {
     JS_FreeValue(ctx, globalObj);
 }
 
-void App::ProcessFrame() const {
+void Runner::ProcessFrame() const {
     JSContext* ctx = qjs->GetContext();
 
     if (int err = JS_ExecutePendingJob(JS_GetRuntime(ctx), &ctx); err < 0) {
@@ -108,17 +108,17 @@ void App::ProcessFrame() const {
     EndDrawing();
 }
 
-JSValue App::js_app_run(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    if (auto* app = ScriptEngine::GetHostInstance<App>(ctx); app && argc >= 1) {
+JSValue Runner::js_app_run(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+    if (auto* app = ScriptEngine::GetHostInstance<Runner>(ctx); app && argc >= 1) {
         app->GetEngine().SetStoredValue(app->appInstance, argv[0]);
     }
     return JS_UNDEFINED;
 }
 
-JSValue App::js_app_constructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv) {
+JSValue Runner::js_app_constructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv) {
     const JSValue obj = JS_NewObject(ctx);
 
-    if (auto* app = ScriptEngine::GetHostInstance<App>(ctx); app) {
+    if (auto* app = ScriptEngine::GetHostInstance<Runner>(ctx); app) {
         app->GetEngine().RegisterFunction(obj, "run", js_app_run, 1);
 
         if (!try_get_value(ctx, app->windowHeight, argv[0])) return JS_EXCEPTION;
@@ -131,7 +131,7 @@ JSValue App::js_app_constructor(JSContext *ctx, JSValueConst new_target, int arg
     return obj;
 }
 
-void App::create_app_class(JSContext* ctx, JSValue global_obj) {
+void Runner::create_app_class(JSContext* ctx, JSValue global_obj) {
     const JSValue ctor = JS_NewCFunction2(ctx, js_app_constructor, "App", 1, JS_CFUNC_constructor, 0);
     JS_SetPropertyStr(ctx, global_obj, "App", ctor);
 }
