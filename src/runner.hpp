@@ -1,6 +1,7 @@
 #pragma once
 #include <quickjs.h>
 #include "script_engine.hpp"
+#include "api/api.hpp"
 
 static constexpr int DEFAULT_WINDOW_HEIGHT = 600;
 static constexpr int DEFAULT_WINDOW_WIDTH = 800;
@@ -30,11 +31,10 @@ public:
 
     // Configuration & State
     bool isRunning = false;
-    int windowWidth = DEFAULT_WINDOW_WIDTH;
-    int windowHeight = DEFAULT_WINDOW_HEIGHT;
     int targetFPS = DEFAULT_TARGET_FPS;
     Color backgroundColor = DEFAULT_BACKGROUND_COLOR;
-    std::string windowTitle = DEFAULT_WINDOW_TITLE;
+
+    [[nodiscard]] API::App& GetApp() const { return *app; }
 
 private:
     // Internal Logic
@@ -43,21 +43,11 @@ private:
     // Internal Resources
     std::unique_ptr<ScriptEngine> qjs = nullptr;
     std::string scriptPath;
-    JSValue appInstance = JS_UNDEFINED;
 
-    // Cached Atoms
-    JSAtom initAtom = JS_ATOM_NULL;
-    JSAtom updateAtom = JS_ATOM_NULL;
-    JSAtom drawAtom = JS_ATOM_NULL;
+    std::unique_ptr<API::App> app;
 
     // Shared JS Objects
     JSValue jsDrawContextObj = JS_UNDEFINED;
     JSValue jsSystemContextObj = JS_UNDEFINED;
-
-    // QuickJS Static Callbacks
-    static JSValue js_app_run(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv);
-    static JSValue js_app_constructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv);
-
-    static void create_app_class(JSContext *ctx, JSValue global_obj);
 
 };

@@ -2,7 +2,7 @@
 #include <raylib.h>
 #include "api.hpp"
 #include "../wrapper/rl_bindings.hpp"
-#include "../utils.hpp"
+#include "common.hpp"
 
 namespace API {
 

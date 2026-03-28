@@ -2,9 +2,10 @@
 
 namespace API {
 
-    void InitEverything(JSContext* ctx, JSValue global) {
-        RaylibBindings::InitAllStructs(ctx, global);
-        RaylibBindings::InitAllEnums(ctx, global);
+    void InitEverything(JSContext* ctx, JSValue global_obj) {
+        RaylibBindings::InitAllStructs(ctx, global_obj);
+        RaylibBindings::InitAllEnums(ctx, global_obj);
+        CreateAppClass(ctx, global_obj);
     }
 
     void RegisterSystemNamespace(JSContext* ctx, JSValue jsSystemContextObj) {
