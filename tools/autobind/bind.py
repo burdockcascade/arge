@@ -37,9 +37,9 @@ FUNCTION_WHITELIST = {
     # Window related functions
     "IsWindowReady", "IsWindowFullscreen", "IsWindowHidden", "IsWindowMinimized", "IsWindowMaximized", "IsWindowResized", "IsWindowFocused",
     "IsWindowState", "SetWindowState", "ClearWindowState",
-    "GetWindowWidth", "GetWindowHeight", "GetScreenWidth", "GetScreenHeight",
+    "GetScreenWidth", "GetScreenHeight",
     "GetRenderWidth", "GetRenderHeight",
-    "ClearBackground",
+    "ClearBackground", "SetWindowTitle",
 
     # Monitor related functions
     "GetMonitorCount",

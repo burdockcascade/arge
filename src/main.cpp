@@ -6,7 +6,7 @@
 
 int main(const int argc, char** argv) {
 
-    SetTraceLogLevel(LOG_ERROR);
+    SetTraceLogLevel(LOG_INFO);
 
     CLI::App args{"QuickJS Raylib Runner"};
 

@@ -43,6 +43,7 @@ namespace RaylibBindings {
     JSValue JS_IsWindowState(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_SetWindowState(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_ClearWindowState(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
+    JSValue JS_SetWindowTitle(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_GetScreenWidth(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_GetScreenHeight(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_GetRenderWidth(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;

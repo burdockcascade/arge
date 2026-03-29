@@ -1991,6 +1991,23 @@ namespace RaylibBindings {
         return JS_UNDEFINED;
     }
 
+    JSValue JS_SetWindowTitle(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
+
+        // Parameter: title (Type: const char *)
+        const char *title = JS_ToCString(ctx, argv[0]);
+        if (!title) return JS_EXCEPTION;
+
+
+        // Call the Raylib function (no return value)
+        SetWindowTitle(title);
+
+        // Free the C string after the function call
+        JS_FreeCString(ctx, title);
+
+        // No return value
+        return JS_UNDEFINED;
+    }
+
     JSValue JS_GetScreenWidth(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
 
 
@@ -2974,6 +2991,7 @@ namespace RaylibBindings {
         JS_CFUNC_DEF("IsWindowState", 1, JS_IsWindowState),
         JS_CFUNC_DEF("SetWindowState", 1, JS_SetWindowState),
         JS_CFUNC_DEF("ClearWindowState", 1, JS_ClearWindowState),
+        JS_CFUNC_DEF("SetWindowTitle", 1, JS_SetWindowTitle),
         JS_CFUNC_DEF("GetScreenWidth", 0, JS_GetScreenWidth),
         JS_CFUNC_DEF("GetScreenHeight", 0, JS_GetScreenHeight),
         JS_CFUNC_DEF("GetRenderWidth", 0, JS_GetRenderWidth),
@@ -3028,7 +3046,7 @@ namespace RaylibBindings {
     };
 
     void InitAllFunctions(JSContext *ctx, JSValue ns) {
-        JS_SetPropertyFunctionList(ctx, ns, js_raylib_funcs, 64);
+        JS_SetPropertyFunctionList(ctx, ns, js_raylib_funcs, 65);
     }
 
 }
