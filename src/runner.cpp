@@ -5,15 +5,18 @@
 #include <sstream>
 #include "runner.hpp"
 #include "raylib/rl_bindings.hpp"
+#include "console.hpp"
 
 Runner::Runner(std::string path) : scriptPath(std::move(path)) {
 
     rt = JS_NewRuntime();
     ctx = JS_NewContext(rt);
 
-    const JSValue globalObj = JS_GetGlobalObject(ctx);
-    RaylibBindings::InternalRegister(ctx, globalObj);
-    JS_FreeValue(ctx, globalObj);
+    Console::register_console(ctx);
+
+    const JSValue global_obj = JS_GetGlobalObject(ctx);
+    RaylibBindings::InternalRegister(ctx, global_obj);
+    JS_FreeValue(ctx, global_obj);
 
 }
 
