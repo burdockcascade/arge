@@ -6,14 +6,15 @@
 
 int main(const int argc, char** argv) {
 
-    SetTraceLogLevel(LOG_TRACE);
+    SetTraceLogLevel(LOG_ERROR);
 
     CLI::App args{"QuickJS Raylib Runner"};
 
     // Required option for script path
     std::string scriptPath;
-    args.add_option("-s,--script", scriptPath, "Path to the JS game script")
-        ->required();
+    args.add_option("script", scriptPath, "Path to the JS game script")
+        ->required()
+        ->check(CLI::ExistingFile);
 
     // Optional flag for verbose logging
     bool verbose = false;

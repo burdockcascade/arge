@@ -3,12 +3,13 @@ export class Vector2 {
         this.x = x;
         this.y = y;
     }
-
 }
 
 const DrawContext = {
     DrawFPS: (position) => _rl.DrawFPS(position.x, position.y),
-    DrawRectangle: (position, size, color) => _rl.DrawRectangle(position.x, position.y, size.x, size.y, color)
+    DrawRectangle: (position, size, color) => _rl.DrawRectangle(position.x, position.y, size.x, size.y, color),
+    DrawCircle: (position, radius, color) => _rl.DrawCircle(position.x, position.y, radius, color),
+    DrawText: (text, position, size, color) => _rl.DrawText(text, position.x, position.y, size, color)
 }
 
 export class App {
@@ -57,12 +58,6 @@ export class console {
     static log(msg) {
         _rl.TraceLog(_rl.TraceLogLevel.LOG_INFO, msg)
     }
-}
-
-export class Sandbox {
-    init() {}
-    update(dt, ctx) {}
-    draw(ctx) {}
 }
 
 globalThis.Vector2 = Vector2;
