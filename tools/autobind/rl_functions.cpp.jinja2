@@ -70,6 +70,9 @@ namespace RaylibBindings {
         {% if p.type == "char *" %}
         // Free the C string after the function call
         JS_FreeCString(ctx, {{ p.name }}_cstr);
+        {% elif p.type == "const char *" %}
+        // Free the C string after the function call
+        JS_FreeCString(ctx, {{ p.name }});
         {% endif %}
         {% endfor %}
         

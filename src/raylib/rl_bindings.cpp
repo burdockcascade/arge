@@ -6,7 +6,7 @@ namespace RaylibBindings {
 
     void InternalRegister(JSContext *ctx, JSValue global_obj) {
         const JSValue raylib_ns = JS_NewObject(ctx);
-        JS_SetPropertyStr(ctx, global_obj, "{{ raylib_ns }}", raylib_ns);
+        JS_SetPropertyStr(ctx, global_obj, "_rl", raylib_ns);
         InitAllFunctions(ctx, raylib_ns);
         InitAllEnums(ctx, raylib_ns);
         InitAllStructs(ctx, raylib_ns);

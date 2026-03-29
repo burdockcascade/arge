@@ -28,6 +28,8 @@ namespace RaylibBindings {
         // Call the Raylib function (no return value)
         InitWindow(width, height, title);
 
+        // Free the C string after the function call
+        JS_FreeCString(ctx, title);
         
         // No return value
         return JS_UNDEFINED;
@@ -337,6 +339,24 @@ namespace RaylibBindings {
         return JS_NewVector2(ctx, result);
     }
 
+    JSValue JS_ClearBackground(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
+
+        // Parameter: color (Type: Color)
+        // Handle struct parameters by retrieving the opaque pointer from the JS object
+        auto *color_ptr = static_cast<Color*>(JS_GetOpaque2(ctx, argv[0], js_Color_class_id));
+        if (!color_ptr) return JS_EXCEPTION;
+        // Dereference for non-pointer struct parameters
+        Color color = *color_ptr;
+
+
+        // Call the Raylib function (no return value)
+        ClearBackground(color);
+
+        
+        // No return value
+        return JS_UNDEFINED;
+    }
+
     JSValue JS_BeginDrawing(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
 
 
@@ -384,6 +404,37 @@ namespace RaylibBindings {
         
         // Return a primitive type
         return JS_NewFloat64(ctx, result);
+    }
+
+    JSValue JS_TraceLog(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
+
+
+
+        // Parameter: logLevel (Type: int)
+        // Handle other parameter types by converting from JS to C++
+        int32_t logLevel;
+        if (JS_ToInt32(ctx, &logLevel, argv[0])) return JS_EXCEPTION;
+
+        TraceLog(LOG_INFO, "logLevel %d", logLevel);
+
+        // Parameter: text (Type: const char *)
+        const char *text = JS_ToCString(ctx, argv[1]);
+        if (!text) return JS_EXCEPTION;
+
+        // Parameter: args (Type: ...)
+        // Handle other parameter types by converting from JS to C++
+        int32_t args;
+        if (JS_ToInt32(ctx, &args, argv[2])) return JS_EXCEPTION;
+
+
+        // Call the Raylib function (no return value)
+        TraceLog(logLevel, text, args);
+
+        // Free the C string after the function call
+        JS_FreeCString(ctx, text);
+        
+        // No return value
+        return JS_UNDEFINED;
     }
 
     JSValue JS_IsKeyPressed(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
@@ -983,6 +1034,8 @@ namespace RaylibBindings {
         // Call the Raylib function and store the struct result
         const auto result = LoadTexture(fileName);
 
+        // Free the C string after the function call
+        JS_FreeCString(ctx, fileName);
         
         // Return a struct by wrapping it in a JS object
         return JS_NewTexture2D(ctx, result);
@@ -1094,6 +1147,8 @@ namespace RaylibBindings {
         // Call the Raylib function (no return value)
         DrawText(text, posX, posY, fontSize, color);
 
+        // Free the C string after the function call
+        JS_FreeCString(ctx, text);
         
         // No return value
         return JS_UNDEFINED;
@@ -1126,10 +1181,12 @@ namespace RaylibBindings {
         JS_CFUNC_DEF("GetMonitorRefreshRate", 1, JS_GetMonitorRefreshRate),
         JS_CFUNC_DEF("GetWindowPosition", 0, JS_GetWindowPosition),
         JS_CFUNC_DEF("GetWindowScaleDPI", 0, JS_GetWindowScaleDPI),
+        JS_CFUNC_DEF("ClearBackground", 1, JS_ClearBackground),
         JS_CFUNC_DEF("BeginDrawing", 0, JS_BeginDrawing),
         JS_CFUNC_DEF("EndDrawing", 0, JS_EndDrawing),
         JS_CFUNC_DEF("SetTargetFPS", 1, JS_SetTargetFPS),
         JS_CFUNC_DEF("GetFrameTime", 0, JS_GetFrameTime),
+        JS_CFUNC_DEF("TraceLog", 3, JS_TraceLog),
         JS_CFUNC_DEF("IsKeyPressed", 1, JS_IsKeyPressed),
         JS_CFUNC_DEF("IsKeyPressedRepeat", 1, JS_IsKeyPressedRepeat),
         JS_CFUNC_DEF("IsKeyDown", 1, JS_IsKeyDown),
@@ -1166,7 +1223,7 @@ namespace RaylibBindings {
     };
 
     void InitAllFunctions(JSContext *ctx, JSValue ns) {
-        JS_SetPropertyFunctionList(ctx, ns, js_raylib_funcs, 62);
+        JS_SetPropertyFunctionList(ctx, ns, js_raylib_funcs, 64);
     }
 
 } // namespace RaylibBindings

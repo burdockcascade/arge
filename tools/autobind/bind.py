@@ -3,6 +3,8 @@ import re
 import os
 from jinja2 import Template
 
+RAYLIB_GLOBAL_NAMESPACE = "_rl"
+
 # This script processes the raylib.json file to generate C++ bindings for QuickJS.
 # Some of these are not needed but we will keep them for future expansion.
 TYPE_MAP = {
@@ -37,6 +39,7 @@ FUNCTION_WHITELIST = {
     "IsWindowState", "SetWindowState", "ClearWindowState",
     "GetWindowWidth", "GetWindowHeight", "GetScreenWidth", "GetScreenHeight",
     "GetRenderWidth", "GetRenderHeight",
+    "ClearBackground",
 
     # Monitor related functions
     "GetMonitorCount",
@@ -62,7 +65,10 @@ FUNCTION_WHITELIST = {
     "DrawFPS",
 
     # Assets
-    "LoadTexture", "UnloadTexture"
+    "LoadTexture", "UnloadTexture",
+
+    # Other
+    "TraceLog"
 }
 
 ENUM_WHITELIST = {
@@ -244,7 +250,8 @@ def run_generator():
         "functions": process_functions(data, known_structs, all_items),
         "enum_list": process_enums(data, all_items),
         "color": get_raylib_colors(data),
-        "all": all_items
+        "all": all_items,
+        "raylib_ns": RAYLIB_GLOBAL_NAMESPACE
     }
 
     # Render Templates

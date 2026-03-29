@@ -55,10 +55,12 @@ namespace RaylibBindings {
     JSValue JS_GetMonitorRefreshRate(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_GetWindowPosition(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_GetWindowScaleDPI(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
+    JSValue JS_ClearBackground(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_BeginDrawing(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_EndDrawing(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_SetTargetFPS(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_GetFrameTime(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
+    JSValue JS_TraceLog(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_IsKeyPressed(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_IsKeyPressedRepeat(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
     JSValue JS_IsKeyDown(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept;
