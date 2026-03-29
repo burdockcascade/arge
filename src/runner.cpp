@@ -1,5 +1,4 @@
 #include <quickjs.h>
-#include <raylib.h>
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -7,14 +6,11 @@
 #include "js/runtime.h"
 #include "raylib/rl_bindings.hpp"
 #include <quickjs-libc.h>
-#include "console.hpp"
 
 Runner::Runner(std::string path) : scriptPath(std::move(path)) {
 
     rt = JS_NewRuntime();
     ctx = JS_NewContext(rt);
-
-    //Console::register_console(ctx);
 
     const JSValue global_obj = JS_GetGlobalObject(ctx);
     RaylibBindings::InternalRegister(ctx, global_obj);
@@ -24,7 +20,7 @@ Runner::Runner(std::string path) : scriptPath(std::move(path)) {
     if (JS_IsException(obj)) {
         HandleException();
     } else {
-        JSValue val = JS_EvalFunction(ctx, obj); // Executes runtime.js
+        JSValue val = JS_EvalFunction(ctx, obj);
         JS_FreeValue(ctx, val);
     }
 

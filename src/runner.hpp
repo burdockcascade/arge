@@ -20,6 +20,6 @@ private:
     JSRuntime* rt = nullptr;
     JSContext* ctx = nullptr;
 
-    bool EvalModule(const std::string &code, const std::string &filename) const;
+    [[nodiscard]] bool EvalModule(const std::string &code, const std::string &filename) const;
     void HandleException() const;
 };
