@@ -255,7 +255,7 @@ def run_generator():
     }
 
     # Render Templates
-    for file_base in ['rl_bindings', 'rl_structs', 'rl_enums', 'rl_functions']:
+    for file_base in ['rl_bindings']:
         for ext in ['hpp', 'cpp']:
             template_path = f'{file_base}.{ext}.jinja2'
             output_path = f'../../src/raylib/{file_base}.{ext}'

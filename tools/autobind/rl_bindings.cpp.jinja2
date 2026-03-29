@@ -12,4 +12,298 @@ namespace RaylibBindings {
         InitAllStructs(ctx, raylib_ns);
     }
 
+    // ==== ENUMS ====
+
+    void InitAllEnums(JSContext *ctx, JSValue global_obj) {
+
+        {% for e in enum_list %}
+        // Enum: {{ e.name }}
+        const JSValue {{ e.name }}_ns = JS_NewObject(ctx);
+        JS_SetPropertyStr(ctx, global_obj, "{{ e.name }}", {{ e.name }}_ns);
+        {% for v in e.vals %}
+        JS_SetPropertyStr(ctx, {{ e.name }}_ns, "{{ v.name }}", JS_NewInt32(ctx, {{ v.value }}));
+        {% endfor %}
+
+        {% endfor %}
+    }
+
+    // ==== STRUCTS ====
+
+    {% for struct in structs %}
+    JSValue JS_New{{ struct.name }}(JSContext *ctx, const {{ struct.name }} data) {
+        const JSValue obj = JS_NewObjectClass(ctx, js_{{ struct.name }}_class_id);
+        if (auto* s = static_cast<{{ struct.name }}*>(js_malloc(ctx, sizeof({{ struct.name }})))) {
+            *s = data;
+            JS_SetOpaque(obj, s);
+        }
+        return obj;
+    }
+
+    static void js_{{ struct.name }}_finalizer(JSRuntime *rt, const JSValue val) noexcept {
+        if (auto* s = static_cast<{{ struct.name }}*>(JS_GetOpaque(val, js_{{ struct.name }}_class_id))) {
+            js_free_rt(rt, s);
+        }
+    }
+
+    {% for field in struct.fields %}
+    // Getter for {{ field.name }}
+    static JSValue js_{{ struct.name }}_get_{{ field.name }}(JSContext *ctx, const JSValue this_val) noexcept {
+        const auto* s = static_cast<{{ struct.name }}*>(JS_GetOpaque2(ctx, this_val, js_{{ struct.name }}_class_id));
+        if (!s) return JS_EXCEPTION;
+        {% if field.is_array %}
+        const JSValue arr = JS_NewArray(ctx);
+        for (int i = 0; i < {{ field.array_size }}; ++i) {
+            {% if field.is_struct %}
+            JS_SetPropertyUint32(ctx, arr, i, JS_New{{ field.type }}(ctx, s->{{ field.name }}[i]));
+            {% else %}
+            JS_SetPropertyUint32(ctx, arr, i, JS_NewFloat64(ctx, static_cast<double>(s->{{ field.name }}[i])));
+            {% endif %}
+        }
+        return arr;
+        {% elif field.is_struct and not field.is_ptr %}
+        return JS_New{{ field.type }}(ctx, s->{{ field.name }});
+        {% elif field.is_ptr %}
+        return JS_NewInt64(ctx, reinterpret_cast<int64_t>(s->{{ field.name }}));
+        {% else %}
+        return {{ field.to_js }}(ctx, static_cast<{{ field.cast }}>(s->{{ field.name }}));
+        {% endif %}
+    }
+
+    // Setter for {{ field.name }}
+    static JSValue js_{{ struct.name }}_set_{{ field.name }}(JSContext *ctx, const JSValue this_val, const JSValue val) noexcept {
+        auto s = static_cast<{{ struct.name }}*>(JS_GetOpaque2(ctx, this_val, js_{{ struct.name }}_class_id));
+        if (!s) return JS_EXCEPTION;
+
+        {% if field.is_array %}
+            for (int i = 0; i < {{ field.array_size }}; ++i) {
+            JSValue item = JS_GetPropertyUint32(ctx, val, i);
+            {% if field.is_struct %}
+            const auto* input = static_cast<{{ field.type }}*>(JS_GetOpaque2(ctx, item, js_{{ field.type }}_class_id));
+            if (input) {
+                s->{{ field.name }}[i] = *input;
+            }
+            {% else %}
+            // Handle arrays of primitives (like float[4])
+            double temp;
+            JS_ToFloat64(ctx, &temp, item);
+            s->{{ field.name }}[i] = static_cast<{{ field.type }}>(temp);
+            {% endif %}
+            JS_FreeValue(ctx, item);
+        }
+        {% elif field.is_struct %}
+            {% if field.is_ptr %}
+        {# Handles pointer aliases like ModelAnimPose (Transform*) #}
+        int64_t ptr_addr;
+        if (JS_ToInt64(ctx, &ptr_addr, val)) return JS_EXCEPTION;
+        s->{{ field.name }} = reinterpret_cast<{{ field.type }}*>(ptr_addr);
+            {% else %}
+        {# Handles standard value structs like Vector3 #}
+        const auto* input = static_cast<{{ field.type }}*>(JS_GetOpaque2(ctx, val, js_{{ field.type }}_class_id));
+        if (!input) return JS_EXCEPTION;
+        s->{{ field.name }} = *input;
+            {% endif %}
+        {% elif field.is_ptr %}
+        {# Handles raw pointers (void*, char*, etc) #}
+        int64_t ptr_addr;
+        if (JS_ToInt64(ctx, &ptr_addr, val)) return JS_EXCEPTION;
+        s->{{ field.name }} = reinterpret_cast<{{ field.type }}>(ptr_addr);
+        {% else %}
+            {% if field.direct_return %}
+        {# Logic for JS_ToBool: returns result directly #}
+        int res = {{ field.from_js }}(ctx, val);
+        if (res < 0) return JS_EXCEPTION;
+        s->{{ field.name }} = static_cast<{{ field.type }}>(res);
+            {% else %}
+        {# Logic for standard types (int, float, etc) #}
+        {{ field.cast }} temp;
+        if ({{ field.from_js }}(ctx, &temp, val)) return JS_EXCEPTION;
+        s->{{ field.name }} = static_cast<{{ field.type }}>(temp);
+            {% endif %}
+        {% endif %}
+        return JS_UNDEFINED;
+    }
+
+    {% endfor %}
+
+    // Constructor for {{ struct.name }}
+    static JSValue js_{{ struct.name }}_constructor(JSContext *ctx, JSValue new_target, int argc, JSValue *argv) {
+
+        // Expect either 0 arguments (default constructor) or all fields provided
+        if (argc != 0 && argc != {{ struct.fields|length }}) {
+            return JS_ThrowTypeError(ctx, "Expected either 0 arguments or exactly {{ struct.fields|length }} arguments for {{ struct.name }} constructor");
+        }
+
+        {{ struct.name }} data = {}; // Initialize with defaults
+
+        // Only populate if the user provides all fields
+        if (argc == {{ struct.fields|length }}) {
+            {% for field in struct.fields %}
+            {
+                {% if field.is_struct and not field.is_ptr %}
+                const auto* input = static_cast<{{ field.type }}*>(JS_GetOpaque2(ctx, argv[{{ loop.index0 }}], js_{{ field.type }}_class_id));
+                if (input) data.{{ field.name }} = *input;
+                {% elif field.is_ptr %}
+                int64_t ptr_addr;
+                if (!JS_ToInt64(ctx, &ptr_addr, argv[{{ loop.index0 }}])) {
+                    data.{{ field.name }} = reinterpret_cast<{{ field.type }}>(ptr_addr);
+                }
+                {% else %}
+                {{ field.cast }} temp;
+                if (!{{ field.from_js }}(ctx, &temp, argv[{{ loop.index0 }}])) {
+                    data.{{ field.name }} = static_cast<{{ field.type }}>(temp);
+                }
+                {% endif %}
+            }
+            {% endfor %}
+        }
+
+        return JS_New{{ struct.name }}(ctx, data);
+    }
+
+    constexpr JSCFunctionListEntry js_{{ struct.name }}_proto_funcs[] = {
+    {% for field in struct.fields %}
+        JS_CGETSET_DEF("{{ field.name }}", js_{{ struct.name }}_get_{{ field.name }}, js_{{ struct.name }}_set_{{ field.name }}),
+    {% endfor %}
+    };
+
+    static void Init{{ struct.name }}Binding(JSContext *ctx, const JSValue ns) {
+        JSRuntime *rt = JS_GetRuntime(ctx);
+        if (js_{{ struct.name }}_class_id == 0) {
+            JS_NewClassID(rt, &js_{{ struct.name }}_class_id);
+        }
+
+        constexpr JSClassDef def{ .class_name = "{{ struct.name }}", .finalizer = js_{{ struct.name }}_finalizer };
+        JS_NewClass(rt, js_{{ struct.name }}_class_id, &def);
+
+        const JSValue proto = JS_NewObject(ctx);
+        JS_SetPropertyFunctionList(ctx, proto, js_{{ struct.name }}_proto_funcs, {{ struct.fields|length }});
+        JS_SetClassProto(ctx, js_{{ struct.name }}_class_id, proto);
+
+        // Create the constructor function and attach it to the namespace
+        const JSValue ctor = JS_NewCFunction2(ctx, js_{{ struct.name }}_constructor, "{{ struct.name }}", {{ struct.fields|length }}, JS_CFUNC_constructor, 0);
+        JS_SetConstructor(ctx, ctor, proto);
+
+        {% if struct.name == "Color" %}
+        {% for c in color %}
+        JS_SetPropertyStr(ctx, ctor, "{{ c.name }}", JS_NewColor(ctx, Color{ {{ c.r }}, {{ c.g }}, {{ c.b }}, {{ c.a }} }));
+        {% endfor %}
+        {% endif %}
+
+        JS_SetPropertyStr(ctx, ns, "{{ struct.name }}", ctor);
+    }
+
+    {% endfor %}
+
+    {% for alias in aliases %}
+    // Alias: {{ alias.name }} maps to {{ alias.target }} ---
+    JSValue JS_New{{ alias.name }}(JSContext *ctx, {{ alias.target }} data) {
+        return JS_New{{ alias.target }}(ctx, data);
+    }
+
+    {% endfor %}
+
+    void InitAllStructs(JSContext *ctx, JSValue ns) {
+    {% for struct in structs %}
+        Init{{ struct.name }}Binding(ctx, ns);
+    {% endfor %}
+    }
+
+
+    // ==== FUNCTIONS ====
+
+    {% for func in functions %}
+    JSValue JS_{{ func.name }}(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) noexcept {
+
+        {% for p in func.params %}
+        // Parameter: {{ p.name }} (Type: {{ p.type }})
+        {% if p.is_struct %}
+        // Handle struct parameters by retrieving the opaque pointer from the JS object
+        auto *{{ p.name }}_ptr = static_cast<{{ p.clean_type }}*>(JS_GetOpaque2(ctx, argv[{{ p.index }}], js_{{ p.clean_type }}_class_id));
+        if (!{{ p.name }}_ptr) return JS_EXCEPTION;
+        {% if p.is_ptr %}
+        // Pass the pointer directly for pointer parameters
+        {{ p.type }} {{ p.name }} = {{ p.name }}_ptr;
+        {% else %}
+        // Dereference for non-pointer struct parameters
+        {{ p.type }} {{ p.name }} = *{{ p.name }}_ptr;
+        {% endif %}
+        {% elif p.is_buffer %}
+        // Handle buffer parameters by getting the ArrayBuffer data and size
+        size_t {{ p.name }}_size = 0;
+        uint8_t* {{ p.name }}_js_ptr = JS_GetArrayBuffer(ctx, &{{ p.name }}_size, argv[{{ p.index }}]);
+        if (!{{ p.name }}_js_ptr) return JS_EXCEPTION;
+
+        // Use a vector for automatic memory management (C++23)
+        std::vector<uint8_t> {{ p.name }}_vec({{ p.name }}_js_ptr, {{ p.name }}_js_ptr + {{ p.name }}_size);
+        const void *{{ p.name }} = {{ p.name }}_vec.data();
+        {% elif p.type == "const char *" %}
+        const char *{{ p.name }} = JS_ToCString(ctx, argv[{{ p.index }}]);
+        if (!{{ p.name }}) return JS_EXCEPTION;
+        {% elif  p.type == "char *" %}
+        const char *{{ p.name }}_cstr = JS_ToCString(ctx, argv[{{ p.index }}]);
+        if (!{{ p.name }}_cstr) return JS_EXCEPTION;
+        char *{{ p.name }} = const_cast<char*>({{ p.name }}_cstr);
+        {% else %}
+        {% if p.direct_return %}
+        // Direct return type (e.g., JS_ToBool)
+        int {{ p.name }}_res = {{ p.from_js }}(ctx, argv[{{ p.index }}]);
+        if ({{ p.name }}_res < 0) return JS_EXCEPTION;
+        const auto {{ p.name }} = static_cast<{{ p.type }}>({{ p.name }}_res);
+        {% else %}
+        // Handle other parameter types by converting from JS to C++
+        {{ p.cast }} {{ p.name }};
+        if ({{ p.from_js }}(ctx, &{{ p.name }}, argv[{{ p.index }}])) return JS_EXCEPTION;
+        {% endif %}
+        {% endif %}
+
+        {% endfor %}
+
+        {% if func.is_ret_void %}
+        // Call the Raylib function (no return value)
+        {{ func.name }}({% for p in func.params %}{{ p.name }}{{ ", " if not loop.last }}{% endfor %});
+        {% elif func.is_ret_struct %}
+        // Call the Raylib function and store the struct result
+        const auto result = {{ func.name }}({% for p in func.params %}{{ p.name }}{{ ", " if not loop.last }}{% endfor %});
+        {% else %}
+        // Call the Raylib function and store the result
+        const auto result = {{ func.name }}({% for p in func.params %}{{ p.name }}{{ ", " if not loop.last }}{% endfor %});
+        {% endif %}
+
+        {% for p in func.params %}
+        {% if p.type == "char *" %}
+        // Free the C string after the function call
+        JS_FreeCString(ctx, {{ p.name }}_cstr);
+        {% elif p.type == "const char *" %}
+        // Free the C string after the function call
+        JS_FreeCString(ctx, {{ p.name }});
+        {% endif %}
+        {% endfor %}
+
+        {% if func.is_ret_void %}
+        // No return value
+        return JS_UNDEFINED;
+        {% elif func.is_ret_struct %}
+        // Return a struct by wrapping it in a JS object
+        return JS_New{{ func.clean_return_type }}(ctx, result);
+        {% elif func.cast == "void *" %}
+        // Return a void pointer as an integer (address)
+        return JS_NewInt64(ctx, reinterpret_cast<int64_t>(result));
+        {% else %}
+        // Return a primitive type
+        return {{ func.to_js }}(ctx, result);
+        {% endif %}
+    }
+
+    {% endfor %}
+
+    static constexpr JSCFunctionListEntry js_raylib_funcs[] = {
+    {% for func in functions %}
+        JS_CFUNC_DEF("{{ func.name }}", {{ func.params|length }}, JS_{{ func.name }}),
+    {% endfor %}
+    };
+
+    void InitAllFunctions(JSContext *ctx, JSValue ns) {
+        JS_SetPropertyFunctionList(ctx, ns, js_raylib_funcs, {{ functions|length }});
+    }
+
 }
