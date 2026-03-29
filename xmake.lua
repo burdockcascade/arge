@@ -8,6 +8,7 @@ add_rules("mode.debug", "mode.release")
 add_requires("cli11 2.6.2")
 add_requires("raylib master") -- develop against this until 6.0 is released
 add_requires("quickjs-ng 0.13.0")
+add_requires("spdlog 1.16")
 
 target("arge")
     set_kind("binary")

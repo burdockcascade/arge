@@ -4,7 +4,9 @@
 #include <fstream>
 #include <sstream>
 #include "runner.hpp"
+#include "js/runtime.h"
 #include "raylib/rl_bindings.hpp"
+#include <quickjs-libc.h>
 #include "console.hpp"
 
 Runner::Runner(std::string path) : scriptPath(std::move(path)) {
@@ -12,11 +14,19 @@ Runner::Runner(std::string path) : scriptPath(std::move(path)) {
     rt = JS_NewRuntime();
     ctx = JS_NewContext(rt);
 
-    Console::register_console(ctx);
+    //Console::register_console(ctx);
 
     const JSValue global_obj = JS_GetGlobalObject(ctx);
     RaylibBindings::InternalRegister(ctx, global_obj);
     JS_FreeValue(ctx, global_obj);
+
+    const JSValue obj = JS_ReadObject(ctx, qjsc_runtime, qjsc_runtime_size, JS_READ_OBJ_BYTECODE);
+    if (JS_IsException(obj)) {
+        HandleException();
+    } else {
+        JSValue val = JS_EvalFunction(ctx, obj); // Executes runtime.js
+        JS_FreeValue(ctx, val);
+    }
 
 }
 
@@ -26,8 +36,14 @@ Runner::~Runner() {
 }
 
 void Runner::Run() const {
-    std::ifstream t(scriptPath);
-    if (!t.is_open()) return;
+
+    TraceLog(LOG_INFO, "Running script: %s", scriptPath.c_str());
+
+    const std::ifstream t(scriptPath);
+    if (!t.is_open()) {
+        TraceLog(LOG_ERROR, "Failed to open script: %s", scriptPath.c_str());
+        return;
+    }
 
     std::stringstream buffer;
     buffer << t.rdbuf();
@@ -39,7 +55,7 @@ void Runner::Run() const {
 
 }
 
-[[nodiscard]] bool Runner::EvalModule(const std::string &code, const std::string &filename) const {
+bool Runner::EvalModule(const std::string &code, const std::string &filename) const {
     const JSValue val = JS_Eval(ctx, code.c_str(), code.length(), filename.c_str(), JS_EVAL_TYPE_MODULE);
     if (JS_IsException(val)) {
         HandleException();
