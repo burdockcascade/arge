@@ -121,12 +121,13 @@ def process_structs(data, known_structs, all_items):
             f_type = f['type'].replace("const ", "").strip()
             is_struct = clean_type(f_type) in known_structs
             mapping = get_mapping(f_type, is_struct)
+            is_ptr = '*' in f_type
 
             fields.append({
                 "name": f['name'],
                 "type": f_type,
                 "is_struct": is_struct,
-                "is_ptr": '*' in f_type,
+                "is_ptr": is_ptr,
                 "cast": mapping["cast"],
                 "to_js": mapping["to"],
                 "from_js": mapping["from"],
@@ -255,7 +256,7 @@ def run_generator():
     }
 
     # Render Templates
-    for file_base in ['rl_bindings']:
+    for file_base in ['rl_bindings', 'rl_enums', 'rl_structs', 'rl_functions']:
         for ext in ['hpp', 'cpp']:
             template_path = f'{file_base}.{ext}.jinja2'
             output_path = f'../../src/raylib/{file_base}.{ext}'
