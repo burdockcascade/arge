@@ -59,8 +59,11 @@ jobs:
           pkg install -y curl bash git gmake
           curl -fsSL https://xmake.io/shget.text | bash
         run: |
-          export PATH=$PATH:$HOME/.local/bin
-          xmake -y
+          /usr/local/bin/bash <<-EOF
+            source ~/.xmake/profile
+            export XMAKE_ROOT=y
+            xmake -y
+          EOF
 #  haiku-build:
 #    runs-on: ubuntu-latest
 #    steps:
