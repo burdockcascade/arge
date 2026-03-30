@@ -1,7 +1,7 @@
 name: Build
 concurrency:
   group: build
-  cancel-in-progress: true
+  cancel-in-progress: false
 on:
   pull_request:
     branches:
@@ -56,7 +56,8 @@ jobs:
       with:
         usesh: true
         prepare: |
-          pkg install -y curl xmake-io
+          pkg install -y curl bash git
+          curl -fsSL https://xmake.io/shget.text | sh
         run: |
           export PATH=$PATH:$HOME/.local/bin
           xmake -y
