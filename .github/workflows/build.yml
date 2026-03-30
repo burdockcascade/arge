@@ -47,21 +47,20 @@ jobs:
          actions-cache-key: ${{ runner.os }}-xmake-${{ hashFiles('xmake.lua') }}
      - name: Build
        run: xmake -y
-#  freebsd-build:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v6
-#      - name: Build on FreeBSD
-#        uses: vmactions/freebsd-vm@v1
-#        with:
-#          usesh: true
-#          # Install xmake dependencies and xmake itself inside the VM
-#          prepare: |
-#            pkg install -y curl
-#            curl -fsSL https://xmake.io/shget.text | sh
-#          run: |
-#            export PATH=$PATH:$HOME/.local/bin
-#            xmake -y
+  freebsd-build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - name: Build on FreeBSD
+      uses: vmactions/freebsd-vm@v1
+      with:
+        usesh: true
+        prepare: |
+          pkg install -y curl
+          curl -fsSL https://xmake.io/shget.text | sh
+        run: |
+          export PATH=$PATH:$HOME/.local/bin
+          xmake -y
 #  haiku-build:
 #    runs-on: ubuntu-latest
 #    steps:
