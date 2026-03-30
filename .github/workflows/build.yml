@@ -36,7 +36,7 @@ jobs:
           actions-cache-key: ${{ runner.os }}-xmake-${{ hashFiles('xmake.lua') }}
       - name: Build
         run: xmake -y
- mac-build:
+  mac-build:
    runs-on: ubuntu-latest
    steps:
      - uses: actions/checkout@v6
