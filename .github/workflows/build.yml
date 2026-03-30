@@ -56,7 +56,7 @@ jobs:
       with:
         usesh: true
         prepare: |
-          pkg install -y curl bash git
+          pkg install -y curl bash git make
           curl -fsSL https://xmake.io/shget.text | bash
         run: |
           export PATH=$PATH:$HOME/.local/bin
