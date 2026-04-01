@@ -1,12 +1,10 @@
 #pragma once
-#include <quickjs.h>
+#include "qjs_wrapper.hpp"
 
 class Runner {
 public:
     // Lifecycle
     explicit Runner(std::string path);
-
-    ~Runner();
 
     // Deleted Copy/Assignment
     Runner(const Runner&) = delete;
@@ -17,9 +15,6 @@ public:
 
 private:
     std::string scriptPath;
-    JSRuntime* rt = nullptr;
-    JSContext* ctx = nullptr;
+    qjs::Engine engine;
 
-    [[nodiscard]] bool EvalModule(const std::string &code, const std::string &filename) const;
-    void HandleException() const;
 };

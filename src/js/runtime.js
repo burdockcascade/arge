@@ -1,10 +1,3 @@
-export class Vector2 {
-    constructor(x = 0, y = 0) {
-        this.x = x;
-        this.y = y;
-    }
-}
-
 // === Contexts ===
 
 const initContext = {
@@ -69,7 +62,7 @@ const renderContext = {
     }
 }
 
-export class App {
+class App {
 
     constructor(height, width, title, options = {}) {
         this.height = height;
@@ -96,7 +89,7 @@ export class App {
 
             _rl.BeginDrawing();
 
-            _rl.ClearBackground(_rl.Color.WHITE);
+            _rl.ClearBackground(Color.WHITE);
 
             if (game.draw) {
                 game.draw(renderContext);
@@ -114,15 +107,4 @@ export class App {
 
 }
 
-export class console {
-    static log(msg) {
-        _rl.TraceLog(_rl.TraceLogLevel.LOG_INFO, msg)
-    }
-}
-
-globalThis.Vector2 = Vector2;
 globalThis.App = App;
-globalThis.KeyboardKey = _rl.KeyboardKey;
-globalThis.MouseButton = _rl.MouseButton;
-globalThis.Color = _rl.Color;
-globalThis.console = console;
