@@ -24,10 +24,4 @@ target("arge")
     add_files("src/*.cpp")
     add_packages("cli11", "raylib", "quickjs-ng")
 
-    before_build(function (target)
-        import("core.base.option")
-        os.execv("qjsc", {"-N", "qjsc_runtime", "-C", "-m", "-o", "src/js/runtime.h", "src/js/runtime.js"})
-        print("JavaScript runtime compiled to src/js/runtime.h")
-    end)
-
 
