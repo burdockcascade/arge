@@ -93,6 +93,11 @@ namespace qjs {
 
     class Engine;
 
+    struct ConstructorEntry {
+        int argc;
+        std::function<void*(JSContext*, JSValueConst*)> invoker;
+    };
+
     template <typename T>
     class ClassBinder {
         JSContext* ctx;
@@ -100,10 +105,13 @@ namespace qjs {
         JSClassID class_id;
         std::string name;
         Engine& engine;
+        std::shared_ptr<std::vector<ConstructorEntry>> ctors;
 
     public:
         ClassBinder(JSContext* c, JSValue p, JSClassID id, std::string_view n, Engine& e)
-            : ctx(c), proto(p), class_id(id), name(n), engine(e) {}
+                    : ctx(c), proto(p), class_id(id), name(n), engine(e) {
+            ctors = std::make_shared<std::vector<ConstructorEntry>>();
+        }
 
         template <typename R, typename... Args>
         ClassBinder& method(this auto& self, std::string_view name, R (T::*func)(Args...)) {
