@@ -28,9 +28,8 @@ jobs:
     steps:
       - name: Installation
         run: |
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
           sudo apt-get update
-          sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev gcc-15 g++-15
+          sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev
       - uses: actions/checkout@v6
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
