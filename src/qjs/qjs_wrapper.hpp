@@ -48,7 +48,7 @@ namespace qjs {
             if constexpr (std::is_same_v<T, bool>) {
                 return JS_NewBool(ctx, val);
             } else if constexpr (std::is_integral_v<T> || std::is_enum_v<T>) {
-                return JS_NewInt32(ctx, static_cast<int32_t>(val));
+                return JS_NewInt64(ctx, static_cast<int64_t>(val));
             } else if constexpr (std::floating_point<T>) {
                 return JS_NewFloat64(ctx, static_cast<double>(val));
             } else if constexpr (std::is_convertible_v<T, std::string_view>) {
