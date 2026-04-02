@@ -29,6 +29,11 @@ jobs:
       - name: Installation
         run: sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev
       - uses: actions/checkout@v6
+      - name: Install GCC 15
+        run: |
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+          sudo apt-get update
+          sudo apt-get install gcc-15 g++-15 -y
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: latest
