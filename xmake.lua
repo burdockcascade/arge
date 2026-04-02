@@ -21,7 +21,7 @@ task("compile-runtime")
 
 target("arge")
     set_kind("binary")
-    add_files("src/*.cpp")
+    add_files("src/*.cpp", "src/raylib/*.cpp")
     add_packages("cli11", "raylib", "quickjs-ng")
 
 

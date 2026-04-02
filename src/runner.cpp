@@ -3,7 +3,7 @@
 #include "runner.hpp"
 #include "js/runtime.h"
 #include "qjs_wrapper.hpp"
-#include "rl_bindings.hpp"
+#include "raylib/rl_bindings.hpp"
 
 static void add_console_utilities(qjs::Engine& engine) {
     auto global = engine.get_global_object();

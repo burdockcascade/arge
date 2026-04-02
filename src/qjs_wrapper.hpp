@@ -427,7 +427,6 @@ namespace qjs {
         return *this;
     }
 
-    // Register a standard C++ constructor
     template <typename T>
     template <typename... Args>
     ClassBinder<T>& ClassBinder<T>::constructor() {
