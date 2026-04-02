@@ -1,4 +1,4 @@
-#include "../qjs_wrapper.hpp"
+#include "../qjs/qjs_wrapper.hpp"
 #include "rl_bindings.hpp"
 
 namespace RaylibBindings {

@@ -2,7 +2,7 @@
 #include <fstream>
 #include "runner.hpp"
 #include "js/runtime.h"
-#include "qjs_wrapper.hpp"
+#include "qjs/qjs_wrapper.hpp"
 #include "raylib/rl_bindings.hpp"
 
 static void add_console_utilities(qjs::Engine& engine) {

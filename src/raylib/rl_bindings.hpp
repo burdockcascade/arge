@@ -1,6 +1,6 @@
 #pragma once
 #include <raylib.h>
-#include "../qjs_wrapper.hpp"
+#include "../qjs/qjs_wrapper.hpp"
 
 namespace qjs {
 
@@ -57,6 +57,6 @@ namespace qjs {
 namespace RaylibBindings {
     void InternalRegister(qjs::Engine &engine);
     void InitAllStructs(qjs::ObjectBinder &ns);
-    void InitAllFunctions(qjs::ObjectBinder &global);
+    void InitAllFunctions(qjs::ObjectBinder &ns);
     void InitAllEnums(qjs::ObjectBinder &ns);
 }
