@@ -37,7 +37,7 @@ namespace qjs {
                 size_t len;
                 const char* str = JS_ToCStringLen(ctx, &len, v);
                 if (!str) return "";
-                std::string s(str, len);
+                std::string s(str ? str : "", len);
                 JS_FreeCString(ctx, str);
                 return s;
             }
