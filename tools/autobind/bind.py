@@ -76,7 +76,6 @@ ENUM_WHITELIST = {
     "MouseButton", "MouseCursor",
     "ConfigFlags",
     "CameraMode", "CameraProjection",
-    "TraceLogLevel"
 }
 
 # --- Helper Functions ---
@@ -246,17 +245,17 @@ def run_generator():
     # Execute processing steps
     print("Processing components...")
     context = {
-        "aliases": process_aliases(data, known_structs, all_items),
-        "structs": process_structs(data, known_structs, all_items),
-        "functions": process_functions(data, known_structs, all_items),
+        # "aliases": process_aliases(data, known_structs, all_items),
+        # "structs": process_structs(data, known_structs, all_items),
+        # "functions": process_functions(data, known_structs, all_items),
         "enum_list": process_enums(data, all_items),
-        "color": get_raylib_colors(data),
-        "all": all_items,
-        "raylib_ns": RAYLIB_GLOBAL_NAMESPACE
+        # "color": get_raylib_colors(data),
+        # "all": all_items,
+        # "raylib_ns": RAYLIB_GLOBAL_NAMESPACE
     }
 
     # Render Templates
-    for file_base in ['rl_bindings', 'rl_enums', 'rl_structs', 'rl_functions']:
+    for file_base in [ 'rl_enums']:
         for ext in ['hpp', 'cpp']:
             template_path = f'{file_base}.{ext}.jinja2'
             output_path = f'../../src/raylib/{file_base}.{ext}'
