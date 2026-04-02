@@ -2,9 +2,12 @@
 // console.log("App exists: " + (globalThis.App !== undefined));
 // console.log("Color exists: " + (globalThis.Color !== undefined));
 //
-Object.getOwnPropertyNames(globalThis).forEach(prop => {
+
+const target = globalThis;
+
+Object.getOwnPropertyNames(target).forEach(prop => {
     try {
-        const value = globalThis[prop];
+        const value = target[prop];
         const type = typeof value;
         console.log(`${prop} [${type}]: ${value}`);
     } catch (e) {
