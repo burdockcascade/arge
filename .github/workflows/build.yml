@@ -23,13 +23,24 @@ jobs:
           actions-cache-key: ${{ runner.os }}-xmake-${{ hashFiles('xmake.lua') }}
       - name: Build
         run: xmake -y
-  linux-build:
-    runs-on: ubuntu-latest
+#  linux-build:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Installation
+#        run: |
+#          sudo apt-get update
+#          sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev
+#      - uses: actions/checkout@v6
+#      - uses: xmake-io/github-action-setup-xmake@v1
+#        with:
+#          xmake-version: latest
+#          package-cache: true
+#          actions-cache-key: ${{ runner.os }}-xmake-${{ hashFiles('xmake.lua') }}
+#      - name: Build
+#        run: xmake -y
+  mac-build:
+    runs-on: macos-latest
     steps:
-      - name: Installation
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev
       - uses: actions/checkout@v6
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
@@ -38,17 +49,6 @@ jobs:
           actions-cache-key: ${{ runner.os }}-xmake-${{ hashFiles('xmake.lua') }}
       - name: Build
         run: xmake -y
-  # mac-build:
-  #  runs-on: macos-latest
-  #  steps:
-  #    - uses: actions/checkout@v6
-  #    - uses: xmake-io/github-action-setup-xmake@v1
-  #      with:
-  #        xmake-version: latest
-  #        package-cache: true
-  #        actions-cache-key: ${{ runner.os }}-xmake-${{ hashFiles('xmake.lua') }}
-  #    - name: Build
-  #      run: xmake -y
   # freebsd-build:
   #   runs-on: ubuntu-latest
   #   steps:
