@@ -36,7 +36,8 @@ namespace qjs {
             } else if constexpr (std::is_convertible_v<T, std::string>) {
                 size_t len;
                 const char* str = JS_ToCStringLen(ctx, &len, v);
-                std::string s(str ? str : "", len);
+                if (!str) return "";
+                std::string s(str, len);
                 JS_FreeCString(ctx, str);
                 return s;
             }
