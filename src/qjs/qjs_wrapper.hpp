@@ -215,7 +215,8 @@ namespace qjs {
         ~Engine() { JS_FreeValue(ctx.get(), global_obj); }
 
         // Script execution
-        inline std::expected<std::string, std::string> eval(std::string_view code, std::string_view file) const;
+        inline std::expected<std::string, std::string> eval_global(std::string_view code, std::string_view file) const;
+        inline std::expected<std::string, std::string> eval_module(std::string_view code, std::string_view file) const;
         inline std::expected<std::string, std::string> run_file(const std::filesystem::path& p) const;
         inline std::expected<std::string, std::string> run_bytecode(const uint8_t* bytecode, size_t len) const;
 
@@ -264,8 +265,12 @@ namespace qjs {
 
     // ==== INLINE IMPLEMENTATION ====
 
-    inline std::expected<std::string, std::string> Engine::eval(std::string_view code, std::string_view file) const {
-        return wrap_result(JS_Eval(ctx.get(), code.data(), code.size(), file.data(), JS_EVAL_TYPE_GLOBAL));
+    inline std::expected<std::string, std::string> Engine::eval_global(std::string_view code, std::string_view filename) const {
+        return wrap_result(JS_Eval(ctx.get(), code.data(), code.size(), filename.data(), JS_EVAL_TYPE_GLOBAL));
+    }
+
+    inline std::expected<std::string, std::string> Engine::eval_module(std::string_view code, std::string_view filename) const {
+        return wrap_result(JS_Eval(ctx.get(), code.data(), code.size(), filename.data(), JS_EVAL_TYPE_MODULE));
     }
 
     inline std::expected<std::string, std::string> Engine::run_bytecode(const uint8_t* bytecode, size_t len) const {
@@ -279,7 +284,7 @@ namespace qjs {
         if (!f) return std::unexpected("File not found: " + p.string());
         std::stringstream b;
         b << f.rdbuf();
-        return eval(b.str(), p.filename().string());
+        return eval_global(b.str(), p.filename().string());
     }
 
     inline ObjectBinder Engine::create_object(std::string_view name) {
