@@ -64,10 +64,11 @@ class Demo  {
             ctx.DrawRectangle(this.rectPos2, this.rectDim2, Color.RED);
             ctx.DrawRectangle(this.rectPos1, this.rectDim1, Color.SKYBLUE);
             ctx.DrawCircle(this.circlePos, 90, this.circleColor);
+            ctx.DrawText("hello", new Vector2(190, 190), 24.0, Color.BLUE);
         });
 
     }
-    
+
     end() {
         console.log("Game Ended");
     }
@@ -78,4 +79,5 @@ class Demo  {
 
 
 const app = new App(600, 800, "Hello World");
+app.set_window_flag(ConfigFlags.FLAG_WINDOW_RESIZABLE)
 app.run(new Demo());

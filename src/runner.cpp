@@ -5,16 +5,30 @@
 #include "qjs/qjs_wrapper.hpp"
 #include "raylib/rl_bindings.hpp"
 
-static void add_console_utilities(qjs::Engine& engine) {
-    auto global = engine.get_global_object();
-    auto console = engine.create_object("console");
+static void add_console_utilities(qjs::ObjectBinder global) {
+
+    // Create a global 'console' object
+    auto console = global.create_object("console");
+    
+    // Basic logging functions
     console.register_function("log", [](std::string msg) {
-        std::cout << "[QJS] " << msg << std::endl;
+        TraceLog(LOG_INFO, "%s", msg.c_str());
     });
+
+    // Error logging
+    console.register_function("error", [](std::string msg) {
+        TraceLog(LOG_ERROR, "%s", msg.c_str());
+    });
+
+    // Warning logging
+    console.register_function("warn", [](std::string msg) {
+        TraceLog(LOG_WARNING, "%s", msg.c_str());
+    });
+
 }
 
 Runner::Runner(std::string path) : scriptPath(std::move(path)) {
-    add_console_utilities(engine);
+    add_console_utilities(engine.get_global_object());
     RaylibBindings::InternalRegister(engine);
 }
 

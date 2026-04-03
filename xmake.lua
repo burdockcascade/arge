@@ -11,7 +11,7 @@ add_requires("quickjs-ng 0.13.0")
 
 task("compile-runtime")
     on_run(function ()
-        os.execv("qjsc", {"-N", "qjsc_runtime", "-C", "-m", "-o", "src/js/runtime.h", "src/js/runtime.js"})
+        os.execv("qjsc", {"-s", "-s", "-N", "qjsc_runtime", "-C", "-m", "-o", "src/js/runtime.h", "src/js/runtime.js"})
         print("JavaScript runtime compiled to src/js/runtime.h")
     end)
     set_menu {

@@ -613,7 +613,7 @@ namespace qjs {
         const JSAtom atom = JS_NewAtom(ctx, field_name.data());
 
         // Register as Read-Only (JS_PROP_C_W_E means Configurable, NOT Writable, Enumerable)
-        JS_DefinePropertyGetSet(ctx, ctor, atom, js_get, JS_UNDEFINED, JS_PROP_ENUMERABLE);
+        JS_DefinePropertyGetSet(ctx, ctor, atom, js_get, JS_UNDEFINED, JS_PROP_WRITABLE | JS_PROP_ENUMERABLE);
 
         JS_FreeAtom(ctx, atom);
         JS_FreeValue(ctx, ctor);

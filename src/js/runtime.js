@@ -64,11 +64,11 @@ const renderContext = {
 
 class App {
 
-    constructor(height, width, title, options = {}) {
+    constructor(height, width, title) {
         this.height = height;
         this.width = width;
         this.title = title;
-        this.fps = options.fps || 60;
+        this.fps = 60;
     }
 
     run(game) {
@@ -103,6 +103,18 @@ class App {
         }
 
         _rl.CloseWindow();
+    }
+
+    set_window_flag(flag) {
+        _rl.SetWindowState(flag);
+    }
+
+    set_fps(fps) {
+        this.fps = fps;
+    }
+
+    set_exit_key(key) {
+        _rl.SetExitKey(key);
     }
 
 }
