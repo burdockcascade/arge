@@ -4,6 +4,8 @@ Another Raylib Game Engine
 ## Status
 ARGE is currently in early development, and is not yet ready for production use.
 
+ARGE needs a better name.
+
 ## Example
 
 ```js
@@ -26,11 +28,22 @@ class HelloWorld {
         // do nothing
     }
 
-    draw(ctx) {
-        ctx.drawRect(this.pos, this.size, this.color);
+    draw(render) {
+        // Debug Layer
+        render.WithLayer2D((ctx) => {
+            ctx.DrawFPS(this.fpsPos);
+        });
+
+        // 2D Graphics Layer
+        render.WithLayer2D((ctx) => {
+            ctx.DrawRectangle(this.rectPos2, this.rectDim2, Color.RED);
+            ctx.DrawRectangle(this.rectPos1, this.rectDim1, Color.SKYBLUE);
+            ctx.DrawCircle(this.circlePos, 90, this.circleColor);
+            ctx.DrawText("hello", new Vector2(190, 190), 24.0, Color.BLUE);
+        });
     }
 }
 
-const app = new Runtime({width: 800, height: 600, title: "Hello World"});
+const app = new Runtime(800, 600, "Hello World");
 app.run(new HelloWorld());
 ```
