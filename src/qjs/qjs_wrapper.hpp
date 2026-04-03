@@ -214,24 +214,12 @@ namespace qjs {
         }
         ~Engine() { JS_FreeValue(ctx.get(), global_obj); }
 
-        std::expected<std::string, std::string> eval(std::string_view code, std::string_view file) const {
-            return wrap_result(JS_Eval(ctx.get(), code.data(), code.size(), file.data(), JS_EVAL_TYPE_GLOBAL));
-        }
+        // Script execution
+        inline std::expected<std::string, std::string> eval(std::string_view code, std::string_view file) const;
+        inline std::expected<std::string, std::string> run_file(const std::filesystem::path& p) const;
+        inline std::expected<std::string, std::string> run_bytecode(const uint8_t* bytecode, size_t len) const;
 
-        std::expected<std::string, std::string> run_file(const std::filesystem::path& p) const {
-            std::ifstream f(p);
-            if (!f) return std::unexpected("File not found: " + p.string());
-            std::stringstream b;
-            b << f.rdbuf();
-            return eval(b.str(), p.filename().string());
-        }
-
-        std::expected<std::string, std::string> run_bytecode(const uint8_t* bytecode, size_t len) const {
-            const JSValue obj = JS_ReadObject(ctx.get(), bytecode, len, JS_READ_OBJ_BYTECODE);
-            if (JS_IsException(obj)) return wrap_result(obj);
-            return wrap_result(JS_EvalFunction(ctx.get(), obj));
-        }
-
+        // Object binding
         inline ObjectBinder create_object(std::string_view name);
         inline ObjectBinder get_global_object();
 
@@ -274,7 +262,25 @@ namespace qjs {
 
     };
 
-    // ==== IMPLEMENTATION ====
+    // ==== INLINE IMPLEMENTATION ====
+
+    inline std::expected<std::string, std::string> Engine::eval(std::string_view code, std::string_view file) const {
+        return wrap_result(JS_Eval(ctx.get(), code.data(), code.size(), file.data(), JS_EVAL_TYPE_GLOBAL));
+    }
+
+    inline std::expected<std::string, std::string> Engine::run_bytecode(const uint8_t* bytecode, size_t len) const {
+        const JSValue obj = JS_ReadObject(ctx.get(), bytecode, len, JS_READ_OBJ_BYTECODE);
+        if (JS_IsException(obj)) return wrap_result(obj);
+        return wrap_result(JS_EvalFunction(ctx.get(), obj));
+    }
+
+    inline std::expected<std::string, std::string> Engine::run_file(const std::filesystem::path& p) const {
+        std::ifstream f(p);
+        if (!f) return std::unexpected("File not found: " + p.string());
+        std::stringstream b;
+        b << f.rdbuf();
+        return eval(b.str(), p.filename().string());
+    }
 
     inline ObjectBinder Engine::create_object(std::string_view name) {
         const JSValue obj = JS_NewObject(ctx.get()); // Extracting raw pointer from unique_ptr
@@ -296,7 +302,7 @@ namespace qjs {
         return ObjectBinder(rt.get(), ctx.get(), global_obj, *this, "global");
     }
 
-   inline std::expected<std::string, std::string> Engine::wrap_result(const JSValue v) const {
+    inline std::expected<std::string, std::string> Engine::wrap_result(const JSValue v) const {
         if (JS_IsException(v)) {
             const JSValue e = JS_GetException(ctx.get());
             std::string msg = converter<std::string>::get(ctx.get(), e);
@@ -316,6 +322,8 @@ namespace qjs {
         JS_FreeValue(ctx.get(), v);
         return res;
     }
+
+    // ==== TEMPLATE IMPLEMENTATIONS ====
 
     template <typename T>
     auto ObjectBinder::register_class(std::string_view name) {
