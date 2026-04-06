@@ -11,8 +11,9 @@ add_requires("quickjs-ng 0.13.0")
 
 task("compile-runtime")
     on_run(function ()
-        os.execv("qjsc", {"-s", "-s", "-N", "qjsc_runtime", "-C", "-m", "-o", "src/js/runtime.h", "src/js/runtime.js"})
-        print("JavaScript runtime compiled to src/js/runtime.h")
+        os.execv("npx.cmd", {"esbuild", "src/scripts/runtime.js", "--bundle", "--minify", "--outfile=src/runtime/runtime.js"})
+        os.execv("qjsc", {"-s", "-s", "-n", "runtime.js", "-N", "qjsc_runtime", "-C", "-m", "-o", "src/runtime/runtime.h", "src/runtime/runtime.js"})
+        print("JavaScript runtime compiled to src/runtime/runtime.h")
     end)
     set_menu {
         usage = "xmake compile-runtime",

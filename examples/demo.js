@@ -10,12 +10,12 @@ class Demo  {
         this.rectDim2 = new Vector2(90, 20);
 
         this.circlePos = new Vector2(300, 300);
-        this.circleColor = Color.GREEN;
+        this.circleColor = Color.GetRandomColor();
 
         this.fpsPos = new Vector2(10, 10);
     }
 
-    start(ctx) {
+    OnStart(ctx) {
         console.log("Game Started");
 
         // print number of monitors and their refresh rates
@@ -23,7 +23,7 @@ class Demo  {
         console.log(`Number of monitors: ${monitorCount}`);
     }
 
-    update(dt, ctx) {
+    OnUpdate(dt, ctx) {
 
         const { Input, Mouse } = ctx;
 
@@ -42,17 +42,18 @@ class Demo  {
             this.rectPos1.y -= moveStep;
         }
 
+        // new random color on space press
         if (Input.IsKeyPressed(KeyboardKey.KEY_SPACE)) {
-            this.circleColor = Color.ORANGE;
+            this.circleColor = Color.GetRandomColor();
         }
 
         if (Mouse.IsButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) {
-            this.circleColor = Color.MAROON;
+            this.circleColor = Color.GetRandomColor();
         }
 
     }
 
-    draw(render) {
+    OnDraw(render) {
 
         // Debug Layer
         render.WithLayer2D((ctx) => {
@@ -69,7 +70,7 @@ class Demo  {
 
     }
 
-    end() {
+    OnEnd() {
         console.log("Game Ended");
     }
 
@@ -79,5 +80,4 @@ class Demo  {
 
 
 const app = new App(600, 800, "Hello World");
-app.set_window_flag(ConfigFlags.FLAG_WINDOW_RESIZABLE)
-app.run(new Demo());
+app.Run(new Demo());

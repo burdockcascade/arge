@@ -55,8 +55,5 @@ namespace qjs {
 }
 
 namespace RaylibBindings {
-    void InternalRegister(qjs::Engine &engine);
-    void InitAllStructs(qjs::ObjectBinder &ns);
-    void InitAllFunctions(qjs::ObjectBinder &ns);
-    void InitAllEnums(qjs::ObjectBinder &ns);
+    void InitRaylib(qjs::Engine &engine);
 }

@@ -1,7 +1,7 @@
 #include <string>
 #include <fstream>
 #include "runner.hpp"
-#include "js/runtime.h"
+#include "runtime/runtime.h"
 #include "qjs/qjs_wrapper.hpp"
 #include "raylib/rl_bindings.hpp"
 
@@ -27,9 +27,17 @@ static void add_console_utilities(qjs::ObjectBinder global) {
 
 }
 
+static void declare_api(qjs::Engine& engine) {
+    auto global = engine.get_global_object();
+
+    // Declare any additional global utilities or namespaces here
+    add_console_utilities(global);
+
+}
+
 Runner::Runner(std::string path) : scriptPath(std::move(path)) {
-    add_console_utilities(engine.get_global_object());
-    RaylibBindings::InternalRegister(engine);
+    declare_api(engine);
+    RaylibBindings::InitRaylib(engine);
 }
 
 void Runner::Run() const {
