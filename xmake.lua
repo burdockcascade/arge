@@ -11,8 +11,8 @@ add_requires("quickjs-ng 0.13.0")
 
 task("compile-runtime")
     on_run(function ()
-        os.execv("npx.cmd", {"esbuild", "src/scripts/runtime.js", "--bundle", "--minify", "--outfile=src/runtime/runtime.js"})
-        os.execv("qjsc", {"-s", "-s", "-n", "runtime.js", "-N", "qjsc_runtime", "-C", "-m", "-o", "src/runtime/runtime.h", "src/runtime/runtime.js"})
+        os.execv("npx.cmd", {"esbuild", "runtime/runtime.js", "--bundle", "--outfile=runtime/dist.js"})
+        os.execv("qjsc", {"-s", "-s", "-n", "runtime.js", "-N", "qjsc_runtime", "-C", "-m", "-o", "src/runtime.hpp", "runtime/dist.js"})
         print("JavaScript runtime compiled to src/runtime/runtime.h")
     end)
     set_menu {
@@ -22,7 +22,7 @@ task("compile-runtime")
 
 target("arge")
     set_kind("binary")
-    add_files("src/*.cpp", "src/raylib/*.cpp")
+    add_files("src/*.cpp")
     add_packages("cli11", "raylib", "quickjs-ng")
 
 

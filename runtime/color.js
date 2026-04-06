@@ -56,6 +56,7 @@ export class Color {
     static get MAROON()    { return new Color(190, 33, 55, 255); }
     static get VIOLET()    { return new Color(135, 60, 190, 255); }
     static get ORANGE()    { return new Color(255, 161, 0, 255); }
+    
 
     /** Returns a random color */
     static GetRandomColor() {

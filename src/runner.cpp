@@ -1,9 +1,9 @@
 #include <string>
 #include <fstream>
 #include "runner.hpp"
-#include "runtime/runtime.h"
+#include "runtime.hpp"
 #include "qjs/qjs_wrapper.hpp"
-#include "raylib/rl_bindings.hpp"
+#include "rl_bindings.hpp"
 
 static void add_console_utilities(qjs::ObjectBinder global) {
 
