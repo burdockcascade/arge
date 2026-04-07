@@ -1,6 +1,6 @@
 #pragma once
 #include <raylib.h>
-#include "qjs/qjs_wrapper.hpp"
+#include "qjs_wrapper.hpp"
 
 namespace qjs {
 

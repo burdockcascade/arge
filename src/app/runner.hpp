@@ -1,5 +1,5 @@
 #pragma once
-#include "qjs/qjs_wrapper.hpp"
+#include "qjs_wrapper.hpp"
 
 class Runner {
 public:

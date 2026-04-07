@@ -12,3 +12,7 @@ CMakeLists.txt
 # CMake Cache
 .idea
 cmake-build-debug
+
+# node
+node_modules
+dist

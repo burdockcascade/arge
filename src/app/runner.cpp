@@ -2,7 +2,7 @@
 #include <fstream>
 #include "runner.hpp"
 #include "runtime.hpp"
-#include "qjs/qjs_wrapper.hpp"
+#include "qjs_wrapper.hpp"
 #include "rl_bindings.hpp"
 
 static void add_console_utilities(qjs::ObjectBinder global) {

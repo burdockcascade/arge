@@ -1,5 +1,5 @@
 (() => {
-  // runtime/app.js
+  // src/runtime/app.js
   var initContext = {
     GetScreenWidth: _rl.GetScreenWidth,
     GetScreenHeight: _rl.GetScreenHeight,
@@ -98,7 +98,7 @@
     }
   };
 
-  // runtime/math.js
+  // src/runtime/math.js
   var Vector2 = class _Vector2 {
     constructor(x = 0, y = 0) {
       this.x = x;
@@ -267,7 +267,7 @@
     }
   };
 
-  // runtime/color.js
+  // src/runtime/color.js
   var Color2 = class _Color {
     constructor(r = 255, g = 255, b = 255, a = 255) {
       this.r = r;
@@ -354,7 +354,7 @@
     }
   };
 
-  // runtime/runtime.js
+  // src/runtime/runtime.js
   globalThis.App = App;
   globalThis.Vector2 = Vector2;
   globalThis.Vector3 = Vector3;

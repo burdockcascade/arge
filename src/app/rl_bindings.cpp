@@ -1,4 +1,4 @@
-#include "qjs/qjs_wrapper.hpp"
+#include "qjs_wrapper.hpp"
 #include <raylib.h>
 #include "rl_bindings.hpp"
 
