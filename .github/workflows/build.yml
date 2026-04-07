@@ -30,10 +30,6 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev
-    - name: Setup GCC 14 manually 
-      run: |
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100 --slave /usr/bin/g++ g++ /usr/bin/g++-14
-        sudo update-alternatives --set gcc /usr/bin/gcc-14
     - uses: actions/checkout@v6
     - uses: xmake-io/github-action-setup-xmake@v1
       with:
