@@ -4,13 +4,6 @@ const screenHeight = 450;
 const app = new App(screenHeight, screenWidth, "Hardware & Monitor Info");
 
 const game = {
-    // OnStart can be used to capture initial one-time data from the initContext
-    OnStart: (init) => {
-        this.monCount = init.Monitor.GetCount();
-        this.physWidth = init.Monitor.GetPhysicalWidth(0);
-        this.physHeight = init.Monitor.GetPhysicalHeight(0);
-        this.refreshRate = init.Monitor.GetRefreshRate(0);
-    },
 
     OnUpdate: (dt, context) => {
         // We can capture real-time window state from the updateContext
