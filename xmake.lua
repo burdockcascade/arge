@@ -13,7 +13,7 @@ task("compile-runtime")
     on_run(function ()
         os.execv("npx.cmd", {"esbuild", "src/runtime/runtime.js", "--bundle", "--outfile=src/runtime/dist.js"})
         os.execv("qjsc", {"-s", "-s", "-n", "runtime.js", "-N", "qjsc_runtime", "-C", "-m", "-o", "src/app/runtime.hpp", "src/runtime/dist.js"})
-        print("JavaScript runtime compiled to src/runtime/runtime.h")
+        print("JavaScript runtime compiled to src/app/runtime.h")
     end)
     set_menu {
         usage = "xmake compile-runtime",

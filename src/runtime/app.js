@@ -1,10 +1,34 @@
+const window_ctx = {
+    IsReady: _rl.IsWindowReady,
+    IsMinimized: _rl.IsWindowMinimized,
+    IsResized: _rl.IsWindowResized,
+    IsHidden: _rl.IsWindowHidden,
+    IsFocused: _rl.IsWindowFocused,
+    IsFullscreen: _rl.IsFullscreen,
+    ToggleFullscreen: _rl.ToggleFullscreen,
+    SetTitle: _rl.SetWindowTitle,
+    SetTargetFPS: _rl.SetTargetFPS,
+}
+
+const screen_ctx = {
+    GetWidth: _rl.GetScreenWidth,
+    GetHeight: _rl.GetScreenHeight,
+}
+
+const monitor_ctx = {
+    GetCount: _rl.GetMonitorCount,
+    GetWidth: _rl.GetMonitorWidth,
+    GetHeight: _rl.GetMonitorHeight,
+    GetPhysicalWidth: _rl.GetMonitorPhysicalWidth,
+    GetPhysicalHeight: _rl.GetMonitorPhysicalHeight,
+    GetRefreshRate: _rl.GetMonitorRefreshRate,
+    GetMonitor: _rl.GetCurrentMonitor,
+}
+
 const initContext = {
-    GetScreenWidth: _rl.GetScreenWidth,
-    GetScreenHeight: _rl.GetScreenHeight,
-    GetMonitorPhysicalWidth: _rl.GetMonitorPhysicalWidth,
-    GetMonitorPhysicalHeight: _rl.GetMonitorPhysicalHeight,
-    GetMonitorCount: _rl.GetMonitorCount,
-    GetMonitorRefreshRate: _rl.GetMonitorRefreshRate,
+    Window: window_ctx,
+    Screen: screen_ctx,
+    Monitor: monitor_ctx,
 }
 
 const updateContext = {
@@ -21,29 +45,9 @@ const updateContext = {
         IsButtonUp: _rl.IsMouseButtonUp,
         IsButtonPressed: _rl.IsMouseButtonPressed,
     },
-    Window: {
-        IsReady: _rl.IsWindowReady,
-        IsMinimized: _rl.IsWindowMinimized,
-        IsResized: _rl.IsWindowResized,
-        IsHidden: _rl.IsWindowHidden,
-        IsFocused: _rl.IsWindowFocused,
-        IsFullscreen: _rl.IsFullscreen,
-        ToggleFullscreen: _rl.ToggleFullscreen,
-        SetTitle: _rl.SetWindowTitle,
-        SetTargetFPS: _rl.SetTargetFPS,
-    },
-    Screen: {
-        GetWidth: _rl.GetScreenWidth,
-        GetHeight: _rl.GetScreenHeight,
-    },
-    Monitor: {
-        GetCount: _rl.GetMonitorCount,
-        GetWidth: _rl.GetMonitorWidth,
-        GetHeight: _rl.GetMonitorHeight,
-        GetPhysicalWidth: _rl.GetMonitorPhysicalWidth,
-        GetPhysicalHeight: _rl.GetMonitorPhysicalHeight,
-        GetRefreshRate: _rl.GetMonitorRefreshRate,
-    },
+    Window: window_ctx,
+    Screen: screen_ctx,
+    Monitor: monitor_ctx,
 
 }
 

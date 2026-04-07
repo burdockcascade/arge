@@ -6,10 +6,8 @@ namespace RaylibBindings {
 
     void InitAllFunctions(qjs::ObjectBinder &ns) {
 
-        ns.register_function("InitWindow", [](int width, int height, const std::string& title) {
-           ::InitWindow(width, height, title.c_str());
-        });
-
+        // Window and Graphics
+        ns.register_function("InitWindow", ::InitWindow);
         ns.register_function("CloseWindow", ::CloseWindow);
         ns.register_function("WindowShouldClose", ::WindowShouldClose);
         ns.register_function("IsWindowReady", ::IsWindowReady);
@@ -22,11 +20,10 @@ namespace RaylibBindings {
         ns.register_function("IsWindowState", ::IsWindowState);
         ns.register_function("SetWindowState", ::SetWindowState);
         ns.register_function("ClearWindowState", ::ClearWindowState);
+        ns.register_function("SetWindowTitle", ::SetWindowTitle);
+        ns.register_function("ClearBackground", ::ClearBackground);
 
-        ns.register_function("SetWindowTitle", [](const std::string& title) {
-            ::SetWindowTitle(title.c_str());
-        });
-
+        // Screen and Display
         ns.register_function("GetScreenWidth", ::GetScreenWidth);
         ns.register_function("GetScreenHeight", ::GetScreenHeight);
         ns.register_function("GetRenderWidth", ::GetRenderWidth);
@@ -39,16 +36,15 @@ namespace RaylibBindings {
         ns.register_function("GetMonitorRefreshRate", ::GetMonitorRefreshRate);
         ns.register_function("GetWindowPosition", ::GetWindowPosition);
         ns.register_function("GetWindowScaleDPI", ::GetWindowScaleDPI);
+        ns.register_function("GetCurrentMonitor", ::GetCurrentMonitor);
 
-        ns.register_function("ClearBackground", ::ClearBackground);
+        // Drawing
         ns.register_function("BeginDrawing", ::BeginDrawing);
         ns.register_function("EndDrawing", ::EndDrawing);
+
+        // Timing
         ns.register_function("SetTargetFPS", ::SetTargetFPS);
         ns.register_function("GetFrameTime", ::GetFrameTime);
-
-        ns.register_function("TraceLog", [](const int level, const std::string& message) {
-            ::TraceLog(level, "%s", message.c_str());
-        });
 
         // Keyboard
         ns.register_function("IsKeyPressed", ::IsKeyPressed);
@@ -75,24 +71,19 @@ namespace RaylibBindings {
 
         // Draw
         ns.register_function("DrawPixel", ::DrawPixel);
-        ns.register_function("DrawPixelV", ::DrawPixelV);
         ns.register_function("DrawLine", ::DrawLine);
-        ns.register_function("DrawLineV", ::DrawLineV);
-        ns.register_function("DrawLineEx", ::DrawLineEx);
-        ns.register_function("DrawLineStrip", ::DrawLineStrip);
-        ns.register_function("DrawLineBezier", ::DrawLineBezier);
         ns.register_function("DrawCircle", ::DrawCircle);
         ns.register_function("DrawRectangle", ::DrawRectangle);
         ns.register_function("DrawTexture", ::DrawTexture);
         ns.register_function("DrawFPS", ::DrawFPS);
+
+        // fixme: this is a bit of a hack to convert the string to a C string, but it works for now. We might want to implement a more robust solution in the future.
         ns.register_function("DrawText", [](const std::string& text, int x, int y, int fontSize, Color color) {
             ::DrawText(text.c_str(), x, y, fontSize, color);
         });
 
         // Textures
-        ns.register_function("LoadTexture", [](const std::string& filename) {
-            return ::LoadTexture(filename.c_str());
-        });
+        ns.register_function("LoadTexture", ::LoadTexture);
         ns.register_function("UnloadTexture", ::UnloadTexture);
     }
 
