@@ -1,39 +1,95 @@
 name: Build
-
+concurrency:
+  group: build
+  cancel-in-progress: false
 on:
   pull_request:
-    branches: [main, master]
+    branches:
+      - main
+      - master
   push:
-    branches: [main, master]
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
+    branches:
+      - main
+      - master
 jobs:
-  build:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-
-    runs-on: ${{ matrix.os }}
-
+  windows-build:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v6
-
-      # Linux-specific dependencies
-      - name: Install Linux System Dependencies
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev
-
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: latest
           package-cache: true
           actions-cache-key: ${{ runner.os }}-xmake-${{ hashFiles('xmake.lua') }}
-
       - name: Build
         run: xmake -y
+  linux-build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Installation
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev
+    - name: Setup GCC 14 manually 
+      run: |
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100 --slave /usr/bin/g++ g++ /usr/bin/g++-14
+        sudo update-alternatives --set gcc /usr/bin/gcc-14
+    - uses: actions/checkout@v6
+    - uses: xmake-io/github-action-setup-xmake@v1
+      with:
+        xmake-version: latest
+        package-cache: true
+        actions-cache-key: ${{ runner.os }}-xmake-${{ hashFiles('xmake.lua') }}
+    - name: Build
+      run: xmake f --toolchain=clang -y && xmake -y
+  mac-build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+          package-cache: true
+          actions-cache-key: ${{ runner.os }}-xmake-${{ hashFiles('xmake.lua') }}
+      - name: Build
+        run: xmake -y
+  # freebsd-build:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v6
+  #   - name: Build on FreeBSD
+  #     uses: vmactions/freebsd-vm@v1
+  #     with:
+  #       usesh: true
+  #       prepare: |
+  #         pkg install -y curl bash git gmake
+  #         curl -fsSL https://xmake.io/shget.text | bash
+  #       run: |
+  #         /usr/local/bin/bash <<-EOF
+  #           source ~/.xmake/profile
+  #           export XMAKE_ROOT=y
+  #           xrepo update-repo
+  #           xmake -y
+  #         EOF
+#  haiku-build:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v6
+#      - name: Build on Haiku
+#        uses: vmactions/haiku-vm@v1
+#        with:
+#          usesh: true
+#          # Haiku uses 'pkgman' for package management
+#          prepare: |
+#            pkgman install -y gapk curl
+#            curl -fsSL https://xmake.io/shget.text | bash
+#          run: |
+#            # 1. Install necessary build dependencies
+#            pkgman install -y gapk curl xentia_devel gcc_syslibs_devel
+#
+#            # 2. Install xmake via the shell script
+#            curl -fsSL https://xmake.io/shget.text | sh
+#
+#            # 3. Update PATH and execute the build
+#            export PATH=$PATH:$HOME/.local/bin
+#            xmake -v -y
