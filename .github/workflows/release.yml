@@ -40,7 +40,7 @@ jobs:
 
       # Build the project
       - name: Build
-        run: xmake -y -m release
+        run: xmake -y
 
       # Rename and upload the binary to the release
       - name: Upload Release Asset
