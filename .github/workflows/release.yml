@@ -9,10 +9,11 @@ jobs:
     name: Build and Release
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: windows-latest
-            artifact_name: arge-windows.exe
+            artifact_name: arge.exe
             asset_name: arge-windows.exe
           - os: ubuntu-latest
             artifact_name: arge
