@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-and-release:
+    name: Build and Release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            artifact_name: arge-windows.exe
+            asset_name: arge-windows.exe
+          - os: ubuntu-latest
+            artifact_name: arge
+            asset_name: arge-linux
+          - os: macos-latest
+            artifact_name: arge
+            asset_name: arge-macos
+
+    steps:
+      - uses: actions/checkout@v6
+
+      # Setup xmake as defined in your build.yml
+      - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+          package-cache: true
+          actions-cache-key: ${{ runner.os }}-xmake-${{ hashFiles('xmake.lua') }}
+
+      # Install Linux dependencies
+      - name: Install Linux Dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev
+
+      # Build the project
+      - name: Build
+        run: xmake -y -m release
+
+      # Rename and upload the binary to the release
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/${{ matrix.os == 'windows-latest' && 'windows/x64/release/' || (matrix.os == 'macos-latest' && 'macosx/x86_64/release/' || 'linux/x86_64/release/') }}${{ matrix.artifact_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
