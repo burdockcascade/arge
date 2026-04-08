@@ -8,48 +8,66 @@ permissions:
   contents: write
 
 jobs:
-  build-and-release:
-    name: Build and Release
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: windows-latest
-            artifact_name: arge.exe
-            asset_name: arge-windows.exe
-          - os: ubuntu-latest
-            artifact_name: arge
-            asset_name: arge-linux
-          - os: macos-latest
-            artifact_name: arge
-            asset_name: arge-macos
-
+  windows-release:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v6
-
-      # Setup xmake as defined in your build.yml
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: latest
           package-cache: true
           actions-cache-key: ${{ runner.os }}-xmake-${{ hashFiles('xmake.lua') }}
-
-      # Install Linux dependencies
-      - name: Install Linux Dependencies
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev
-
-      # Build the project
       - name: Build
         run: xmake -y
-
-      # Rename and upload the binary to the release
+      - name: Rename binary
+        run: mv build/windows/x64/release/arge.exe arge-windows-x86_64.exe
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         with:
-          files: build/${{ matrix.os == 'windows-latest' && 'windows/x64/release/' || (matrix.os == 'macos-latest' && 'macosx/x86_64/release/' || 'linux/x86_64/release/') }}${{ matrix.artifact_name }}
+          files: arge-windows-x86_64.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  linux-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Installation
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev
+      - uses: actions/checkout@v6
+      - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+          package-cache: true
+          actions-cache-key: ${{ runner.os }}-xmake-${{ hashFiles('xmake.lua') }}
+      - name: Build
+        run: xmake f -p linux -a x86_64 --sdk=/usr/bin --cc=gcc-14 --cxx=g++-14 -y && xmake -y
+      - name: Rename binary
+        run: mv build/linux/x86_64/release/arge arge-linux-x86_64
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: arge-linux-x86_64
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  macos-release:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+          package-cache: true
+          actions-cache-key: ${{ runner.os }}-xmake-${{ hashFiles('xmake.lua') }}
+      - name: Build
+        run: xmake -y 
+      - name: Rename binary
+        run: mv build/macosx/x86_64/release/arge arge-macos-arm64
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: arge-macos-arm64
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
